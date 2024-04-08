@@ -100,18 +100,6 @@ struct ProfileView: View {
                         })
                         .listRowBackground(Color.ColorSystem.systemGray4)
                         .disabled(true)
-                        
-//                        Button(action: {
-//                            
-//                        }, label: {
-//                            HStack {
-//                                Text("Manage subscriptions (coming soon)")
-//                                    .foregroundStyle(Color.ColorSystem.secondaryText)
-//                                Spacer()
-//                            }
-//                        })
-//                        .listRowBackground(Color.ColorSystem.systemGray4)
-//                        .disabled(true)
                     }
                 }
                 .listStyle(.insetGrouped)
@@ -129,7 +117,8 @@ struct ProfileView: View {
             }
             .background(Color.ColorSystem.systemGray5)
             .sheet(isPresented: $settingsIsPresented, content: {
-                SettingsView()
+                SettingsView(user: viewModel.user!)
+                    .environmentObject(userViewModel)
                     .presentationDetents([.medium])
             })
             .alert(isPresented: $viewModel.didReturnError, content: {

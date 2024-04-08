@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct UserView: View {
     
     @EnvironmentObject var userViewModel: UserViewModel
     
@@ -35,6 +35,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    UserView()
         .environmentObject(UserViewModel())
 }
