@@ -74,7 +74,7 @@ final class CreateAccountViewModel: ObservableObject {
         }
         
         let createUserRequest = CreateUserRequest(
-            userImage: self.profilePicture,
+            profilePicture: self.profilePicture,
             fullName: self.fullName,
             username: self.username,
             email: self.email,

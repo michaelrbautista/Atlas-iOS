@@ -1,32 +1,32 @@
 //
-//  EditWorkoutView.swift
-//  stayhard
+//  NewWorkoutView.swift
+//  Atlas
 //
-//  Created by Michael Bautista on 3/16/24.
+//  Created by Michael Bautista on 4/14/24.
 //
 
 import SwiftUI
 
-struct EditWorkoutView: View {
+struct NewWorkoutView: View {
     // MARK: UI state
     @Environment(\.dismiss) private var dismiss
+    @FocusState var keyboardIsFocused: Bool
     @State private var addExerciseIsPresented = false
     @State private var editExerciseIsPresented = false
-    @FocusState var keyboardIsFocused: Bool
     
     // MARK: Data
-    @State var workoutId: Int
+    @State var workoutNumber: Int
     
-    @State var workoutTitle: String
-    @State var workoutDescription: String
-    @State var exercises: [Exercise]
+    @State var workoutTitle: String = ""
+    @State var workoutDescription: String = ""
+    @State var exercises: [Exercise] = [Exercise]()
     
     @State var didReturnError = false
     @State var returnedErrorMessage: String? = nil
     
     @State private var exerciseSelected: Exercise? = nil
     
-    public var onWorkoutSaved: ((Workout) -> Void)
+    public var onWorkoutAdded: ((Workout) -> Void)?
     
     var body: some View {
         NavigationStack {
@@ -75,15 +75,14 @@ struct EditWorkoutView: View {
 //                        )
 //                        .background(Color.ColorSystem.systemGray4)
 //                        .listRowBackground(Color.ColorSystem.systemGray4)
-//                        .deleteDisabled(exercise.video_url != nil)
 //                        .onTapGesture {
 //                            exerciseSelected = exercise
 //                            editExerciseIsPresented.toggle()
 //                        }
                     }
-//                    .onDelete(perform: { indexSet in
-//                        self.exercises.remove(atOffsets: indexSet)
-//                    })
+                    .onDelete(perform: { indexSet in
+                        self.exercises.remove(atOffsets: indexSet)
+                    })
                     
                     Button(action: {
                         keyboardIsFocused = false
@@ -106,7 +105,7 @@ struct EditWorkoutView: View {
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Edit Workout")
+            .navigationTitle("New Workout")
             .background(Color.ColorSystem.systemGray5)
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
@@ -118,7 +117,7 @@ struct EditWorkoutView: View {
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
+                    Button("Add") {
 //                        keyboardIsFocused = false
 //                        
 //                        if workoutTitle == "" {
@@ -128,49 +127,43 @@ struct EditWorkoutView: View {
 //                        }
 //                        
 //                        let newWorkout = Workout(
-//                            id: workoutId,
+//                            id: workoutNumber,
 //                            title: workoutTitle,
-//                            description: "",
+//                            description: workoutDescription,
 //                            exercises: exercises
 //                        )
 //                        
-//                        onWorkoutSaved(newWorkout)
+//                        onWorkoutAdded?(newWorkout)
 //                        dismiss()
                     }
                     .tint(Color.ColorSystem.systemBlue)
                 }
             })
-            .alert(isPresented: $didReturnError, content: {
-                Alert(title: Text(returnedErrorMessage ?? "Couldn't add workout."))
-            })
-            .sheet(isPresented: $addExerciseIsPresented, content: {
-//                AddExerciseView(exerciseId: exercises.count) { exercise  in
-//                    exercises.insert(exercise, at: exercise.id)
-//                }
-            })
-            .sheet(isPresented: $editExerciseIsPresented, content: {
-//                if exerciseSelected != nil {
-//                    EditExerciseView(
-//                        workoutId: workoutId,
-//                        exerciseId: exerciseSelected!.id,
-//                        exerciseTitle: exerciseSelected!.title,
-//                        sets: exerciseSelected!.sets,
-//                        reps: exerciseSelected!.reps,
-//                        instructions: exerciseSelected!.instructions) { exercise in
-//                            self.exercises[exercise.id] = exercise
-//                        }
-//                }
-            })
         }
+        .alert(isPresented: $didReturnError, content: {
+            Alert(title: Text(returnedErrorMessage ?? "Couldn't add workout."))
+        })
+        .sheet(isPresented: $addExerciseIsPresented, content: {
+            AddExerciseView(exerciseId: exercises.count) { exercise in
+                exercises.append(exercise)
+            }
+        })
+        .sheet(isPresented: $editExerciseIsPresented, content: {
+//            if exerciseSelected != nil {
+//                EditExerciseView(
+//                    workoutId: workoutNumber,
+//                    exerciseId: exerciseSelected!.id,
+//                    exerciseTitle: exerciseSelected!.title,
+//                    sets: exerciseSelected!.sets,
+//                    reps: exerciseSelected!.reps,
+//                    instructions: exerciseSelected!.instructions ?? "") { exercise in
+//                        self.exercises[exercise.id] = exercise
+//                    }
+//            }
+        })
     }
 }
 
 #Preview {
-    EditWorkoutView(
-        workoutId: 1,
-        workoutTitle: "Test Workout",
-        workoutDescription: "",
-        exercises: [],
-        onWorkoutSaved: {_ in}
-    )
+    NewWorkoutView(workoutNumber: 1, onWorkoutAdded: {_ in})
 }

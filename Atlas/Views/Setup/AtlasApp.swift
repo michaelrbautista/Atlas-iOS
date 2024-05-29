@@ -1,5 +1,5 @@
 //
-//  stayhardApp.swift
+//  AtlasApp.swift
 //  stayhard
 //
 //  Created by Michael Bautista on 3/16/24.
@@ -8,14 +8,17 @@
 import SwiftUI
 import Firebase
 import FirebaseAuth
+import StripePaymentsUI
 
 @main
-struct stayhardApp: App {
+struct AtlasApp: App {
     
     @StateObject var userViewModel = UserViewModel()
     
     init() {
         FirebaseApp.configure()
+        
+        StripeAPI.defaultPublishableKey = "pk_live_51P3659KRUtiKYn5dwsXjtLmId9RBxn7HcheF3xa7UUmIU9gB5muXSJ2O6QkzW4JXaA3KleatZqRpBLzWrKafaeNv007sERBIv3"
         
         let navAppearance = UINavigationBarAppearance()
         navAppearance.backgroundColor = UIColor(Color.ColorSystem.systemGray5)
@@ -58,8 +61,13 @@ struct CheckAuthentication: View {
             .tint(Color.ColorSystem.primaryText)
         } else {
             if userViewModel.isLoggedIn {
-                ContentView()
-                    .environmentObject(userViewModel)
+                if userViewModel.isCreatorView {
+                    CreatorView()
+                        .environmentObject(userViewModel)
+                } else {
+                    UserView()
+                        .environmentObject(userViewModel)
+                }
             } else {
                 LandingPageView()
                     .environmentObject(userViewModel)
@@ -72,6 +80,7 @@ struct CheckAuthentication: View {
 class UserViewModel: ObservableObject {
     @Published var isLoggedIn = false
     @Published var isBusy = false
+    @Published var isCreatorView = false
     
     init() {
         self.isBusy = true
@@ -83,7 +92,6 @@ class UserViewModel: ObservableObject {
     
     public func checkAuth() async {
         DispatchQueue.main.async {
-            self.isLoggedIn = false
             self.isBusy = true
         }
         
@@ -108,6 +116,7 @@ class UserViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.isLoggedIn = true
                     self.isBusy = false
+                    self.isCreatorView = false
                 }
             }
         }

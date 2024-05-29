@@ -1,5 +1,5 @@
 //
-//  CellView.swift
+//  ProgramCell.swift
 //  stayhard
 //
 //  Created by Michael Bautista on 3/16/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CellView: View {
+struct ProgramCell: View {
     
     var imageUrl: String
     var title: String
@@ -47,5 +47,5 @@ struct CellView: View {
 }
 
 #Preview {
-    CellView(imageUrl: "https://firebasestorage.googleapis.com:443/v0/b/stayhard-9ef02.appspot.com/o/programImages%2Fnm8axxxzFZZO8B3qM1Fg34cNxTE3-7763174990326985035.jpg?alt=media&token=d599652a-5599-486f-9141-fa0e209ca2b8", title: "Test", creator: "Test")
+    ProgramCell(imageUrl: "https://firebasestorage.googleapis.com:443/v0/b/stayhard-9ef02.appspot.com/o/programImages%2Fnm8axxxzFZZO8B3qM1Fg34cNxTE3-7763174990326985035.jpg?alt=media&token=d599652a-5599-486f-9141-fa0e209ca2b8", title: "Test", creator: "Test")
 }

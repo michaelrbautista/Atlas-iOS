@@ -8,50 +8,47 @@
 import SwiftUI
 
 struct WorkoutDetailView: View {
+    @EnvironmentObject var viewModel: ProgramDetailViewModel
     
-    @State var workoutTitle: String
-    @State var workoutDescription: String
-    @State var exercises: [Exercise]
+    // MARK: Workout data
+    @State var workout: Workout
     
     var body: some View {
         List {
             // MARK: Description
-            if workoutDescription != "" {
+            if workout.description != "" {
                 Section {
-                    Text(workoutDescription)
+                    Text(workout.description)
                         .listRowBackground(Color.ColorSystem.systemGray4)
                 } header: {
-                    Text(workoutTitle)
+                    Text(workout.title)
                         .font(Font.FontStyles.title1)
                 }
                 .headerProminence(.increased)
             } else {
                 Section {
-                    Text(workoutTitle)
+                    Text(workout.title)
                         .font(Font.FontStyles.title1)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 }
             }
             
             // MARK: Exercises
             Section {
-                ForEach(exercises) { exercise in
-                    NavigationLink {
-                        ExerciseDetailView(
-                            exerciseTitle: exercise.title,
-                            sets: exercise.sets,
-                            reps: exercise.reps,
-                            instructions: exercise.instructions ?? ""
-                        )
-                    } label: {
-                        ExerciseCell(
-                            exerciseNumber: exercise.id,
-                            exerciseTitle: exercise.title,
-                            sets: exercise.sets,
-                            reps: exercise.reps
-                        )
-                    }
-                    .listRowBackground(Color.ColorSystem.systemGray4)
-                }
+//                ForEach(workout.exercises) { exercise in
+//                    NavigationLink {
+//                        ExerciseDetailView(workoutId: workout.id, exercise: exercise)
+//                            .environmentObject(viewModel)
+//                    } label: {
+//                        ExerciseCell(
+//                            exerciseNumber: exercise.id,
+//                            exerciseTitle: exercise.title,
+//                            sets: exercise.sets,
+//                            reps: exercise.reps
+//                        )
+//                    }
+//                    .listRowBackground(Color.ColorSystem.systemGray4)
+//                }
             } header: {
                 Text("Exercises")
                     .foregroundStyle(Color.ColorSystem.primaryText)
@@ -67,11 +64,6 @@ struct WorkoutDetailView: View {
 }
 
 #Preview {
-    NavigationStack {
-        WorkoutDetailView(
-            workoutTitle: "Test Workout Test Workout Test Worout",
-            workoutDescription: "",
-            exercises: [Exercise(id: 0, title: "Test", sets: "1", reps: "1")]
-        )
-    }
+    WorkoutDetailView(workout: Workout(id: "", workout_number: 2, title: "Test", description: "Description"))
+        .environmentObject(ProgramDetailViewModel(savedProgram: SavedProgram(program_id: "", saved_by: "", created_by: "")))
 }

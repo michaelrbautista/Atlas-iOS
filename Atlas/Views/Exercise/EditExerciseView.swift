@@ -1,5 +1,5 @@
 //
-//  AddExerciseView.swift
+//  EditExerciseView.swift
 //  stayhard
 //
 //  Created by Michael Bautista on 3/16/24.
@@ -7,24 +7,26 @@
 
 import SwiftUI
 import PhotosUI
-import AVKit
 
-struct AddExerciseView: View {
+struct EditExerciseView: View {
     // MARK: UI state
     @Environment(\.dismiss) private var dismiss
     @FocusState var keyboardIsFocused: Bool
     
     // MARK: Data
-    var exerciseNumber: Int
-    @State var exerciseTitle = ""
-    @State var sets = ""
-    @State var reps = ""
-    @State var instructions = ""
+    // Needed to save video
+    var workoutId: Int
+    var exerciseId: Int
+    
+    @State var exerciseTitle: String
+    @State var sets: String
+    @State var reps: String
+    @State var instructions: String
     
     @State var didReturnError = false
     @State var returnedErrorMessage: String? = nil
     
-    public var onExerciseAdded: ((Exercise) -> Void)
+    public var onExerciseSaved: ((Exercise) -> Void)
     
     var body: some View {
         NavigationStack {
@@ -38,6 +40,18 @@ struct AddExerciseView: View {
                     .listRowBackground(Color.ColorSystem.systemGray4)
                 } header: {
                     Text("Title")
+                }
+                
+                // MARK: Video
+                Section {
+                    HStack(spacing: 16) {
+                        Image(systemName: "info.circle.fill")
+                        
+                        Text("Video can be added after saving the program.")
+                            .font(Font.FontStyles.body)
+                            .foregroundStyle(Color.ColorSystem.primaryText)
+                    }
+                    .listRowBackground(Color.ColorSystem.systemGray4)
                 }
                 
                 Section {
@@ -72,7 +86,7 @@ struct AddExerciseView: View {
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Add Exercise")
+            .navigationTitle("Edit Exercise")
             .background(Color.ColorSystem.systemGray5)
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
@@ -84,25 +98,25 @@ struct AddExerciseView: View {
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Add") {
-                        keyboardIsFocused = false
-                        
-                        if exerciseTitle == "" {
-                            didReturnError = true
-                            returnedErrorMessage = "Please enter a title."
-                            return
-                        }
-                        
-                        let newExercise = Exercise(
-                            id: exerciseNumber,
-                            title: exerciseTitle,
-                            sets: sets,
-                            reps: reps,
-                            instructions: instructions
-                        )
-                        
-                        onExerciseAdded(newExercise)
-                        dismiss()
+                    Button("Save") {
+//                        keyboardIsFocused = false
+//                        
+//                        if exerciseTitle == "" {
+//                            didReturnError = true
+//                            returnedErrorMessage = "Please enter a title."
+//                            return
+//                        }
+//                        
+//                        let newExercise = Exercise(
+//                            id: exerciseId,
+//                            title: exerciseTitle,
+//                            sets: sets,
+//                            reps: reps,
+//                            instructions: instructions
+//                        )
+//                        
+//                        onExerciseSaved(newExercise)
+//                        dismiss()
                     }
                     .tint(Color.ColorSystem.systemBlue)
                 }
@@ -115,5 +129,5 @@ struct AddExerciseView: View {
 }
 
 #Preview {
-    AddExerciseView(exerciseNumber: 1, onExerciseAdded: {_ in })
+    EditExerciseView(workoutId: 1, exerciseId: 1, exerciseTitle: "Test", sets: "2", reps: "3", instructions: "", onExerciseSaved: {_ in})
 }

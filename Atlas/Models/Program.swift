@@ -7,6 +7,8 @@
 
 //import SwiftUI
 import Firebase
+import SwiftUI
+import PhotosUI
 
 // MARK: Program
 struct Program: Codable, Identifiable, Hashable {
@@ -48,14 +50,7 @@ struct Exercise: Codable, Identifiable, Hashable {
 
 // MARK: Exercise video
 struct ExerciseVideo {
-    var video: UIImage
-    var videoPath: String
-    var exerciseNumber: Int
-    var workoutNumber: Int
-}
-
-struct SavedExerciseVideo {
-    var videoUrl: String
+    var video: PhotosPickerItem
     var exerciseNumber: Int
     var workoutNumber: Int
 }

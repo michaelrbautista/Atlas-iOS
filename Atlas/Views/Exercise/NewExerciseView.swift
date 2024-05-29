@@ -1,29 +1,30 @@
 //
-//  EditExerciseView.swift
+//  CreateExerciseView.swift
 //  stayhard
 //
 //  Created by Michael Bautista on 3/16/24.
 //
 
 import SwiftUI
+import PhotosUI
+import AVKit
 
-struct EditExerciseView: View {
-    
+struct NewExerciseView: View {
     // MARK: UI state
     @Environment(\.dismiss) private var dismiss
     @FocusState var keyboardIsFocused: Bool
     
     // MARK: Data
-    var exerciseNumber: Int
-    @State var exerciseTitle: String
-    @State var sets: String
-    @State var reps: String
-    @State var instructions: String
+    @State var exerciseNumber: Int
+    @State var exerciseTitle = ""
+    @State var sets = ""
+    @State var reps = ""
+    @State var instructions = ""
     
     @State var didReturnError = false
     @State var returnedErrorMessage: String? = nil
     
-    public var onExerciseSaved: ((Exercise) -> Void)
+    public var onExerciseAdded: ((Exercise) -> Void)
     
     var body: some View {
         NavigationStack {
@@ -37,6 +38,18 @@ struct EditExerciseView: View {
                     .listRowBackground(Color.ColorSystem.systemGray4)
                 } header: {
                     Text("Title")
+                }
+                
+                // MARK: Video
+                Section {
+                    HStack(spacing: 16) {
+                        Image(systemName: "info.circle.fill")
+                        
+                        Text("Video can be added after saving the program.")
+                            .font(Font.FontStyles.body)
+                            .foregroundStyle(Color.ColorSystem.primaryText)
+                    }
+                    .listRowBackground(Color.ColorSystem.systemGray4)
                 }
                 
                 Section {
@@ -63,7 +76,7 @@ struct EditExerciseView: View {
                 Section {
                     TextField("", text: $instructions, prompt: instructions == "" ? Text("Add instructions...") : Text(""), axis: .vertical)
                         .lineLimit(16...)
-                    .listRowBackground(Color.ColorSystem.systemGray4)
+                        .listRowBackground(Color.ColorSystem.systemGray4)
                 } header: {
                     Text("Instructions")
                 }
@@ -71,47 +84,46 @@ struct EditExerciseView: View {
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Edit Exercise")
+            .navigationTitle("Add Exercise")
             .background(Color.ColorSystem.systemGray5)
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
-                        keyboardIsFocused = false
                         dismiss()
                     }
-                    .tint(Color.ColorSystem.primaryText)
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
-                        keyboardIsFocused = false
-                        
-                        if exerciseTitle == "" {
-                            didReturnError = true
-                            returnedErrorMessage = "Please enter a title."
-                            return
-                        }
-                        
-                        let newExercise = Exercise(
-                            id: exerciseNumber,
-                            title: exerciseTitle,
-                            sets: sets,
-                            reps: reps
-                        )
-                        
-                        onExerciseSaved(newExercise)
-                        dismiss()
+                    Button("Add") {
+//                        keyboardIsFocused = false
+//                        
+//                        if exerciseTitle == "" {
+//                            didReturnError = true
+//                            returnedErrorMessage = "Please enter a title."
+//                            return
+//                        }
+//                        
+//                        let newExercise = Exercise(
+//                            id: exerciseId,
+//                            title: exerciseTitle,
+//                            sets: sets,
+//                            reps: reps,
+//                            instructions: instructions
+//                        )
+//                        
+//                        onExerciseAdded(newExercise)
+//                        dismiss()
                     }
                     .tint(Color.ColorSystem.systemBlue)
                 }
             })
-            .alert(isPresented: $didReturnError, content: {
-                Alert(title: Text(returnedErrorMessage ?? "Couldn't add exercise."))
-            })
         }
+        .alert(isPresented: $didReturnError, content: {
+            Alert(title: Text(returnedErrorMessage ?? "Couldn't add exercise."))
+        })
     }
 }
 
 #Preview {
-    EditExerciseView(exerciseNumber: 1, exerciseTitle: "Test", sets: "2", reps: "3", instructions: "", onExerciseSaved: {_ in})
+    NewExerciseView(exerciseNumber: 1, onExerciseAdded: {_ in })
 }
