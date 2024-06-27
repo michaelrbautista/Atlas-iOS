@@ -1,23 +1,23 @@
 //
-//  WorkoutDetailView.swift
-//  stayhard
+//  ProgramSectionDetailView.swift
+//  Atlas
 //
-//  Created by Michael Bautista on 3/20/24.
+//  Created by Michael Bautista on 6/13/24.
 //
 
 import SwiftUI
 
-struct WorkoutDetailView: View {
+struct ProgramSectionDetailView: View {
     @EnvironmentObject var programViewModel: ProgramDetailViewModel
     
     // MARK: UI State
-    @State private var presentNewExercise = false
-    @State private var presentEditWorkout = false
+    @State private var presentNewWorkout = false
+    @State private var presentEditSection = false
     
-    @StateObject var viewModel: WorkoutDetailViewModel
+    @StateObject var viewModel: ProgramSectionDetailViewModel
     
     var body: some View {
-        if viewModel.workoutIsLoading == true || viewModel.workout == nil {
+        if viewModel.sectionIsLoading == true || viewModel.section == nil {
             VStack(alignment: .center) {
                 Spacer()
                 ProgressView()
@@ -33,51 +33,47 @@ struct WorkoutDetailView: View {
         } else {
             List {
                 // MARK: Description
-                if viewModel.workout?.description != "" {
+                if viewModel.section?.description != "" {
                     Section {
-                        Text(viewModel.workout!.description)
+                        Text(viewModel.section!.description)
                             .listRowBackground(Color.ColorSystem.systemGray4)
                     } header: {
-                        Text(viewModel.workout!.title)
+                        Text(viewModel.section!.title)
                             .font(Font.FontStyles.title1)
                     }
                     .headerProminence(.increased)
                 } else {
                     Section {
-                        Text(viewModel.workout!.title)
+                        Text(viewModel.section!.title)
                             .font(Font.FontStyles.title1)
                             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                     }
                 }
                 
-                // MARK: Exercises
+                // MARK: Workouts
                 Section {
-                    ForEach(viewModel.workout!.exercises ?? [Exercise]()) { exercise in
+                    ForEach(viewModel.section!.workouts ?? [Workout]()) { workout in
                         NavigationLink {
-                            ExerciseDetailView(viewModel: ExerciseDetailViewModel(exercise: exercise))
+                            WorkoutDetailView(viewModel: WorkoutDetailViewModel(workoutId: workout.id!))
                                 .environmentObject(programViewModel)
                         } label: {
-                            ExerciseCell(
-                                exerciseNumber: exercise.exerciseNumber,
-                                exerciseTitle: exercise.name,
-                                sets: exercise.sets,
-                                reps: exercise.reps
-                            )
+                            WorkoutCell(workoutTitle: workout.title)
                         }
                         .listRowBackground(Color.ColorSystem.systemGray4)
+                        .disabled(!programViewModel.programIsPurchased && !workout.isFree && !programViewModel.isCreator)
                     }
                     
                     if programViewModel.program!.createdBy == UserService.currentUser?.id {
                         Button(action: {
-                            presentNewExercise.toggle()
+                            presentNewWorkout.toggle()
                         }, label: {
-                            Text("+ Add exercise")
+                            Text("+ Add workout")
                                 .foregroundStyle(Color.ColorSystem.systemBlue)
                         })
                         .listRowBackground(Color.ColorSystem.systemGray4)
                     }
                 } header: {
-                    Text("Exercises")
+                    Text("Workouts")
                         .foregroundStyle(Color.ColorSystem.primaryText)
                         .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 }
@@ -89,10 +85,10 @@ struct WorkoutDetailView: View {
             .background(Color.ColorSystem.systemGray5)
             .toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing) {
-                    if UserService.currentUser?.id == viewModel.workout?.createdBy {
+                    if UserService.currentUser?.id == viewModel.section?.createdBy {
                         Menu("", systemImage: "ellipsis") {
                             Button("Edit", role: .none) {
-                                presentEditWorkout.toggle()
+                                presentEditSection.toggle()
                             }
                             
 //                            Button("Delete", role: .destructive) {
@@ -102,22 +98,17 @@ struct WorkoutDetailView: View {
                     }
                 }
             })
-            .sheet(isPresented: $presentNewExercise, content: {
-                NewExerciseView(viewModel: NewExerciseViewModel(workoutId: viewModel.workout!.id!, exerciseNumber: (viewModel.workout?.exercises?.count ?? 0) + 1)) { exercise in
-                    viewModel.workout?.exercises?.append(exercise)
+            .sheet(isPresented: $presentNewWorkout, content: {
+                NewWorkoutView(viewModel: NewWorkoutViewModel(sectionId: viewModel.section!.id!, workoutNumber: (viewModel.section?.workouts?.count ?? 0) + 1)) { workout in
+                    viewModel.section?.workouts?.append(workout)
                 }
             })
-            .sheet(isPresented: $presentEditWorkout, content: {
-                EditWorkoutView(viewModel: EditWorkoutViewModel(oldWorkout: viewModel.workout!)) { workout in
-                    viewModel.workout?.title = workout.title
-                    viewModel.workout?.description = workout.description
-                }
-            })
+            // MARK: Edit section
         }
     }
 }
 
 #Preview {
-    WorkoutDetailView(viewModel: WorkoutDetailViewModel(workoutId: "Test"))
+    ProgramSectionDetailView(viewModel: ProgramSectionDetailViewModel(sectionId: ""))
         .environmentObject(ProgramDetailViewModel(programId: ""))
 }

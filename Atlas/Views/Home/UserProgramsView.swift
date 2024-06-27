@@ -11,79 +11,63 @@ struct UserProgramsView: View {
     // MARK: Data
     @StateObject var viewModel: UserProgramsViewModel
     
-    // If user is navigating from home page, don't show plus in navigation bar
-    public var isFromHomePage: Bool
-    
-    @State private var createProgramIsPresented = false
-    
     var body: some View {
-        ScrollView {
-            LazyVGrid(
-                columns: [
-                GridItem(.flexible(), spacing: 16, alignment: nil),
-                GridItem(.flexible(), spacing: 16, alignment: nil)
-                ], 
-                spacing: 16,
-                content: {
-                    ForEach(viewModel.programs) { program in
-                        NavigationLink {
-                            let vm = ProgramDetailViewModel(
-                                programId: program.programId
-                            )
-                            
-                            ProgramDetailView(viewModel: vm)
-                        } label: {
-                            CellView(
-                                imageUrl: program.imageUrl,
-                                title: program.title,
-                                creator: program.username
-                            )
-                        }
-                    }
-            })
-            .padding(16)
-            
-            if !viewModel.isLoading && !viewModel.endReached && viewModel.returnedErrorMessage != nil {
-                ProgressView()
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 48)
-                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
-                    .foregroundStyle(Color.ColorSystem.primaryText)
-                    .onAppear(perform: {
-                        guard let currentUserUid = UserService.currentUser?.uid else {
-                            print("Error getting more workouts.")
-                            return
-                        }
-                        
-                        let getProgramsRequest = GetProgramsRequest(
-                            uid: currentUserUid, lastProgramRef: viewModel.lastProgramFetchedRef
+        List {
+            Section {
+                ForEach(viewModel.programs) { savedProgram in
+                    ZStack {
+                        ProgramCell(
+                            programId: savedProgram.programId
                         )
                         
-                        Task {
-                            await viewModel.getCreatorPrograms(getProgramsRequest: getProgramsRequest)
+                        NavigationLink {
+                            ProgramDetailView(viewModel: ProgramDetailViewModel(savedProgram: savedProgram))
+                        } label: {
+                            
                         }
-                    })
+                        .opacity(0)
+                    }
+                    .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+                    .listRowBackground(Color.ColorSystem.systemGray5)
+                    .listRowSeparator(.hidden)
+                }
+                
+                Color.ColorSystem.systemGray5
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 16)
+                    .padding(0)
+                    .listRowBackground(Color.ColorSystem.systemGray5)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                    .listRowSeparator(.hidden)
+                
+//                if !viewModel.isLoading && !viewModel.endReached && viewModel.returnedErrorMessage == nil {
+//                    ProgressView()
+//                        .frame(maxWidth: .infinity)
+//                        .frame(height: 48)
+//                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
+//                        .foregroundStyle(Color.ColorSystem.primaryText)
+//                        .onAppear(perform: {
+//                            // Get more programs
+//                            Task {
+//                                await viewModel.getCreatorPrograms()
+//                            }
+//                        })
+//                }
             }
         }
-        .background(Color.ColorSystem.systemGray5)
+        .listStyle(.plain)
+        .listRowSeparator(.hidden)
+        .scrollContentBackground(.hidden)
+        .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Programs")
-        .refreshable(action: {
-            await viewModel.pulledRefresh()
-        })
-        .toolbar(content: {
-            if !isFromHomePage {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("", systemImage: "plus") {
-                        createProgramIsPresented.toggle()
-                    }
-                }
+        .background(Color.ColorSystem.systemGray5)
+        .onAppear(perform: {
+            Task {
+                await viewModel.getCreatorPrograms()
             }
         })
-        .fullScreenCover(isPresented: $createProgramIsPresented, content: {
-            let vm = CreateProgramViewModel()
-            CreateProgramView(viewModel: vm, onProgramSaved:  { savedProgram in
-                viewModel.insertProgramToBeginning(newProgram: savedProgram)
-            })
+        .refreshable(action: {
+                await viewModel.pulledRefresh()
         })
         .alert(isPresented: $viewModel.didReturnError, content: {
             Alert(title: Text(viewModel.returnedErrorMessage ?? "Couldn't get workouts."))
@@ -92,5 +76,5 @@ struct UserProgramsView: View {
 }
 
 #Preview {
-    UserProgramsView(viewModel: UserProgramsViewModel(creatorUid: "7VNj6cg8u7Ndo8JwG5KevruLpEh1"), isFromHomePage: true)
+    UserProgramsView(viewModel: UserProgramsViewModel(userId: "Test"))
 }

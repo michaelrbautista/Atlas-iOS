@@ -1,5 +1,5 @@
 //
-//  CreateExerciseView.swift
+//  NewExerciseView.swift
 //  stayhard
 //
 //  Created by Michael Bautista on 3/16/24.
@@ -14,69 +14,101 @@ struct NewExerciseView: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState var keyboardIsFocused: Bool
     
-    // MARK: Data
-    @State var exerciseNumber: Int
-    @State var exerciseTitle = ""
-    @State var sets = ""
-    @State var reps = ""
-    @State var instructions = ""
+    @StateObject var viewModel: NewExerciseViewModel
+    
+    @State var presentVideoPlayer = false
+    
+    @State var thumbnail: UIImage? = nil
     
     @State var didReturnError = false
     @State var returnedErrorMessage: String? = nil
     
-    public var onExerciseAdded: ((Exercise) -> Void)
+    public var onExerciseCreated: ((Exercise) -> Void)
     
     var body: some View {
         NavigationStack {
             List {
+                // MARK: Video
+                if let player = viewModel.player {
+                    Section {
+                        
+                    }
+                }
+                
+                Section {
+                    if viewModel.videoSelection != nil {
+                        Button(action: {
+                            viewModel.exerciseVideo = nil
+                            viewModel.videoSelection = nil
+                            viewModel.player = nil
+                        }, label: {
+                            HStack {
+                                Spacer()
+                                Text("Delete video")
+                                    .font(Font.FontStyles.body)
+                                    .foregroundStyle(Color.ColorSystem.primaryText)
+                                Spacer()
+                            }
+                        })
+                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                        .listRowBackground(Color.ColorSystem.systemRed)
+                        .disabled(viewModel.isSaving)
+                    } else {
+                        PhotosPicker(selection: $viewModel.videoSelection, matching: .videos) {
+                            HStack {
+                                Spacer()
+                                Text("Select video")
+                                    .font(Font.FontStyles.body)
+                                    .foregroundStyle(Color.ColorSystem.primaryText)
+                                Spacer()
+                            }
+                        }
+                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                        .listRowBackground(Color.ColorSystem.systemGray4)
+                        .disabled(viewModel.isSaving)
+                    }
+                }
+                
                 // MARK: Text Field
                 Section {
-                    TextField(text: $exerciseTitle, prompt: Text("Title")) {
-                        Text("Title")
+                    TextField(text: $viewModel.name, prompt: Text("Name")) {
+                        Text("Name")
                     }
                     .foregroundStyle(Color.ColorSystem.primaryText)
                     .listRowBackground(Color.ColorSystem.systemGray4)
+                    .disabled(viewModel.isSaving)
                 } header: {
-                    Text("Title")
-                }
-                
-                // MARK: Video
-                Section {
-                    HStack(spacing: 16) {
-                        Image(systemName: "info.circle.fill")
-                        
-                        Text("Video can be added after saving the program.")
-                            .font(Font.FontStyles.body)
-                            .foregroundStyle(Color.ColorSystem.primaryText)
-                    }
-                    .listRowBackground(Color.ColorSystem.systemGray4)
+                    Text("Name")
                 }
                 
                 Section {
-                    TextField(text: $sets, prompt: Text("Sets")) {
+                    TextField(text: $viewModel.sets, prompt: Text("Sets")) {
                         Text("Sets")
                     }
                     .foregroundStyle(Color.ColorSystem.primaryText)
                     .listRowBackground(Color.ColorSystem.systemGray4)
+                    .disabled(viewModel.isSaving)
                 } header: {
                     Text("Sets")
                 }
                 
                 Section {
-                    TextField(text: $reps, prompt: Text("Reps")) {
+                    TextField(text: $viewModel.reps, prompt: Text("Reps")) {
                         Text("Reps")
                     }
                     .foregroundStyle(Color.ColorSystem.primaryText)
                     .listRowBackground(Color.ColorSystem.systemGray4)
+                    .disabled(viewModel.isSaving)
                 } header: {
                     Text("Reps")
                 }
                 
                 // MARK: Text Field
                 Section {
-                    TextField("", text: $instructions, prompt: instructions == "" ? Text("Add instructions...") : Text(""), axis: .vertical)
+                    TextField("", text: $viewModel.instructions, prompt: viewModel.instructions == "" ? Text("Add instructions...") : Text(""), axis: .vertical)
                         .lineLimit(16...)
                         .listRowBackground(Color.ColorSystem.systemGray4)
+                        .disabled(viewModel.isSaving)
                 } header: {
                     Text("Instructions")
                 }
@@ -84,46 +116,51 @@ struct NewExerciseView: View {
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Add Exercise")
+            .navigationTitle("New Exercise")
             .background(Color.ColorSystem.systemGray5)
+            .fullScreenCover(isPresented: $presentVideoPlayer, content: {
+                if let url = viewModel.exercise.videoUrl {
+                    VideoViewURL(videoUrl: url)
+                }
+            })
+            .alert(isPresented: $viewModel.didReturnError, content: {
+                Alert(title: Text(viewModel.returnedErrorMessage ?? "Couldn't save exercise."))
+            })
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .disabled(viewModel.isSaving)
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Add") {
-//                        keyboardIsFocused = false
-//                        
-//                        if exerciseTitle == "" {
-//                            didReturnError = true
-//                            returnedErrorMessage = "Please enter a title."
-//                            return
-//                        }
-//                        
-//                        let newExercise = Exercise(
-//                            id: exerciseId,
-//                            title: exerciseTitle,
-//                            sets: sets,
-//                            reps: reps,
-//                            instructions: instructions
-//                        )
-//                        
-//                        onExerciseAdded(newExercise)
-//                        dismiss()
+                    if viewModel.isSaving {
+                        ProgressView()
+                            .foregroundStyle(Color.ColorSystem.primaryText)
+                    } else {
+                        Button("Save") {
+                            keyboardIsFocused = false
+                            
+                            // Save exercise
+                            Task {
+                                if let savedExercise = await viewModel.createNewExercise() {
+                                    
+                                    self.onExerciseCreated(savedExercise)
+                                    
+                                    dismiss()
+                                }
+                            }
+                        }
+                        .tint(Color.ColorSystem.systemBlue)
+                        .disabled(viewModel.name == "")
                     }
-                    .tint(Color.ColorSystem.systemBlue)
                 }
             })
         }
-        .alert(isPresented: $didReturnError, content: {
-            Alert(title: Text(returnedErrorMessage ?? "Couldn't add exercise."))
-        })
     }
 }
 
 #Preview {
-    NewExerciseView(exerciseNumber: 1, onExerciseAdded: {_ in })
+    NewExerciseView(viewModel: NewExerciseViewModel(workoutId: "test", exerciseNumber: 8), onExerciseCreated: {_ in })
 }

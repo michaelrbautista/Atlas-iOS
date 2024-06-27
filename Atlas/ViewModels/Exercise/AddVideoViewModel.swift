@@ -25,45 +25,6 @@ class AddVideoViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage: String? = nil
     
-    public func saveVideo(program: Program, workoutId: Int, exerciseId: Int, completion: @escaping (_ url: URL) -> Void) {
-        // Get current user
-        guard let currentUser = UserService.currentUser else {
-            print("Couldn't get current user.")
-            return
-        }
-        
-        isSaving = true
-        
-        let videoPath = "exerciseVideos/\(currentUser.id)\(Date().hashValue).mp4"
-        
-        guard let video = exerciseVideo else {
-            print("No video was selected.")
-            return
-        }
-        
-        StorageService.shared.saveVideo(video: video, videoPath: videoPath) { url, error in
-            if let error = error {
-                self.didReturnError = true
-                self.returnedErrorMessage = error.localizedDescription
-                return
-            }
-            
-            guard let videoUrl = url else {
-                return
-            }
-            
-            WorkoutService.shared.addVideoToExercise(program: program, videoUrl: videoUrl, videoPath: videoPath, workoutId: workoutId, exerciseId: exerciseId) { error in
-                if let error = error {
-                    self.didReturnError = true
-                    self.returnedErrorMessage = error.localizedDescription
-                    return
-                }
-                
-                completion(videoUrl)
-            }
-        }
-    }
-    
     struct Movie: Transferable {
         let url: URL
         

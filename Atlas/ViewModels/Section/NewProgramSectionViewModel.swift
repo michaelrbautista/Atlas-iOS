@@ -1,20 +1,19 @@
 //
-//  NewWorkoutViewModel.swift
+//  NewProgramSectionViewModel.swift
 //  Atlas
 //
-//  Created by Michael Bautista on 5/11/24.
+//  Created by Michael Bautista on 6/13/24.
 //
 
 import SwiftUI
 
-final class NewWorkoutViewModel: ObservableObject {
+final class NewProgramSectionViewModel: ObservableObject {
     
-    // MARK: Workout data
-    var sectionId: String
-    var workoutNumber: Int
+    // MARK: Section data
+    var programId: String
+    var sectionNumber: Int
     
     @Published var title: String = ""
-    @Published var isFree: Bool = false
     @Published var description: String = ""
     
     @Published var isSaving = false
@@ -22,14 +21,14 @@ final class NewWorkoutViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage: String? = nil
     
-    init(sectionId: String, workoutNumber: Int) {
-        self.sectionId = sectionId
-        self.workoutNumber = workoutNumber
+    init(programId: String, sectionNumber: Int) {
+        self.programId = programId
+        self.sectionNumber = sectionNumber
     }
     
     // MARK: Create new workout
     @MainActor
-    public func createNewWorkout() async -> Workout? {
+    public func createNewProgramSection() async -> ProgramSection? {
         isSaving = true
         
         guard let currentUserId = UserService.currentUser?.id.description else {
@@ -38,21 +37,20 @@ final class NewWorkoutViewModel: ObservableObject {
             return nil
         }
         
-        let newWorkout = Workout(
+        let newProgramSection = ProgramSection(
             createdBy: currentUserId,
-            sectionId: sectionId,
-            workoutNumber: workoutNumber,
+            programId: programId,
+            sectionNumber: sectionNumber,
             title: title,
-            isFree: isFree,
             description: description
         )
         
         do {
-            let createdWorkout = try await WorkoutService.shared.createWorkout(workout: newWorkout)
+            let createdProgramSection = try await SectionService.shared.createSection(section: newProgramSection)
             
             isSaving = false
             
-            return createdWorkout
+            return createdProgramSection
         } catch {
             isSaving = false
             self.didReturnError = true

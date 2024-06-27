@@ -9,43 +9,83 @@ import SwiftUI
 
 struct ProgramCell: View {
     
-    var imageUrl: String
-    var title: String
-    var creator: String
+    @State var isLoading = true
+    
+    var programId: String
+    
+    @State var program: Program? = nil
+    @State var user: User? = nil
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            AsyncImage(url: URL(string: imageUrl)) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: ((UIScreen.main.bounds.size.width - 48) / 2), height: ((UIScreen.main.bounds.size.width - 48) / 2))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-            } placeholder: {
-                ProgressView()
-                    .frame(width: ((UIScreen.main.bounds.size.width - 48) / 2), height: ((UIScreen.main.bounds.size.width - 48) / 2))
-                    .tint(Color.ColorSystem.primaryText)
+        if isLoading || program == nil || user == nil {
+            Color.ColorSystem.systemGray5
+            .task {
+                do {
+                    let program = try await ProgramService.shared.getProgram(programId: programId)
+                    
+                    self.program = program
+                    
+                    let user = try await UserService.shared.getUser(uid: program.createdBy)
+                    
+                    self.user = user
+                    
+                    isLoading = false
+                } catch {
+                    print(error)
+                }
             }
-            
-            Text(title)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(EdgeInsets(top: 8, leading: 0, bottom: 0, trailing: 0))
-                .foregroundStyle(Color.ColorSystem.primaryText)
-                .font(Font.FontStyles.headline)
-                .multilineTextAlignment(.leading)
-                .lineLimit(2)
-            
-            Text(creator)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .foregroundStyle(Color.ColorSystem.secondaryText)
-                .font(Font.FontStyles.subhead)
-            
-            Spacer()
+        } else {
+            VStack(alignment: .leading, spacing: 0) {
+                if program!.imageUrl != nil {
+                    AsyncImage(url: URL(string: program!.imageUrl!)) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(maxWidth: .infinity)
+                            .frame(height: ((UIScreen.main.bounds.size.width - 32) / 2))
+                            .clipped()
+                    } placeholder: {
+                        ProgressView()
+                            .tint(Color.ColorSystem.primaryText)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: ((UIScreen.main.bounds.size.width - 32) / 2))
+                    }
+                } else {
+                    VStack {
+                        Spacer()
+                        Image(systemName: "figure.run")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 48)
+                            .foregroundStyle(Color.ColorSystem.secondaryText)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 180)
+                    .background(Color.ColorSystem.systemGray4)
+                }
+                
+                VStack {
+                    Text(program!.title)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundStyle(Color.ColorSystem.primaryText)
+                        .font(Font.FontStyles.title2)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(2)
+                    
+                    Text("@\(user!.username)")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundStyle(Color.ColorSystem.secondaryText)
+                        .font(Font.FontStyles.headline)
+                }
+                .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+            }
+            .background(Color.ColorSystem.systemGray4)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
         }
-        .background(Color.ColorSystem.systemGray5)
     }
 }
 
 #Preview {
-    ProgramCell(imageUrl: "https://firebasestorage.googleapis.com:443/v0/b/stayhard-9ef02.appspot.com/o/programImages%2Fnm8axxxzFZZO8B3qM1Fg34cNxTE3-7763174990326985035.jpg?alt=media&token=d599652a-5599-486f-9141-fa0e209ca2b8", title: "Test", creator: "Test")
+    ProgramCell(programId: "a4f83733-5cc4-444a-b732-b6dfcdbc7f55")
 }

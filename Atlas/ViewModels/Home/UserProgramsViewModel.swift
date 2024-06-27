@@ -6,74 +6,50 @@
 //
 
 import SwiftUI
-import FirebaseFirestore
 
 final class UserProgramsViewModel: ObservableObject {
     
     // MARK: Variables
-    var lastProgramFetchedRef: QueryDocumentSnapshot? = nil
     @Published var isLoading = false
     @Published var endReached = false
     
     @Published var didReturnError = false
     @Published var returnedErrorMessage: String? = nil
     
-    var creatorUid: String
     @Published var programs = [SavedProgram]()
     
-    init(creatorUid: String) {
-        self.creatorUid = creatorUid
+    var userId: String
+    
+    init(userId: String) {
+        self.userId = userId
+    }
+    
+    @MainActor
+    public func pulledRefresh() async {
+        self.programs = [SavedProgram]()
+        self.endReached = false
         
+        await getCreatorPrograms()
+    }
+    
+    @MainActor
+    public func getCreatorPrograms() async {
         self.isLoading = true
         
-        let getProgramsRequest = GetProgramsRequest(
-            uid: creatorUid,
-            lastProgramRef: self.lastProgramFetchedRef
-        )
-        
-        Task {
-            await getCreatorPrograms(getProgramsRequest: getProgramsRequest)
-        }
-    }
-    
-    public func pulledRefresh() async {
-        DispatchQueue.main.async {
-            self.programs = [SavedProgram]()
-        }
-        
-        self.lastProgramFetchedRef = nil
-        
-        let getProgramsRequest = GetProgramsRequest(
-            uid: self.creatorUid,
-            lastProgramRef: self.lastProgramFetchedRef
-        )
-        
-        await getCreatorPrograms(getProgramsRequest: getProgramsRequest)
-    }
-    
-    public func getCreatorPrograms(getProgramsRequest: GetProgramsRequest) async {
-        await WorkoutService.shared.getCreatorPrograms(getProgramsRequest: getProgramsRequest) { newProgramRefs, lastProgramRef, error in
-            if let error = error {
-                DispatchQueue.main.async {
-                    self.didReturnError = true
-                    self.returnedErrorMessage = error.localizedDescription
-                }
-                return
-            }
+        do {
+            let programs = try await ProgramService.shared.getCreatorPrograms(creatorId: userId)
             
-            if newProgramRefs != nil {
-                self.addPrograms(newPrograms: newProgramRefs!)
-                
-                if lastProgramRef != nil {
-                    self.lastProgramFetchedRef = lastProgramRef
-                }
-                
-                DispatchQueue.main.async {
-                    self.endReached = newProgramRefs!.count < 8
-                }
-                
-                return
+            self.isLoading = false
+            
+            self.programs = programs
+            
+            if programs.count > 8 {
+                self.endReached = true
             }
+        } catch {
+            self.isLoading = false
+            self.didReturnError = true
+            self.returnedErrorMessage = error.localizedDescription
         }
     }
     
@@ -98,12 +74,6 @@ final class UserProgramsViewModel: ObservableObject {
     public func removeProgram(programIndex: Int) {
         DispatchQueue.main.async {
             self.programs.remove(at: programIndex)
-        }
-    }
-    
-    public func updateLastProgramFetchedRef(workoutRef: QueryDocumentSnapshot) {
-        DispatchQueue.main.async {
-            self.lastProgramFetchedRef = workoutRef
         }
     }
 }

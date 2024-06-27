@@ -6,9 +6,8 @@
 //
 
 import SwiftUI
-import FirebaseFirestore
 
-final class WorkoutViewModel: ObservableObject {
+final class ProgramsViewModel: ObservableObject {
     
     // MARK: Variables
     @Published var isLoading = false
@@ -19,13 +18,10 @@ final class WorkoutViewModel: ObservableObject {
     
     @Published var programs = [SavedProgram]()
     
-    var fetchIndex = 0
     var userId: String
     
     // MARK: Initializaer
     init() {
-        isLoading = true
-        
         guard let currentUserId = UserService.currentUser?.id.description else {
             userId = ""
             self.didReturnError = true
@@ -34,20 +30,13 @@ final class WorkoutViewModel: ObservableObject {
         }
         
         self.userId = currentUserId
-        
-        Task {
-            await getSavedPrograms()
-        }
     }
     
     // MARK: Refresh
+    @MainActor
     public func pulledRefresh() async {
-        DispatchQueue.main.async {
-            self.programs = [SavedProgram]()
-            self.endReached = false
-        }
-        
-        fetchIndex = 0
+        self.programs = [SavedProgram]()
+        self.endReached = false
         
         await getSavedPrograms()
     }
@@ -57,10 +46,8 @@ final class WorkoutViewModel: ObservableObject {
     public func getSavedPrograms() async {
         self.isLoading = true
         
-//        fetchIndex += 8
-        
         do {
-            let programs = try await WorkoutService.shared.getSavedPrograms(userId: userId, fetch_index: fetchIndex)
+            let programs = try await ProgramService.shared.getSavedPrograms(userId: userId)
             
             self.isLoading = false
             

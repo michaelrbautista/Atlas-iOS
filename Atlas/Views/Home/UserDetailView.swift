@@ -18,37 +18,53 @@ struct UserDetailView: View {
     var body: some View {
         List {
             Section {
-                VStack(spacing: 16) {
-                    if viewModel.userImageIsLoading {
+                if viewModel.profilePictureIsLoading {
+                    HStack {
                         ProgressView()
-                            .frame(maxWidth: .infinity)
-                            .frame(height: UIScreen.main.bounds.size.width / 2)
+                            .frame(width: UIScreen.main.bounds.size.width / 2, height: UIScreen.main.bounds.size.width / 2)
+                            .clipShape(Circle())
+                    }
+                    .frame(maxWidth: .infinity)
+                } else {
+                    if viewModel.user.profilePictureUrl != nil {
+                        HStack {
+                            Image(uiImage: viewModel.profilePicture!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: UIScreen.main.bounds.size.width / 2, height: UIScreen.main.bounds.size.width / 2)
+                                .clipShape(Circle())
+                        }
+                        .frame(maxWidth: .infinity)
                     } else {
-                        Image(uiImage: viewModel.userImage!)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(maxWidth: .infinity)
-                            .frame(height: UIScreen.main.bounds.size.width / 2)
+                        HStack {
+                            VStack {
+                                Image(systemName: "person.circle.fill")
+                                    .foregroundStyle(Color.ColorSystem.secondaryText)
+                            }
+                            .frame(width: UIScreen.main.bounds.size.width / 2, height: UIScreen.main.bounds.size.width / 2)
+                            .background(Color.ColorSystem.systemGray4)
+                            .clipShape(Circle())
+                        }
+                        .frame(maxWidth: .infinity)
                     }
                 }
-                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .listRowBackground(Color.ColorSystem.systemGray5)
             } footer: {
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(viewModel.user?.fullName ?? "")
+                VStack(alignment: .center, spacing: 0) {
+                    Text(viewModel.user.fullName)
                         .font(Font.FontStyles.title1)
                         .foregroundStyle(Color.ColorSystem.primaryText)
                     
-                    Text("@\(viewModel.user?.username ?? "")")
+                    Text("@\(viewModel.user.username)")
                         .font(Font.FontStyles.headline)
                         .foregroundStyle(Color.ColorSystem.secondaryText)
                 }
+                .frame(maxWidth: .infinity)
                 .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 16, trailing: 0))
             }
             
             Section {
                 NavigationLink {
-                    UserProgramsView(viewModel: UserProgramsViewModel(creatorUid: "bTKT12UtFnN6nxciXaguP1BeW5B3"), isFromHomePage: true)
+                    UserProgramsView(viewModel: UserProgramsViewModel(userId: "e7da8d24-3231-4759-be39-fb27ed2cff46"))
                 } label: {
                     HStack(spacing: 16) {
                         Image(systemName: "figure.run")
@@ -71,11 +87,11 @@ struct UserDetailView: View {
         .navigationTitle(" ")
         .background(Color.ColorSystem.systemGray5)
         .toolbar(content: {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("", systemImage: "ellipsis") {
-                    
-                }
-            }
+//            ToolbarItem(placement: .topBarTrailing) {
+//                Button("", systemImage: "ellipsis") {
+//                    
+//                }
+//            }
         })
         .alert(isPresented: $viewModel.didReturnError, content: {
             Alert(title: Text(viewModel.returnedErrorMessage ?? ""))
@@ -84,13 +100,5 @@ struct UserDetailView: View {
 }
 
 #Preview {
-    UserDetailView(viewModel: UserDetailViewModel(user: User(
-        uid: "7VNj6cg8u7Ndo8JwG5KevruLpEh1",
-        fullName: "Joe Schmo",
-        fullNameLowercase: "joe schmo",
-        userImageUrl: "https://firebasestorage.googleapis.com:443/v0/b/stayhard-9ef02.appspot.com/o/userImages%2F7VNj6cg8u7Ndo8JwG5KevruLpEh18210374283593336603.jpg?alt=media&token=5bbe5f03-b02a-4a33-8c22-a10acfa3e739",
-        userImagePath: "userImages/7VNj6cg8u7Ndo8JwG5KevruLpEh18210374283593336603.jpg",
-        username: "joeschmo",
-        email: "joeschmo@email.com"
-    )))
+    UserDetailView(viewModel: UserDetailViewModel(user: User(id: "", email: "email", fullName: "Test User", username: "testuser", profilePictureUrl: "https://ltjnvfgpomlatmtqjxrk.supabase.co/storage/v1/object/public/profile_pictures/29DB3EDD-7700-4F60-B24B-F31A4B86AA06-5128345469385601134.jpg", isCreator: true)))
 }

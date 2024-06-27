@@ -10,58 +10,46 @@ import PhotosUI
 import AVKit
 
 struct ExerciseDetailView: View {
-    @EnvironmentObject var viewModel: ProgramDetailViewModel
+    @EnvironmentObject var programViewModel: ProgramDetailViewModel
     
     // Video data
-    @State var presentAddVideo = false
-    @State var confirmDeleteVideo = false
-    var workoutId: Int
+    @State var presentEditExercise = false
+    @State var presentVideoPlayer = false
     
-    // MARK: Exercise data
-    @State var exercise: Exercise
+    @StateObject var viewModel: ExerciseDetailViewModel
     
     var body: some View {
         List {
             // MARK: Name
             Section {
-                Text(exercise.title)
+                Text(viewModel.exercise.name)
                     .font(Font.FontStyles.title1)
                     .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
             }
             
-//            if exercise.videoUrl != nil {
-//                if let url = URL(string: exercise.videoUrl!) {
-//                    Section {
-//                        HStack {
-//                            Spacer()
-//                            
-//                            VideoPlayer(player: AVPlayer(url: url))
-//                                .scaledToFit()
-//                            
-//                            Spacer()
-//                        }
-//                        .listRowBackground(Color.ColorSystem.systemGray5)
-//                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-//                    }
-//                }
-//            }
+            // MARK: Video
+            if let videoUrl = URL(string: viewModel.exercise.videoUrl!) {
+                VideoCell(videoUrl: videoUrl) {
+                    presentVideoPlayer.toggle()
+                }
+            }
             
             Section {
-                Text(exercise.sets == "1" ? "\(exercise.sets) set" : "\(exercise.sets) sets")
+                Text(viewModel.exercise.sets == "1" ? "\(viewModel.exercise.sets) set" : "\(viewModel.exercise.sets) sets")
                     .font(Font.FontStyles.body)
                     .foregroundStyle(Color.ColorSystem.primaryText)
                     .listRowBackground(Color.ColorSystem.systemGray4)
                 
-                Text(exercise.reps == "1" ? "\(exercise.reps) rep" : "\(exercise.reps) reps")
+                Text(viewModel.exercise.reps == "1" ? "\(viewModel.exercise.reps) rep" : "\(viewModel.exercise.reps) reps")
                     .font(Font.FontStyles.body)
                     .foregroundStyle(Color.ColorSystem.primaryText)
                     .listRowBackground(Color.ColorSystem.systemGray4)
             }
             
             // MARK: Instructions
-            if exercise.instructions != "" {
+            if viewModel.exercise.instructions != "" {
                 Section {
-                    Text(exercise.instructions)
+                    Text(viewModel.exercise.instructions)
                         .font(Font.FontStyles.body)
                         .foregroundStyle(Color.ColorSystem.primaryText)
                         .listRowBackground(Color.ColorSystem.systemGray4)
@@ -72,45 +60,36 @@ struct ExerciseDetailView: View {
         .scrollContentBackground(.hidden)
         .navigationBarTitleDisplayMode(.inline)
         .background(Color.ColorSystem.systemGray5)
-        .sheet(isPresented: $presentAddVideo, content: {
-//            AddVideoView(workoutId: workoutId, exerciseId: exercise.id) { videoUrl in
-//                viewModel.program!.workouts[workoutId].exercises[exercise.id].videoUrl = videoUrl.absoluteString
-//                exercise.videoUrl = videoUrl.absoluteString
-//            }
-        })
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
-                // If the current user created the program
-//                if UserService.currentUser?.id == viewModel.program?.created_by {
-//                    // If the exercise has a video
-//                    Menu("", systemImage: "ellipsis") {
-//                        if exercise.videoUrl != nil {
-//                            Button("Delete video", role: .destructive) {
-//                                confirmDeleteVideo.toggle()
+                if UserService.currentUser?.id == viewModel.exercise.createdBy {
+                    Menu("", systemImage: "ellipsis") {
+                        Button("Edit", role: .none) {
+                            presentEditExercise.toggle()
+                        }
+                        
+//                            Button("Delete", role: .destructive) {
+//                                presentConfirmDelete.toggle()
 //                            }
-//                        } else {
-//                            Button("Add video", role: .none) {
-//                                presentAddVideo.toggle()
-//                            }
-//                        }
-//                    }
-//                }
+                    }
+                }
             }
         })
-        .alert(Text("Delete video?"), isPresented: $confirmDeleteVideo) {
-            Button(role: .destructive) {
-//                viewModel.deleteExerciseVideo(workoutId: workoutId, exerciseId: exercise.id) { exercise in
-//                    self.exercise = exercise
-//                }
-            } label: {
-                Text("Delete")
+        .fullScreenCover(isPresented: $presentVideoPlayer, content: {
+            if let url = viewModel.exercise.videoUrl {
+                VideoViewURL(videoUrl: url)
             }
-        }
+        })
+        .sheet(isPresented: $presentEditExercise, content: {
+            EditExerciseView(viewModel: EditExerciseViewModel(oldExercise: viewModel.exercise)) { exercise, newVideo in
+                viewModel.exercise = exercise
+            }
+        })
     }
 }
 
 #Preview {
-    EmptyView()
-//    ExerciseDetailView(workoutId: 4, exercise: Exercise(id: "", exercise_number: 1, title: "Test exercise", sets: "4", reps: "6", instructions: "Instructions", video_url: "url"))
-//        .environmentObject(ProgramDetailViewModel(savedProgram: SavedProgram(program_id: "", saved_by: "", created_by: "")))
+//    EmptyView()
+    ExerciseDetailView(viewModel: ExerciseDetailViewModel(exercise: Exercise(createdBy: "", workoutId: "", exerciseNumber: 2, name: "Test Exercise", sets: "2", reps: "2", instructions: "This exercise is just to test videos", videoUrl: "https://ltjnvfgpomlatmtqjxrk.supabase.co/storage/v1/object/public/exercise_videos/640b0902-fec9-449b-aead-8e226c7682db-965909189293864553.mp4?t=2024-06-20T01%3A33%3A11.186Z")))
+        .environmentObject(ProgramDetailViewModel(programId: "beff379c-b74b-4423-8a1f-b14b077b31f3"))
 }

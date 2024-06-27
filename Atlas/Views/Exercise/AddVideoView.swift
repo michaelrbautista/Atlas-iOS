@@ -83,19 +83,19 @@ struct AddVideoView: View {
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    if videoViewModel.isSaving {
-                        ProgressView()
-                            .foregroundStyle(Color.ColorSystem.primaryText)
-                    } else {
-                        Button("Save") {
-                            videoViewModel.saveVideo(program: viewModel.program!, workoutId: workoutId, exerciseId: exerciseId) { url in
-                                self.onVideoSaved?(url)
-                                dismiss()
-                            }
-                        }
-                        .tint(Color.ColorSystem.systemBlue)
-                        .disabled(videoViewModel.player == nil)
-                    }
+//                    if videoViewModel.isSaving {
+//                        ProgressView()
+//                            .foregroundStyle(Color.ColorSystem.primaryText)
+//                    } else {
+//                        Button("Save") {
+//                            videoViewModel.saveVideo(program: viewModel.program!, workoutId: workoutId, exerciseId: exerciseId) { url in
+//                                self.onVideoSaved?(url)
+//                                dismiss()
+//                            }
+//                        }
+//                        .tint(Color.ColorSystem.systemBlue)
+//                        .disabled(videoViewModel.player == nil)
+//                    }
                 }
             })
         }

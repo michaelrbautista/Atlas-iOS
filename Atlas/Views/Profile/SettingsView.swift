@@ -6,57 +6,215 @@
 //
 
 import SwiftUI
+import Supabase
 
 struct SettingsView: View {
     
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var userViewModel: UserViewModel
     
-    @State var isLoggingOut = false
+    @State var presentBecomeCreatorView = false
+    
+    @State var isLoading = false
+    @State var confirmDeleteAccount = false
+    
+    @State var user: User
     
     var body: some View {
         List {
             Section {
-                Button(action: {
-                    isLoggingOut = true
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(user.fullName)
+                        .font(Font.FontStyles.title2)
+                        .foregroundStyle(Color.ColorSystem.primaryText)
                     
-                    AuthService.shared.signOut { error in
-                        isLoggingOut = false
-                        
-                        if let error = error {
-                            print(error.localizedDescription)
-                            return
+                    Text("@\(user.username)")
+                        .font(Font.FontStyles.headline)
+                        .foregroundStyle(Color.ColorSystem.secondaryText)
+                }
+                .listRowBackground(Color.ColorSystem.systemGray5)
+                .listRowInsets(.none)
+                .listRowSeparator(.hidden)
+            }
+            
+            // MARK: Switch view
+            Section {
+                VStack(spacing: 16) {
+                    if user.stripeAccountId != nil {
+                        if userViewModel.isCreatorView {
+                            // MARK: User view
+                            Button(action: {
+                                dismiss()
+                                userViewModel.isCreatorView.toggle()
+                                UserDefaults.standard.set(false, forKey: "isCreatorView")
+                            }, label: {
+                                HStack {
+                                    Spacer()
+                                    Text("Switch to user view")
+                                        .font(Font.FontStyles.headline)
+                                        .foregroundStyle(Color.ColorSystem.primaryText)
+                                    Spacer()
+                                }
+                            })
+                            .buttonStyle(.plain)
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(Color.ColorSystem.systemGray3)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                        } else {
+                            // MARK: Creator view
+                            Button(action: {
+                                dismiss()
+                                userViewModel.isCreatorView.toggle()
+                                UserDefaults.standard.set(true, forKey: "isCreatorView")
+                            }, label: {
+                                HStack {
+                                    Spacer()
+                                    Text("Switch to creator view")
+                                        .font(Font.FontStyles.headline)
+                                        .foregroundStyle(Color.ColorSystem.primaryText)
+                                    Spacer()
+                                }
+                            })
+                            .buttonStyle(.plain)
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(Color.ColorSystem.systemGray3)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
                         }
-                        
-                        dismiss()
-                        userViewModel.isLoggedIn = false
+                    } else {
+                        if userViewModel.isCreatorView {
+                            // MARK: User View
+                            Button(action: {
+                                presentBecomeCreatorView.toggle()
+                            }, label: {
+                                HStack {
+                                    Spacer()
+                                    Text("Switch to user view")
+                                        .font(Font.FontStyles.headline)
+                                        .foregroundStyle(Color.ColorSystem.primaryText)
+                                    Spacer()
+                                }
+                            })
+                            .buttonStyle(.plain)
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(Color.ColorSystem.systemGray3)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .disabled(true)
+                        } else {
+                            // MARK: Become creator
+                            Button(action: {
+                                presentBecomeCreatorView.toggle()
+                            }, label: {
+                                HStack {
+                                    Spacer()
+                                    Text("Become a creator")
+                                        .font(Font.FontStyles.headline)
+                                        .foregroundStyle(Color.ColorSystem.primaryText)
+                                    Spacer()
+                                }
+                            })
+                            .buttonStyle(.plain)
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(Color.ColorSystem.systemGray3)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                        }
                     }
-                }, label: {
-                    HStack(spacing: 16) {
-                        Spacer()
+                    
+                    // MARK: Logout
+                    Button(action: {
+                        isLoading = true
                         
-                        if isLoggingOut {
+                        Task {
+                            do {
+                                try await supabase.auth.signOut()
+                                
+                                DispatchQueue.main.async {
+                                    self.userViewModel.isLoggedIn = false
+                                    self.userViewModel.isCreatorView = false
+                                    
+                                    // Reset default screen user vs. creator
+                                    UserDefaults.standard.removeObject(forKey: "isCreatorView")
+                                }
+                            } catch {
+                                print(error.localizedDescription)
+                            }
+                        }
+                    }, label: {
+                        if isLoading {
                             ProgressView()
                                 .foregroundStyle(Color.ColorSystem.primaryText)
                         } else {
-                            Text("Logout")
+                            HStack {
+                                Spacer()
+                                Text("Logout")
+                                    .font(Font.FontStyles.headline)
+                                    .foregroundStyle(Color.ColorSystem.primaryText)
+                                Spacer()
+                            }
+                        }
+                    })
+                    .buttonStyle(.plain)
+                    .frame(maxWidth: .infinity)
+                    .padding(12)
+                    .background(Color.ColorSystem.systemGray3)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    
+                    // MARK: Delete account
+                    Button(action: {
+                        confirmDeleteAccount.toggle()
+                    }, label: {
+                        HStack {
+                            Spacer()
+                            Text("Delete account")
                                 .font(Font.FontStyles.headline)
                                 .foregroundStyle(Color.ColorSystem.primaryText)
+                            Spacer()
                         }
-                        
-                        Spacer()
-                    }
-                })
-                .frame(maxWidth: .infinity)
-                .font(Font.FontStyles.headline)
-                .listRowBackground(Color.ColorSystem.systemGray4)
+                    })
+                    .buttonStyle(.plain)
+                    .frame(maxWidth: .infinity)
+                    .padding(12)
+                    .background(Color.ColorSystem.systemRed)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
+                .listRowBackground(Color.ColorSystem.systemGray5)
+                .listRowSeparator(.hidden)
             }
         }
-        .listStyle(.insetGrouped)
+        .listStyle(.plain)
         .background(Color.ColorSystem.systemGray5)
+        .sheet(isPresented: $presentBecomeCreatorView, content: {
+            BecomeCreatorView(viewModel: BecomeCreatorViewModel())
+        })
+        .alert(Text("Are you sure you want to delete your account?"), isPresented: $confirmDeleteAccount) {
+            Button(role: .destructive) {
+                // Delete account
+                Task {
+                    do {
+                        try await UserService.shared.deleteUser(uid: user.id)
+                        
+                        DispatchQueue.main.async {
+                            self.userViewModel.isLoggedIn = false
+                            self.userViewModel.isCreatorView = false
+                            
+                            // Reset default screen user vs. creator
+                            UserDefaults.standard.removeObject(forKey: "isCreatorView")
+                        }
+                    } catch {
+                        print(error)
+                    }
+                }
+            } label: {
+                Text("Delete")
+            }
+        }
     }
 }
 
 #Preview {
-    SettingsView()
+    SettingsView(user: User(id: "", createdAt: "", email: "", fullName: "Test user", username: "testuser", stripeDetailsSubmitted: false))
+        .environmentObject(UserViewModel())
 }

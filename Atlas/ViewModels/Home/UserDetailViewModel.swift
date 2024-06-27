@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import FirebaseFirestore
 
 final class UserDetailViewModel: ObservableObject {
     
@@ -14,30 +13,25 @@ final class UserDetailViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage: String? = nil
     
-    @Published var user: User?
+    var user: User
     
-    @Published var userImage: UIImage? = nil
-    @Published var userImageIsLoading = false
+    @Published var profilePicture: UIImage? = nil
+    @Published var profilePictureIsLoading = false
     
-    init(user: User?) {
+    init(user: User) {
         self.user = user
         
-        userImageIsLoading = true
-        
-        if user?.userImageUrl == "" {
-            userImage = UIImage(systemName: "person.circle.fill")
-            userImageIsLoading = false
-        } else {
-            self.getUserImage(imageUrl: user!.userImageUrl) { error in
-                self.userImageIsLoading = true
+        if user.profilePictureUrl != nil {
+            self.profilePictureIsLoading = true
+            
+            self.getUserImage(imageUrl: user.profilePictureUrl!) { error in
+                self.profilePictureIsLoading = false
                 
                 if let error = error {
                     self.didReturnError = true
                     self.returnedErrorMessage = error.localizedDescription
                     return
                 }
-                
-                self.userImageIsLoading = false
             }
         }
     }
@@ -57,7 +51,7 @@ final class UserDetailViewModel: ObservableObject {
                 }
                 
                 if let data = data, let image = UIImage(data: data) {
-                    self.userImage = image
+                    self.profilePicture = image
                     completion(nil)
                 } else {
                     print("Couldn't get image from data.")

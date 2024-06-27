@@ -1,19 +1,19 @@
 //
-//  NewWorkoutView.swift
+//  NewProgramSectionView.swift
 //  Atlas
 //
-//  Created by Michael Bautista on 4/14/24.
+//  Created by Michael Bautista on 6/13/24.
 //
 
 import SwiftUI
 
-struct NewWorkoutView: View {
+struct NewProgramSectionView: View {
     // MARK: UI state
-    @StateObject var viewModel: NewWorkoutViewModel
+    @StateObject var viewModel: NewProgramSectionViewModel
     @Environment(\.dismiss) private var dismiss
     @FocusState var keyboardIsFocused: Bool
     
-    public var onWorkoutCreated: ((Workout) -> Void)
+    public var onSectionCreated: ((ProgramSection) -> Void)
     
     var body: some View {
         NavigationStack {
@@ -26,19 +26,6 @@ struct NewWorkoutView: View {
                         .disabled(viewModel.isSaving)
                 } header: {
                     Text("Title")
-                }
-                
-                // MARK: Is Free
-                Section {
-                    Toggle(isOn: $viewModel.isFree, label: {
-                        Text("Free Workout")
-                            .font(Font.FontStyles.body)
-                            .foregroundStyle(Color.ColorSystem.primaryText)
-                    })
-                    .toggleStyle(SwitchToggleStyle(tint: .green))
-                    .listRowBackground(Color.ColorSystem.systemGray4)
-                } footer: {
-                    Text("Users will be able to see this workout without purchasing the program.")
                 }
                 
                 // MARK: Text Field
@@ -54,10 +41,10 @@ struct NewWorkoutView: View {
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("New Workout")
+            .navigationTitle("New Section")
             .background(Color.ColorSystem.systemGray5)
             .alert(isPresented: $viewModel.didReturnError, content: {
-                Alert(title: Text(viewModel.returnedErrorMessage ?? "Couldn't save workout."))
+                Alert(title: Text(viewModel.returnedErrorMessage ?? "Couldn't save section."))
             })
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
@@ -78,10 +65,10 @@ struct NewWorkoutView: View {
                             
                             // Save workout
                             Task {
-                                let savedWorkout = await viewModel.createNewWorkout()
+                                let savedProgramSection = await viewModel.createNewProgramSection()
                                 
-                                if let savedWorkout = savedWorkout {
-                                    self.onWorkoutCreated(savedWorkout)
+                                if let savedProgramSection = savedProgramSection {
+                                    self.onSectionCreated(savedProgramSection)
                                     dismiss()
                                 }
                             }
@@ -96,5 +83,5 @@ struct NewWorkoutView: View {
 }
 
 #Preview {
-    NewWorkoutView(viewModel: NewWorkoutViewModel(sectionId: "asdf", workoutNumber: 2), onWorkoutCreated: {_ in})
+    NewProgramSectionView(viewModel: NewProgramSectionViewModel(programId: "", sectionNumber: 1), onSectionCreated: {_ in })
 }
