@@ -1,5 +1,5 @@
 //
-//  ProgramSectionDetailViewModel.swift
+//  WeekDetailViewModel.swift
 //  Atlas
 //
 //  Created by Michael Bautista on 6/13/24.
@@ -7,35 +7,35 @@
 
 import SwiftUI
 
-final class ProgramSectionDetailViewModel: ObservableObject {
+final class WeekDetailViewModel: ObservableObject {
     
     // MARK: Variables
-    @Published var section: ProgramSection?
+    @Published var week: Week?
     
-    @Published var sectionIsLoading: Bool = true
+    @Published var isLoading: Bool = true
     
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
     
     // MARK: Initializer
-    init(sectionId: String) {
-        sectionIsLoading = true
+    init(weekId: String) {
+        isLoading = true
         
         Task {
             do {
                 // Get program
-                let section = try await SectionService.shared.getSection(sectionId: sectionId)
+                let week = try await WeekService.shared.getWeek(weekId: weekId)
                 
                 DispatchQueue.main.async {
-                    self.section = section
-                    if section.workouts == nil {
-                        self.section?.workouts = [Workout]()
+                    self.week = week
+                    if week.workouts == nil {
+                        self.week?.workouts = [Workout]()
                     }
-                    self.sectionIsLoading = false
+                    self.isLoading = false
                 }
             } catch {
                 DispatchQueue.main.async {
-                    self.sectionIsLoading = false
+                    self.isLoading = false
                     self.didReturnError = true
                     self.returnedErrorMessage = error.localizedDescription
                 }

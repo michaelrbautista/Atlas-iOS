@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-final class SectionService {
+final class WeekService {
     
-    public static let shared = SectionService()
+    public static let shared = WeekService()
     
     // MARK: Update section
     
@@ -17,7 +17,7 @@ final class SectionService {
     // MARK: Create section
     public func createSection(section: ProgramSection) async throws -> ProgramSection {
         do {
-            let createdSection: ProgramSection = try await supabase
+            let createdSection: ProgramSection = try await SupabaseService.shared.supabase
                 .from("sections")
                 .insert(section)
                 .select()
@@ -34,7 +34,7 @@ final class SectionService {
     // MARK: Get section
     public func getSection(sectionId: String) async throws -> ProgramSection {
         do {
-            let section: ProgramSection = try await supabase
+            let section: ProgramSection = try await SupabaseService.shared.supabase
                 .from("sections")
                 .select("*, workouts(*)")
                 .eq("id", value: sectionId)
