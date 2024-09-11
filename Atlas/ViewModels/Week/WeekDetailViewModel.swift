@@ -8,9 +8,17 @@
 import SwiftUI
 
 final class WeekDetailViewModel: ObservableObject {
-    
     // MARK: Variables
-    @Published var week: Week?
+    var weekNumber: Int
+    @Published var workouts: [Workout]?
+    
+    @Published var mondayWorkouts = [Workout]()
+    @Published var tuesdayWorkouts = [Workout]()
+    @Published var wednesdayWorkouts = [Workout]()
+    @Published var thursdayWorkouts = [Workout]()
+    @Published var fridayWorkouts = [Workout]()
+    @Published var saturdayWorkouts = [Workout]()
+    @Published var sundayWorkouts = [Workout]()
     
     @Published var isLoading: Bool = true
     
@@ -18,19 +26,19 @@ final class WeekDetailViewModel: ObservableObject {
     @Published var returnedErrorMessage = ""
     
     // MARK: Initializer
-    init(weekId: String) {
+    init(programId: String, weekNumber: Int) {
         isLoading = true
+        
+        self.weekNumber = weekNumber
         
         Task {
             do {
-                // Get program
-                let week = try await WeekService.shared.getWeek(weekId: weekId)
+                // Get workouts for week
+                let workouts = try await WorkoutService.shared.getWeekWorkouts(programId: programId, weekNumber: weekNumber)
                 
                 DispatchQueue.main.async {
-                    self.week = week
-                    if week.workouts == nil {
-                        self.week?.workouts = [Workout]()
-                    }
+                    self.workouts = workouts
+                    
                     self.isLoading = false
                 }
             } catch {
