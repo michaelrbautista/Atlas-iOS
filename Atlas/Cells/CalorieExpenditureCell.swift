@@ -1,18 +1,18 @@
 //
-//  TeamProgramsView.swift
+//  CalorieExpenditureCell.swift
 //  Atlas
 //
-//  Created by Michael Bautista on 9/9/24.
+//  Created by Michael Bautista on 11/8/24.
 //
 
 import SwiftUI
 
-struct TeamProgramsView: View {
+struct CalorieExpenditureCell: View {
     var body: some View {
         Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
 }
 
 #Preview {
-    TeamProgramsView()
+    CalorieExpenditureCell()
 }
