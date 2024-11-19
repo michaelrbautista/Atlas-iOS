@@ -6,66 +6,56 @@
 //
 
 import SwiftUI
-import FirebaseStorage
+import Supabase
 
 final class StorageService {
     
     public static let shared = StorageService()
-    public static let storage = Storage.storage().reference()
     
-    // MARK: Save exercise videos
-    public func saveExerciseVideos(exerciseVideos: [ExerciseVideo], completion: @escaping ([String]) -> Void) {
-        
-    }
-    
-    // MARK: Save image
-    public func saveImage(image: UIImage?, imagePath: String, completion: @escaping (_ url: URL?, _ error: Error?) -> Void) {
-        guard let image = image else {
-            completion(nil, nil)
-            return
-        }
-        
-        let imageRef = StorageService.storage.child(imagePath)
-        
-        guard let imageData = image.pngData() else {
-            completion(nil, nil)
-            print("Couldn't get data from image.")
-            return
-        }
-        
-        imageRef.putData(imageData) { result in
-            switch result {
-            case .success(_):
-                imageRef.downloadURL { url, error in
-                    guard let downloadURL = url else {
-                        print("Error downloading image URL.")
-                        return
-                    }
-                    
-                    if let error = error {
-                        completion(nil, error)
-                        return
-                    }
-                    
-                    completion(downloadURL, nil)
-                    return
-                }
-            case .failure(let error):
-                completion(nil, error)
-            }
+    // MARK: Delete file
+    public func deleteFile(bucketName: String, filePath: String) async throws {
+        do {
+            let _ = try await SupabaseService.shared.supabase.storage
+                .from(bucketName)
+                .remove(paths: [filePath])
+        } catch {
+            print("Error deleting file")
+            throw error
         }
     }
     
-    // MARK: Delete image
-    public func deleteImage(imagePath: String, completion: @escaping (_ error: Error?) -> Void) {
-        let imageRef = StorageService.storage.child(imagePath)
-        
-        imageRef.delete { error in
-            if let error = error {
-                completion(error)
-            } else {
-                completion(nil)
-            }
+    // MARK: Save file
+    public func saveFile(file: Data, bucketName: String, fileName: String) async throws -> String {
+        do {
+            try await SupabaseService.shared.supabase.storage
+                .from(bucketName)
+                .upload(
+                    path: "\(fileName)",
+                    file: file
+                )
+            
+            let imageUrl = try SupabaseService.shared.supabase.storage
+              .from(bucketName)
+              .getPublicURL(path: fileName)
+            
+            return imageUrl.absoluteString
+        } catch {
+            print("Error saving file")
+            throw error
+        }
+    }
+    
+    // MARK: Update file
+    public func udpateImage(imagePath: String, newImage: Data) async throws {
+        do {
+            try await SupabaseService.shared.supabase.storage
+                .from("program_images")
+                .update(
+                    path: imagePath,
+                    file: newImage
+                )
+        } catch {
+            throw error
         }
     }
 }

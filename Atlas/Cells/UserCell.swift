@@ -9,37 +9,52 @@ import SwiftUI
 
 struct UserCell: View {
     
-    var userImageUrl: String
-    var userFullName: String
+    var user: User
     
     var body: some View {
-        VStack(alignment: .leading) {
-            AsyncImage(url: URL(string: userImageUrl)) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: UIScreen.main.bounds.size.width - 32, height: 180)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-            } placeholder: {
-                ProgressView()
-                    .frame(width: UIScreen.main.bounds.size.width - 32, height: 180)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .tint(Color.ColorSystem.primaryText)
+        HStack(alignment: .center, spacing: 16) {
+            if user.profilePictureUrl != nil {
+                AsyncImage(url: URL(string: user.profilePictureUrl!)) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 80, height: 80)
+                        .clipShape(Circle())
+                } placeholder: {
+                    ProgressView()
+                        .frame(width: 80, height: 80)
+                        .clipShape(Circle())
+                        .tint(Color.ColorSystem.primaryText)
+                }
+            } else {
+                VStack {
+                    Image(systemName: "person.circle.fill")
+                        .foregroundStyle(Color.ColorSystem.systemGray)
+                }
+                .frame(width: 80, height: 80)
+                .background(Color.ColorSystem.systemGray4)
+                .clipShape(Circle())
             }
             
-            Text(userFullName)
-                .font(Font.FontStyles.title2)
-                .foregroundStyle(Color.ColorSystem.primaryText)
+            VStack(alignment: .leading) {
+                Text(user.fullName)
+                    .font(Font.FontStyles.title3)
+                    .foregroundStyle(Color.ColorSystem.primaryText)
+                    .lineLimit(1)
+                
+                Text("@\(user.username)")
+                    .font(Font.FontStyles.headline)
+                    .foregroundStyle(Color.ColorSystem.systemGray)
+                    .lineLimit(1)
+            }
+            
+            Spacer()
         }
         .background(Color.ColorSystem.systemGray5)
         .padding(0)
     }
-    
-    private func getImage(iamgeUrl: String) {
-        
-    }
 }
 
 #Preview {
-    UserCell(userImageUrl: "https://firebasestorage.googleapis.com:443/v0/b/stayhard-9ef02.appspot.com/o/userImages%2F7VNj6cg8u7Ndo8JwG5KevruLpEh18210374283593336603.jpg?alt=media&token=5bbe5f03-b02a-4a33-8c22-a10acfa3e739", userFullName: "Test")
+    UserCell(user: User(id: "", createdAt: "", email: "testuser@email.com", fullName: "Test", username: "testuser", bio: "Test", paymentsEnabled: false))
 }

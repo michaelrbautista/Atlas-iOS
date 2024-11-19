@@ -10,13 +10,15 @@ import SwiftUI
 final class ProgramsViewModel: ObservableObject {
     
     // MARK: Variables
-    @Published var isLoading = false
+    @Published var isLoading = true
+    
+    @Published var offset = 0
     @Published var endReached = false
     
     @Published var didReturnError = false
-    @Published var returnedErrorMessage: String? = nil
+    @Published var returnedErrorMessage = ""
     
-    @Published var programs = [SavedProgram]()
+    @Published var programs = [PurchasedProgram]()
     
     var userId: String
     
@@ -30,32 +32,36 @@ final class ProgramsViewModel: ObservableObject {
         }
         
         self.userId = currentUserId
+        
+        Task {
+            await getPurchasedPrograms()
+        }
     }
     
     // MARK: Refresh
     @MainActor
     public func pulledRefresh() async {
-        self.programs = [SavedProgram]()
-        self.endReached = false
-        
-        await getSavedPrograms()
+        self.programs = [PurchasedProgram]()
+//        self.endReached = false
+//        
+        await getPurchasedPrograms()
     }
     
     // MARK: Get my saved programs
     @MainActor
-    public func getSavedPrograms() async {
-        self.isLoading = true
-        
+    public func getPurchasedPrograms() async {
         do {
-            let programs = try await ProgramService.shared.getSavedPrograms(userId: userId)
+            let programs = try await ProgramService.shared.getPurchasedPrograms(userId: self.userId, offset: offset)
+            
+            self.programs.append(contentsOf: programs)
+            
+            if programs.count < 10 {
+                self.endReached = true
+            } else {
+                offset += 10
+            }
             
             self.isLoading = false
-            
-            self.programs = programs
-            
-            if programs.count > 8 {
-                self.endReached = true
-            }
         } catch {
             self.isLoading = false
             self.didReturnError = true
@@ -63,19 +69,7 @@ final class ProgramsViewModel: ObservableObject {
         }
     }
     
-    public func updateProgram(newProgram: SavedProgram, programIndex: Int) {
-        DispatchQueue.main.async {
-            self.programs[programIndex] = newProgram
-        }
-    }
-    
-    public func insertProgramToBeginning(newProgram: SavedProgram) {
-        DispatchQueue.main.async {
-            self.programs.insert(newProgram, at: 0)
-        }
-    }
-    
-    public func addPrograms(newPrograms: [SavedProgram]) {
+    public func addPrograms(newPrograms: [PurchasedProgram]) {
         DispatchQueue.main.async {
             self.programs.append(contentsOf: newPrograms)
         }
@@ -87,4 +81,14 @@ final class ProgramsViewModel: ObservableObject {
         }
     }
     
+}
+
+extension Calendar {
+    func numberOfDaysBetween(_ from: Date, and to: Date) -> Int {
+        let fromDate = startOfDay(for: from) // <1>
+        let toDate = startOfDay(for: to) // <2>
+        let numberOfDays = dateComponents([.day], from: fromDate, to: toDate) // <3>
+        
+        return numberOfDays.day!
+    }
 }

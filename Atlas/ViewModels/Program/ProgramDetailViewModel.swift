@@ -5,19 +5,19 @@
 //  Created by Michael Bautista on 3/16/24.
 //
 
-import FirebaseFirestore
-import FirebaseFirestoreSwift
+import SwiftUI
 
 final class ProgramDetailViewModel: ObservableObject {
     
     // MARK: Variables
-    var savedProgram: SavedProgram
-    @Published var program: Program? = nil
-    @Published var programIsLoading: Bool = true
-    @Published var programIsSaving: Bool = false
+    var programId: String
+    var program: Program? = nil
     
-    @Published var programIsSaved: Bool = false
-    @Published var checkingIfUserSavedProgram: Bool = true
+    @Published var isLoading = true
+    @Published var isSaving = false
+    
+    @Published var isPurchased = false
+    @Published var isStarted = false
     
     @Published var programImage: UIImage? = nil
     @Published var programImageIsLoading = true
@@ -26,105 +26,113 @@ final class ProgramDetailViewModel: ObservableObject {
     @Published var returnedErrorMessage = ""
     
     // MARK: Initializer
-    init(savedProgram: SavedProgram) {
-        self.savedProgram = savedProgram
+    init(programId: String) {
+        self.programId = programId
         
-        DispatchQueue.main.async {
-            self.programIsLoading = true
+        Task {
+            await getProgram()
         }
-        
-        // Get program
-        
-        // Get image
-        
-        // Check if user has saved the program
-        
     }
     
     // MARK: Get program
-    public func getProgram(programId: String) {
-        
-    }
-    
-    // MARK: Delete program
-    public func deleteProgram() {
-        
-    }
-    
-    // MARK: Unsave program
-    public func unsaveProgram(programId: String) {
-        self.programIsSaving = true
-        
-        
-    }
-    
-    // MARK: Save program
-    public func saveProgram(program: Program) {
-        DispatchQueue.main.async {
-            self.programIsSaving = true
-        }
-        
-//        Task {
-//            await WorkoutService.shared.saveProgram(program: program, username: savedProgram.username) { savedProgramRef, error in
-//                if let error = error {
-//                    self.didReturnError = true
-//                    self.returnedErrorMessage = error.localizedDescription
-//                    DispatchQueue.main.async {
-//                        self.programIsSaving = false
-//                    }
-//                    return
-//                }
-//                
-//                DispatchQueue.main.async {
-//                    self.programIsSaved = true
-//                    self.programIsSaving = false
-//                }
-//            }
-//        }
-    }
-    
-    // MARK: Check if user already saved program
-    public func checkProgram(programId: String, uid: String, completion: @escaping (_ isSaved: Bool?, _ error: Error?) -> Void) {
-        WorkoutService.shared.checkIfUserSavedProgram(programId: programId, uid: uid) { isSaved, error in
-            if let error = error {
+    @MainActor
+    public func getProgram() async {
+        Task {
+            do {
+                // Get program
+                let program = try await ProgramService.shared.getProgram(programId: programId)
+                
+                // Check if user has already purchased the program
+                let isPurchased = try await ProgramService.shared.checkIfUserPurchasedProgram(programId: program.id)
+                
+                // Check is user started the program
+                if let startedProgramId = UserDefaults.standard.value(forKey: "startedProgram") as? String {
+                    if startedProgramId == self.programId {
+                        self.isStarted = true
+                    }
+                }
+                
+                self.program = program
+                self.isPurchased = isPurchased
+                self.isLoading = false
+                
+                // Get image
+                if let imageUrl = program.imageUrl {
+                    try await self.getProgramImage(imageUrl: imageUrl)
+                } else {
+                    self.programImageIsLoading = false
+                    self.programImage = UIImage(systemName: "figure.run")
+                }
+            } catch {
+                self.isLoading = false
                 self.didReturnError = true
                 self.returnedErrorMessage = error.localizedDescription
-                completion(nil, error)
-                return
             }
-            
-            completion(isSaved, nil)
         }
     }
     
     // MARK: Get program image
-    public func getProgramImage(imageUrl: String, completion: @escaping (_ error: Error?) -> Void) {
-        guard let fetchUrl = URL(string: imageUrl) else {
-            print("Couldn't get url.")
+    @MainActor
+    public func getProgramImage(imageUrl: String) async throws {
+        self.programImageIsLoading = true
+        
+        guard let imageUrl = URL(string: imageUrl) else {
+            self.programImageIsLoading = false
             return
         }
         
-        DispatchQueue.main.async {
-            self.programImageIsLoading = true
-        }
-        
-        let task = URLSession.shared.dataTask(with: fetchUrl) { data, response, error in
-            if let error = error {
-                completion(error)
+        do {
+            let (data, _) = try await URLSession.shared.data(from: imageUrl)
+            
+            guard let image = UIImage(data: data) else {
                 return
             }
             
-            if let data = data, let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self.programImage = image
-                }
-            } else {
-                print("Couldn't get image from data.")
-                return
-            }
+            self.programImageIsLoading = false
+            self.programImage = image
+        } catch {
+            throw error
         }
-        
-        task.resume()
     }
     
+    @MainActor
+    public func unsaveProgram() async throws {
+        do {
+            try await ProgramService.shared.unsaveProgram(program: program!)
+            
+            self.isPurchased = false
+        } catch {
+            self.didReturnError = true
+            self.returnedErrorMessage = error.localizedDescription
+        }
+    }
+    
+    @MainActor
+    public func saveProgram() async throws {
+//        self.isSaving = true
+//        
+//        guard let currentUserId = UserService.currentUser?.id else {
+//            self.isLoading = false
+//            self.didReturnError = true
+//            self.returnedErrorMessage = "Couldn't get current user."
+//            return
+//        }
+//        
+//        let purchasedProgram = PurchasedProgram(
+//            programId: self.programId,
+//            purchasedBy: currentUserId,
+//            createdBy: self.team!.createdBy
+//        )
+//        
+//        do {
+//            try await ProgramService.shared.saveProgram(purchasedProgram: purchasedProgram)
+//            
+//            self.isPurchased = true
+//            self.isSaving = false
+//        } catch {
+//            self.isSaving = false
+//            self.didReturnError = true
+//            self.returnedErrorMessage = error.localizedDescription
+//        }
+    }
 }

@@ -9,40 +9,38 @@ import SwiftUI
 
 struct ProgramsView: View {
     // MARK: UI State
-    @State var presentNewProgram = false
+    @State var presentSettings = false
     
     // MARK: Data
-    @EnvironmentObject var userViewModel: UserViewModel
-    @StateObject private var viewModel = WorkoutViewModel()
+    @StateObject private var viewModel = ProgramsViewModel()
     
-    @State var path: [SavedProgram] = [SavedProgram]()
+    @Binding var path: [NavigationDestinationTypes]
     
     var body: some View {
-        NavigationStack(path: $path) {
-            List {
-                Section {
-                    ForEach(viewModel.programs) { savedProgram in
-                        ZStack {
-                            ProgramCell(programId: savedProgram.programId)
+        List {
+            Section {
+                ForEach(viewModel.programs) { program in
+                    ZStack {
+                        if program.users != nil && program.programs != nil {
+                            ProgramCell(title: program.programs!.title, imageUrl: program.programs!.imageUrl, userFullName: program.users!.fullName)
                             
-                            NavigationLink(value: savedProgram) {
+                            NavigationLink(value: NavigationDestinationTypes.ProgramDetail(programId: program.programs!.id)) {
                                 
                             }
                             .opacity(0)
                         }
-                        .listRowInsets(EdgeInsets(top: 16, leading: 20, bottom: 0, trailing: 20))
-                        .listRowBackground(Color.ColorSystem.systemGray5)
-                        .listRowSeparator(.hidden)
                     }
-                    
-                    Color.ColorSystem.systemGray5
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 16)
-                        .padding(0)
-                        .listRowBackground(Color.ColorSystem.systemGray5)
-                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                        .listRowSeparator(.hidden)
-                    
+                    .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 10, trailing: 20))
+                    .listRowSeparator(.hidden)
+                }
+                
+                Color.ColorSystem.systemBackground
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 16)
+                    .padding(0)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                    .listRowSeparator(.hidden)
+                
 //                    if !viewModel.isLoading && !viewModel.endReached && viewModel.returnedErrorMessage == nil {
 //                        ProgressView()
 //                            .frame(maxWidth: .infinity)
@@ -56,59 +54,56 @@ struct ProgramsView: View {
 //                                }
 //                            })
 //                    }
-                }
-            }
-            .listStyle(.plain)
-            .listRowSeparator(.hidden)
-            .scrollContentBackground(.hidden)
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(userViewModel.isCreatorView ? "My Programs" : "Saved Programs")
-            .background(Color.ColorSystem.systemGray5)
-            .onAppear(perform: {
-                Task {
-                    await viewModel.getSavedPrograms()
-                }
-            })
-            .refreshable(action: {
-                await viewModel.pulledRefresh()
-            })
-            .navigationDestination(for: SavedProgram.self, destination: { program in
-                let vm = ProgramDetailViewModel(
-                    programId: program.programId
-                )
-                
-                ProgramDetailView(viewModel: vm, onProgramSaved: { savedProgram in
-                    #warning("Need to add saved program")
-                }, onProgramDelete: {
-                    #warning("Need to remove deleted program")
-                })
-                .toolbarRole(.editor)
-            })
-            .sheet(isPresented: $presentNewProgram, content: {
-                let vm = NewProgramViewModel()
-                NewProgramView(viewModel: vm, onProgramCreated: { savedProgram in
-                    viewModel.insertProgramToBeginning(newProgram: savedProgram)
-                    path.append(savedProgram)
-                })
-            })
-            .alert(isPresented: $viewModel.didReturnError, content: {
-                Alert(title: Text(viewModel.returnedErrorMessage ?? "Couldn't get workouts."))
-            })
-            .toolbar {
-                if userViewModel.isCreatorView {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("", systemImage: "plus") {
-                            presentNewProgram.toggle()
-                        }
-                        .tint(Color.ColorSystem.primaryText)
-                    }
-                }
             }
         }
+        .listStyle(.plain)
+        .listRowSeparator(.hidden)
+        .scrollContentBackground(.hidden)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Programs")
+        .background(Color.ColorSystem.systemBackground)
+        .refreshable(action: {
+            await viewModel.pulledRefresh()
+        })
+        .alert(isPresented: $viewModel.didReturnError, content: {
+            Alert(title: Text(viewModel.returnedErrorMessage))
+        })
+//        .navigationDestination(for: NavigationDestinationTypes.self, destination: { destination in
+//            switch destination {
+//            case .PostDetail:
+//                let vm = PostDetailViewModel(post: destination.getPost())
+//                PostDetailView(viewModel: vm)
+//            case .UserDetail:
+//                let vm = UserDetailViewModel(userId: destination.getId())
+//                UserDetailView(viewModel: vm)
+//            case .UserPrograms:
+//                let vm = UserProgramsViewModel(userId: destination.getId())
+//                UserProgramsView(viewModel: vm)
+//            case .ProgramsView:
+//                ProgramsView(path: $path)
+//            case .ProgramDetail:
+//                let vm = ProgramDetailViewModel(programId: destination.getId())
+//                ProgramDetailView(viewModel: vm, path: $path)
+//            case .CalendarView:
+//                let program = destination.getProgram()
+//                CalendarView(
+//                    programId: program.id,
+//                    weeks: program.weeks,
+//                    pages: program.weeks / 4 + 1,
+//                    remainder: program.weeks % 4
+//                )
+//            case .WorkoutDetail:
+//                let vm = WorkoutDetailViewModel(workoutId: destination.getId())
+//                WorkoutDetailView(viewModel: vm)
+//            case .ExerciseDetail:
+//                let vm = ExerciseDetailViewModel(workoutExercise: destination.getWorkoutExercise())
+//                ExerciseDetailView(viewModel: vm)
+//            }
+//        })
     }
 }
 
 #Preview {
-    ProgramsView()
+    ProgramsView(path: .constant([]))
         .environmentObject(UserViewModel())
 }

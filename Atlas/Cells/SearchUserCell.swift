@@ -1,5 +1,5 @@
 //
-//  SearchTeamCell.swift
+//  SearchUserCell.swift
 //  Atlas
 //
 //  Created by Michael Bautista on 10/8/24.
@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct SearchTeamCell: View {
+struct SearchUserCell: View {
     
-    var team: Team
+    var user: User
     
     var body: some View {
         HStack {
-            if team.imageUrl != nil {
-                AsyncImage(url: URL(string: team.imageUrl!)) { image in
+            if user.profilePictureUrl != nil {
+                AsyncImage(url: URL(string: user.profilePictureUrl!)) { image in
                     image
                         .resizable()
                         .scaledToFill()
@@ -42,20 +42,18 @@ struct SearchTeamCell: View {
             }
             
             VStack {
-                Text(team.name)
+                Text(user.fullName)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundStyle(Color.ColorSystem.primaryText)
                     .font(Font.FontStyles.headline)
                     .multilineTextAlignment(.leading)
                     .lineLimit(2)
                 
-                if team.description != nil {
-                    Text(team.description!)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundStyle(Color.ColorSystem.systemGray)
-                        .font(Font.FontStyles.caption1)
-                        .lineLimit(2)
-                }
+                Text("@\(user.username)")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .foregroundStyle(Color.ColorSystem.systemGray)
+                    .font(Font.FontStyles.caption1)
+                    .lineLimit(2)
             }
             .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
         }
@@ -63,5 +61,5 @@ struct SearchTeamCell: View {
 }
 
 #Preview {
-    SearchTeamCell(team: Team(id: "", createdAt: "", createdBy: "", name: "Test team", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla quam ligula. Suspendisse egestas ultrices orci, ac fermentum dolor bibendum sit amet."))
+    SearchUserCell(user: User(id: "asdf", email: "asdf", fullName: "Test User", username: "testuser", paymentsEnabled: false))
 }

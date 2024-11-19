@@ -10,17 +10,37 @@ import SwiftUI
 final class ExerciseDetailViewModel: ObservableObject {
     
     // MARK: Variables
-    @Published var exercise: Exercise
+    var workoutExercise: WorkoutExercise
     
-    @Published var exerciseIsLoading: Bool = true
+    @Published var exercise: Exercise?
+    
+    @Published var isLoading: Bool = true
     
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
     
     // MARK: Initializer
-    init(exercise: Exercise) {
-        self.exercise = exercise
+    init(workoutExercise: WorkoutExercise) {
+        isLoading = true
+        
+        self.workoutExercise = workoutExercise
+        
+        Task {
+            do {
+                // Get program
+                let exercise = try await ExerciseService.shared.getExercise(exerciseId: workoutExercise.exerciseId)
+                
+                DispatchQueue.main.async {
+                    self.exercise = exercise
+                    self.isLoading = false
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    self.didReturnError = true
+                    self.returnedErrorMessage = error.localizedDescription
+                }
+            }
+        }
     }
-    
-    #warning("Download video and store it in a variable like with program images on program detail view")
 }

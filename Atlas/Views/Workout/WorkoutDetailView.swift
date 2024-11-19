@@ -17,7 +17,7 @@ struct WorkoutDetailView: View {
     @StateObject var viewModel: WorkoutDetailViewModel
     
     var body: some View {
-        if viewModel.workoutIsLoading == true || viewModel.workout == nil {
+        if viewModel.isLoading == true || viewModel.workout == nil {
             VStack(alignment: .center) {
                 Spacer()
                 ProgressView()
@@ -25,7 +25,7 @@ struct WorkoutDetailView: View {
                     .tint(Color.ColorSystem.primaryText)
                 Spacer()
             }
-            .background(Color.ColorSystem.systemGray5)
+            .background(Color.ColorSystem.systemBackground)
             .navigationBarTitleDisplayMode(.inline)
             .alert(isPresented: $viewModel.didReturnError, content: {
                 Alert(title: Text(viewModel.returnedErrorMessage))
@@ -33,10 +33,10 @@ struct WorkoutDetailView: View {
         } else {
             List {
                 // MARK: Description
-                if viewModel.workout?.description != "" {
+                if viewModel.workout!.description != "" {
                     Section {
-                        Text(viewModel.workout!.description)
-                            .listRowBackground(Color.ColorSystem.systemGray4)
+                        Text(viewModel.workout!.description ?? "")
+                            .listRowBackground(Color.ColorSystem.systemGray6)
                     } header: {
                         Text(viewModel.workout!.title)
                             .font(Font.FontStyles.title1)
@@ -51,68 +51,30 @@ struct WorkoutDetailView: View {
                 }
                 
                 // MARK: Exercises
-                Section {
-                    ForEach(viewModel.workout!.exercises ?? [Exercise]()) { exercise in
-                        NavigationLink {
-                            ExerciseDetailView(viewModel: ExerciseDetailViewModel(exercise: exercise))
-                                .environmentObject(programViewModel)
-                        } label: {
-                            ExerciseCell(
-                                exerciseNumber: exercise.exerciseNumber,
-                                exerciseTitle: exercise.name,
-                                sets: exercise.sets,
-                                reps: exercise.reps
-                            )
+                if viewModel.workout!.workoutExercises!.count > 0 {
+                    Section {
+                        ForEach(viewModel.workout!.workoutExercises ?? [WorkoutExercise]()) { exercise in
+                            NavigationLink(value: NavigationDestinationTypes.ExerciseDetail(workoutExercise: exercise)) {
+                                ExerciseCell(
+                                    exerciseId: exercise.exerciseId,
+                                    exerciseNumber: exercise.exerciseNumber,
+                                    sets: exercise.sets,
+                                    reps: exercise.reps
+                                )
+                            }
                         }
-                        .listRowBackground(Color.ColorSystem.systemGray4)
+                    } header: {
+                        Text("Exercises")
+                            .foregroundStyle(Color.ColorSystem.primaryText)
+                            .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                     }
-                    
-                    if programViewModel.program!.createdBy == UserService.currentUser?.id {
-                        Button(action: {
-                            presentNewExercise.toggle()
-                        }, label: {
-                            Text("+ Add exercise")
-                                .foregroundStyle(Color.ColorSystem.systemBlue)
-                        })
-                        .listRowBackground(Color.ColorSystem.systemGray4)
-                    }
-                } header: {
-                    Text("Exercises")
-                        .foregroundStyle(Color.ColorSystem.primaryText)
-                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                    .headerProminence(.increased)
                 }
-                .headerProminence(.increased)
             }
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
             .navigationBarTitleDisplayMode(.inline)
-            .background(Color.ColorSystem.systemGray5)
-            .toolbar(content: {
-                ToolbarItem(placement: .topBarTrailing) {
-                    if UserService.currentUser?.id == viewModel.workout?.createdBy {
-                        Menu("", systemImage: "ellipsis") {
-                            Button("Edit", role: .none) {
-                                presentEditWorkout.toggle()
-                            }
-                            
-//                            Button("Delete", role: .destructive) {
-//                                presentConfirmDelete.toggle()
-//                            }
-                        }
-                    }
-                }
-            })
-            .sheet(isPresented: $presentNewExercise, content: {
-                NewExerciseView(viewModel: NewExerciseViewModel(workoutId: viewModel.workout!.id!, exerciseNumber: (viewModel.workout?.exercises?.count ?? 0) + 1)) { exercise in
-                    viewModel.workout?.exercises?.append(exercise)
-                }
-            })
-            .sheet(isPresented: $presentEditWorkout, content: {
-                EditWorkoutView(viewModel: EditWorkoutViewModel(oldWorkout: viewModel.workout!)) { workout in
-                    viewModel.workout?.title = workout.title
-                    viewModel.workout?.description = workout.description
-                }
-            })
+            .background(Color.ColorSystem.systemBackground)
         }
     }
 }

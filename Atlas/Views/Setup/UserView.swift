@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  UserView.swift
 //  stayhard
 //
 //  Created by Michael Bautista on 3/16/24.
@@ -13,20 +13,33 @@ struct UserView: View {
     
     var body: some View {
         TabView {
-            HomeView()
-                .tabItem {
-                    Image(systemName: "house.fill")
-                }
+//            HomeView()
+//                .tabItem {
+//                    Image(systemName: "house.fill")
+//                }
+//                .environmentObject(userViewModel)
             
-            WorkoutView()
+            TrainingView()
                 .tabItem {
                     Image(systemName: "figure.run")
                 }
                 .environmentObject(userViewModel)
             
-            ProfileView()
+            ExploreView()
                 .tabItem {
-                    Image(systemName: "person.fill")
+                    Image(systemName: "magnifyingglass")
+                }
+                .environmentObject(userViewModel)
+            
+//            TrainingView()
+//                .tabItem {
+//                    Image(systemName: "figure.run")
+//                }
+//                .environmentObject(userViewModel)
+            
+            LibraryView()
+                .tabItem {
+                    Image(systemName: "text.book.closed.fill")
                 }
                 .environmentObject(userViewModel)
         }

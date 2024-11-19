@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import FirebaseFirestore
 
 final class ProfileViewModel: ObservableObject {
     
@@ -16,10 +15,10 @@ final class ProfileViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
     
-    @Published var userImage: UIImage? = nil
-    @Published var userImageIsLoading = false
+    @Published var profilePicture: UIImage? = nil
+    @Published var profilePictureIsLoading = false
     
-    @Published var user: User?
+    var user: User?
     
     init() {
         isLoading = true
@@ -32,19 +31,19 @@ final class ProfileViewModel: ObservableObject {
         
         self.user = currentUser
         
-        if user!.userImageUrl != "" {
-            self.userImageIsLoading = true
+        self.isLoading = false
+        
+        if user!.profilePictureUrl != nil {
+            self.profilePictureIsLoading = true
             
-            self.getUserImage(imageUrl: user!.userImageUrl) { error in
-                self.isLoading = false
-                
+            self.getUserImage(imageUrl: user!.profilePictureUrl!) { error in
                 if let error = error {
                     self.didReturnError = true
                     self.returnedErrorMessage = error.localizedDescription
                     return
                 }
                 
-                self.userImageIsLoading = false
+                self.profilePictureIsLoading = false
             }
         } else {
             isLoading = false
@@ -66,7 +65,7 @@ final class ProfileViewModel: ObservableObject {
                 }
                 
                 if let data = data, let image = UIImage(data: data) {
-                    self.userImage = image
+                    self.profilePicture = image
                     completion(nil)
                 } else {
                     print("Couldn't get image from data.")
@@ -77,28 +76,5 @@ final class ProfileViewModel: ObservableObject {
         
         task.resume()
     }
-    
-    // MARK: Update user
-//    public func updateUser(completion: @escaping (_ newUser: User?, _ error: Error?) -> Void) {
-//        self.isLoading = true
-//        
-//        if user != nil {
-//            UserService.shared.updateUser(user: user!, uid: user!.uid) { error in
-//                self.isLoading = false
-//                
-//                if let error = error {
-//                    self.didReturnError = true
-//                    self.returnedErrorMessage = error.localizedDescription
-//                    return
-//                }
-//            }
-//        } else {
-//            self.isLoading = false
-//            
-//            self.didReturnError = true
-//            self.returnedErrorMessage = "Error saving user."
-//            return
-//        }
-//    }
     
 }

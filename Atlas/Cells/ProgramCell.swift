@@ -9,83 +9,61 @@ import SwiftUI
 
 struct ProgramCell: View {
     
-    @State var isLoading = true
-    
-    var programId: String
-    
-    @State var program: Program? = nil
-    @State var user: User? = nil
+    var title: String
+    var imageUrl: String?
+    var userFullName: String
     
     var body: some View {
-        if isLoading || program == nil || user == nil {
-            Color.ColorSystem.systemGray5
-            .task {
-                do {
-                    let program = try await ProgramService.shared.getProgram(programId: programId)
-                    
-                    self.program = program
-                    
-                    let user = try await UserService.shared.getUser(uid: program.createdBy)
-                    
-                    self.user = user
-                    
-                    isLoading = false
-                } catch {
-                    print(error)
+        VStack(alignment: .leading, spacing: 0) {
+            if imageUrl != nil {
+                AsyncImage(url: URL(string: imageUrl!)) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(maxWidth: UIScreen.main.bounds.size.width - 32)
+                        .frame(height: 180)
+                        .clipped()
+                } placeholder: {
+                    ProgressView()
+                        .tint(Color.ColorSystem.primaryText)
+                        .frame(maxWidth: UIScreen.main.bounds.size.width - 32)
+                        .frame(height: 180)
                 }
-            }
-        } else {
-            VStack(alignment: .leading, spacing: 0) {
-                if program!.imageUrl != nil {
-                    AsyncImage(url: URL(string: program!.imageUrl!)) { image in
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(maxWidth: .infinity)
-                            .frame(height: ((UIScreen.main.bounds.size.width - 32) / 2))
-                            .clipped()
-                    } placeholder: {
-                        ProgressView()
-                            .tint(Color.ColorSystem.primaryText)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: ((UIScreen.main.bounds.size.width - 32) / 2))
-                    }
-                } else {
-                    VStack {
-                        Spacer()
-                        Image(systemName: "figure.run")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 48)
-                            .foregroundStyle(Color.ColorSystem.secondaryText)
-                        Spacer()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 180)
-                    .background(Color.ColorSystem.systemGray4)
-                }
-                
+            } else {
                 VStack {
-                    Text(program!.title)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundStyle(Color.ColorSystem.primaryText)
-                        .font(Font.FontStyles.title2)
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(2)
-                    
-                    Text("@\(user!.username)")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundStyle(Color.ColorSystem.secondaryText)
-                        .font(Font.FontStyles.headline)
+                    Spacer()
+                    Image(systemName: "figure.run")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 48)
+                        .foregroundStyle(Color.ColorSystem.systemGray)
+                    Spacer()
                 }
-                .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+                .frame(maxWidth: .infinity)
+                .frame(height: 180)
+                .background(Color.ColorSystem.systemGray5)
             }
-            .background(Color.ColorSystem.systemGray4)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+            
+            VStack {
+                Text(title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .foregroundStyle(Color.ColorSystem.primaryText)
+                    .font(Font.FontStyles.title2)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(2)
+                
+                Text(userFullName)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .foregroundStyle(Color.ColorSystem.systemGray)
+                    .font(Font.FontStyles.headline)
+            }
+            .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
         }
+        .background(Color.ColorSystem.systemGray6)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }
 
 #Preview {
-    ProgramCell(programId: "a4f83733-5cc4-444a-b732-b6dfcdbc7f55")
+    ProgramCell(title: "Test", userFullName: "Test User")
 }

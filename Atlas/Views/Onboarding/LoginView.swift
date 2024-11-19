@@ -6,15 +6,10 @@
 //
 
 import SwiftUI
-import FirebaseAuth
-import FirebaseFirestore
-import FirebaseFirestoreSwift
 import Photos
 import PhotosUI
-import FirebaseStorage
 
 struct LoginView: View {
-    
     @EnvironmentObject var userViewModel: UserViewModel
     
     @FocusState var keyboardIsFocused: Bool
@@ -28,73 +23,93 @@ struct LoginView: View {
     @State private var isLoading = false
     
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    TextField(text: $email, prompt: Text("Email")) {
-                        Text("Email")
-                    }
-                    .foregroundStyle(Color.ColorSystem.primaryText)
+        List {
+            Section {
+                TextField("", text: $email, axis: .vertical)
                     .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled(true)
-                    .listRowBackground(Color.ColorSystem.systemGray4)
-                    .disabled(isLoading)
-                    
-                    SecureField(text: $password) {
-                        Text("Password")
-                    }
                     .foregroundStyle(Color.ColorSystem.primaryText)
-                    .textInputAutocapitalization(.never)
-                    .listRowBackground(Color.ColorSystem.systemGray4)
+                    .listRowBackground(Color.ColorSystem.systemGray6)
                     .disabled(isLoading)
-                }
-                
-                Section {
-                    Button(action: {
-                        keyboardIsFocused = false
-                        isLoading = true
-                        
-                        AuthService.shared.signIn(email: email, password: password) { error in
-                            isLoading = false
-                            
-                            if let error = error {
-                                isAlertShown = true
-                                alertMessage = error.localizedDescription
-                                return
-                            }
-                            
-                            DispatchQueue.main.async {
-                                userViewModel.isLoggedIn = true
-                            }
-                        }
-                    }, label: {
-                        if isLoading {
-                            HStack {
-                                Spacer()
-                                ProgressView()
-                                    .foregroundStyle(Color.ColorSystem.primaryText)
-                                Spacer()
-                            }
-                        } else {
-                            HStack {
-                                Spacer()
-                                Text("Login")
-                                    .font(Font.FontStyles.headline)
-                                Spacer()
-                            }
-                        }
-                    })
-                    .disabled(isLoading)
-                    .foregroundStyle(Color.ColorSystem.primaryText)
-                    .listRowBackground(Color.ColorSystem.systemBlue)
-                }
+            } header: {
+                Text("Email")
             }
-            .scrollDisabled(true)
-            .listStyle(.insetGrouped)
-            .scrollContentBackground(.hidden)
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Login")
-            .background(Color.ColorSystem.systemGray5)
+            
+            Section {
+                SecureField(text: $password) {
+                    Text("")
+                }
+                .textInputAutocapitalization(.never)
+                .foregroundStyle(Color.ColorSystem.primaryText)
+                .listRowBackground(Color.ColorSystem.systemGray6)
+                .disabled(isLoading)
+            } header: {
+                Text("Password")
+            }
+            
+            Section {
+                Button(action: {
+                    keyboardIsFocused = false
+                    isLoading = true
+                    
+                    if email == "" || password == "" {
+                        isLoading = false
+                        isAlertShown = true
+                        alertMessage = "Please fill in all fields."
+                        return
+                    }
+                    
+                    Task {
+                        do {
+                            try await SupabaseService.shared.supabase.auth.signIn(
+                                email: email,
+                                password: password
+                            )
+                            
+                            let currentUserId = try await SupabaseService.shared.supabase.auth.session.user.id.description
+                            
+                            let user = try await UserService.shared.getUser(uid: currentUserId)
+                            
+                            UserService.currentUser = user
+                            
+                            userViewModel.isLoggedIn = true
+                        } catch {
+                            isLoading = false
+                            isAlertShown = true
+                            alertMessage = error.localizedDescription
+                        }
+                    }
+                }, label: {
+                    if isLoading {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                                .foregroundStyle(Color.ColorSystem.primaryText)
+                            Spacer()
+                        }
+                    } else {
+                        HStack {
+                            Spacer()
+                            Text("Login")
+                                .font(Font.FontStyles.headline)
+                            Spacer()
+                        }
+                    }
+                })
+                .disabled(isLoading)
+                .foregroundStyle(Color.ColorSystem.primaryText)
+                .listRowBackground(Color.ColorSystem.systemBlue)
+            }
+        }
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .scrollDismissesKeyboard(.interactively)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Login")
+        .background(Color.ColorSystem.systemBackground)
+        .alert("", isPresented: $isAlertShown) {
+            
+        } message: {
+            Text(alertMessage)
         }
     }
 }

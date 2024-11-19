@@ -13,201 +13,274 @@ struct ProgramDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState var keyboardIsFocused: Bool
     
-    @State private var presentProgramInfo = false
-    @State private var presentEditProgram = false
-    @State private var presentConfirmUnsave = false
-    @State private var presentConfirmDelete = false
+    @State var presentStartProgram = false
+    @State var presentPurchaseModal = false
     
     // MARK: Data
-    @StateObject var viewModel: ProgramDetailViewModel
+    @ObservedObject var viewModel: ProgramDetailViewModel
     
-    public var onProgramSaved: ((SavedProgram) -> Void)?
-    public var onProgramDelete: (() -> Void)?
+    @Binding var path: [NavigationDestinationTypes]
     
     var body: some View {
-        if viewModel.programIsLoading == true || viewModel.program == nil {
+        if viewModel.program == nil || viewModel.isLoading {
             VStack(alignment: .center) {
                 Spacer()
                 ProgressView()
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: UIScreen.main.bounds.size.width)
                     .tint(Color.ColorSystem.primaryText)
                 Spacer()
             }
-            .background(Color.ColorSystem.systemGray5)
+            .background(Color.ColorSystem.systemBackground)
             .navigationBarTitleDisplayMode(.inline)
             .alert(isPresented: $viewModel.didReturnError, content: {
                 Alert(title: Text(viewModel.returnedErrorMessage))
             })
         } else {
-            List {
-                Section {
-//                    VStack(spacing: 16) {
-//                        // MARK: Image
-//                        HStack {
-//                            Spacer()
-//                            if viewModel.program?.image_url != nil {
-//                                if viewModel.programImage != nil {
-//                                    Image(uiImage: viewModel.programImage!)
-//                                        .resizable()
-//                                        .scaledToFill()
-//                                        .frame(width: UIScreen.main.bounds.size.width / 2, height: UIScreen.main.bounds.size.width / 2, alignment: .center)
-//                                        .clipShape(RoundedRectangle(cornerRadius: 10))
-//                                        .background(Color.ColorSystem.systemGray3)
-//                                        .foregroundStyle(Color.ColorSystem.secondaryText)
-//                                } else {
-//                                    ProgressView()
-//                                        .frame(width: UIScreen.main.bounds.size.width / 2, height: UIScreen.main.bounds.size.width / 2, alignment: .center)
-//                                        .frame(maxWidth: .infinity, alignment: .center)
-//                                        .tint(Color.ColorSystem.primaryText)
-//                                        .clipShape(RoundedRectangle(cornerRadius: 10))
-//                                }
-//                            } else {
-//                                VStack {
-//                                    Spacer()
-//                                    Image(systemName: "figure.run")
-//                                        .resizable()
-//                                        .scaledToFit()
-//                                        .frame(height: 48)
-//                                        .foregroundStyle(Color.ColorSystem.secondaryText)
-//                                    Spacer()
-//                                }
-//                                .frame(width: UIScreen.main.bounds.size.width / 2, height: UIScreen.main.bounds.size.width / 2, alignment: .center)
-//                                .background(Color.ColorSystem.systemGray4)
-//                                .clipShape(RoundedRectangle(cornerRadius: 8))
-//                            }
-//                            
-//                            Spacer()
-//                        }
-//                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-//                        .listRowSeparator(.hidden)
-//                        .listRowBackground(Color.ColorSystem.systemGray5)
-//                        
-//                        // MARK: Title
-//                        VStack(spacing: 4) {
-//                            Text(viewModel.program?.title ?? "")
-//                                .font(Font.FontStyles.title1)
-//                                .foregroundStyle(Color.ColorSystem.primaryText)
-//                                .multilineTextAlignment(.center)
-//                            
-//                            Text("@")
-//                                .font(Font.FontStyles.headline)
-//                                .foregroundStyle(Color.ColorSystem.secondaryText)
-//                        }
-//                        
-//                        // MARK: Save button
-//                        VStack {
-//                            Button(action: {
-//                                if viewModel.programIsSaved {
-//                                    presentConfirmUnsave.toggle()
-//                                } else {
-//                                    viewModel.saveProgram(program: viewModel.program!)
-//                                }
-//                            }, label: {
-//                                if viewModel.checkingIfUserSavedProgram || viewModel.programIsSaving {
-//                                    ProgressView()
-//                                        .foregroundStyle(Color.ColorSystem.primaryText)
-//                                        .frame(maxWidth: .infinity)
-//                                        .frame(height: 40)
-//                                        .background(Color.ColorSystem.systemGray4)
-//                                        .clipShape(RoundedRectangle(cornerRadius: 10))
-//                                } else {
-//                                    if viewModel.programIsSaved {
-//                                        Text("Saved")
-//                                            .font(Font.FontStyles.headline)
-//                                            .foregroundStyle(Color.ColorSystem.secondaryText)
-//                                            .frame(maxWidth: .infinity)
-//                                            .frame(height: 40)
-//                                            .background(Color.ColorSystem.systemGray4)
-//                                            .clipShape(RoundedRectangle(cornerRadius: 10))
-//                                    } else {
-//                                        Text("Save")
-//                                            .font(Font.FontStyles.headline)
-//                                            .foregroundStyle(Color.ColorSystem.primaryText)
-//                                            .frame(maxWidth: .infinity)
-//                                            .frame(height: 40)
-//                                            .background(viewModel.checkingIfUserSavedProgram ? Color.ColorSystem.systemGray4 : Color.ColorSystem.systemBlue)
-//                                            .clipShape(RoundedRectangle(cornerRadius: 10))
-//                                    }
-//                                }
-//                            })
-//                            .buttonStyle(.plain)
-//                            .disabled(viewModel.checkingIfUserSavedProgram || viewModel.programIsSaving)
-//                        }
-//                        .padding(EdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 0))
-//                        .buttonStyle(.plain)
-//                    }
-                }
-                
-                // MARK: Description
-                if viewModel.program?.description != "" {
+            if let program = viewModel.program, let user = viewModel.program?.users {
+                List {
                     Section {
-                        Text(viewModel.program!.description)
-                            .listRowBackground(Color.ColorSystem.systemGray4)
+                        VStack(spacing: 0) {
+                            // MARK: Image
+                            if program.imageUrl != nil {
+                                if viewModel.programImage != nil {
+                                    Image(uiImage: viewModel.programImage!)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(maxWidth: UIScreen.main.bounds.size.width)
+                                        .frame(height: 200)
+                                        .buttonStyle(.plain)
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                                } else {
+                                    ProgressView()
+                                        .frame(maxWidth: UIScreen.main.bounds.size.width)
+                                        .frame(height: 200)
+                                        .tint(Color.ColorSystem.primaryText)
+                                        .background(Color.ColorSystem.systemBackground)
+                                        .buttonStyle(.plain)
+                                }
+                            } else {
+                                VStack {
+                                    Spacer()
+                                    Image(systemName: "figure.run")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(height: 48)
+                                        .foregroundStyle(Color.ColorSystem.systemGray)
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 200)
+                                .background(Color.ColorSystem.systemGray5)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .buttonStyle(.plain)
+                            }
+                            
+                            Text(program.title)
+                                .font(Font.FontStyles.title1)
+                                .foregroundStyle(Color.ColorSystem.primaryText)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .multilineTextAlignment(.leading)
+                                .padding(EdgeInsets(top: 8, leading: 0, bottom: 0, trailing: 0))
+                            
+                            // MARK: Team name
+                            Button {
+//                                path.append(NavigationDestinationTypes.TeamDetail(teamId: viewModel.team!.id))
+                            } label: {
+                                HStack {
+                                    Text(user.fullName)
+                                        .font(Font.FontStyles.headline)
+                                        .foregroundStyle(Color.ColorSystem.systemBlue)
+                                    Spacer()
+                                }
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        .listRowInsets(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
+                        .listRowSeparator(.hidden)
+                    }
+                    
+                    // MARK: Description
+                    if program.description != "" && program.description != nil {
+                        Section {
+                            HStack {
+                                Text(viewModel.program!.description!)
+                                    .padding(10)
+                                
+                                Spacer()
+                            }
+                            .background(Color.ColorSystem.systemGray6)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
+                            .listRowSeparator(.hidden)
+                        }
+                    }
+                    
+                    if viewModel.isPurchased {
+                        Section {
+                            if viewModel.program!.free {
+                                // MARK: Saved program
+                                Button {
+                                    Task {
+                                        try await viewModel.unsaveProgram()
+                                    }
+                                } label: {
+                                    HStack {
+                                        Spacer()
+                                        
+                                        Text("Saved")
+                                            .font(Font.FontStyles.headline)
+                                            .foregroundStyle(Color.ColorSystem.systemGray)
+                                        
+                                        Spacer()
+                                    }
+                                    .padding(10)
+                                    .background(Color.ColorSystem.systemGray5)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                }
+                                .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 10, trailing: 20))
+                                .listRowSeparator(.hidden)
+                                .disabled(true)
+                            }
+                            
+                            if viewModel.isStarted {
+                                // MARK: Started program
+                                Button {
+                                    
+                                } label: {
+                                    HStack {
+                                        Spacer()
+                                        
+                                        Text("In Progress")
+                                            .font(Font.FontStyles.headline)
+                                            .foregroundStyle(Color.ColorSystem.systemGray)
+                                        
+                                        Spacer()
+                                    }
+                                    .padding(10)
+                                    .background(Color.ColorSystem.systemGray5)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                }
+                                .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
+                                .listRowSeparator(.hidden)
+                                .disabled(true)
+                            } else {
+                                // MARK: Start program
+                                Button {
+                                    presentStartProgram.toggle()
+                                } label: {
+                                    HStack {
+                                        Spacer()
+                                        
+                                        Text("Start Program")
+                                            .font(Font.FontStyles.headline)
+                                            .foregroundStyle(Color.ColorSystem.primaryText)
+                                        
+                                        Spacer()
+                                    }
+                                    .padding(10)
+                                    .background(Color.ColorSystem.systemBlue)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                }
+                                .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
+                                .listRowSeparator(.hidden)
+                            }
+                        }
+                        
+                        Section {
+                            // MARK: Calendar link
+                            ZStack {
+                                HStack {
+                                    HStack {
+                                        Text("🗓️")
+                                        
+                                        Text("Calendar")
+                                            .font(Font.FontStyles.headline)
+                                            .foregroundStyle(Color.ColorSystem.primaryText)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .foregroundStyle(Color.ColorSystem.systemGray)
+                                }
+                                .padding(10)
+                                .background(Color.ColorSystem.systemGray6)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                
+                                NavigationLink(value: NavigationDestinationTypes.CalendarView(program: viewModel.program!)) {
+                                    
+                                }
+                                .opacity(0)
+                            }
+                            .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
+                            .listRowSeparator(.hidden)
+                        }
+                    } else {
+                        Section {
+                            // MARK: Save button
+                            if viewModel.program!.free {
+                                Button {
+                                    Task {
+                                        try await viewModel.saveProgram()
+                                    }
+                                } label: {
+                                    HStack {
+                                        Spacer()
+                                        if viewModel.isSaving {
+                                            ProgressView()
+                                                .frame(maxWidth: UIScreen.main.bounds.size.width)
+                                                .tint(Color.ColorSystem.primaryText)
+                                        } else {
+                                            Text("Save")
+                                                .font(Font.FontStyles.headline)
+                                                .foregroundStyle(Color.ColorSystem.primaryText)
+                                        }
+                                        Spacer()
+                                    }
+                                    .padding(10)
+                                    .background(Color.ColorSystem.systemBlue)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                }
+                                .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                                .listRowSeparator(.hidden)
+                            } else {
+                                Button {
+                                    presentPurchaseModal.toggle()
+                                } label: {
+                                    HStack {
+                                        Spacer()
+                                        Text("Purchase \(viewModel.program!.price.formatted(.currency(code: "usd")))")
+                                            .font(Font.FontStyles.headline)
+                                        Spacer()
+                                    }
+                                    .padding(10)
+                                    .background(Color.ColorSystem.systemBlue)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                }
+                                .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                                .listRowSeparator(.hidden)
+                            }
+                        }
                     }
                 }
-                
-                // MARK: Workouts
-                Section {
-//                    ForEach(viewModel.program!.workouts) { workout in
-//                        NavigationLink {
-//                            WorkoutDetailView(workout: workout)
-//                                .environmentObject(viewModel)
-//                        } label: {
-//                            HStack {
-//                                Text(workout.title)
-//                                    .font(Font.FontStyles.body)
-//                                    .foregroundStyle(Color.ColorSystem.primaryText)
-//                                Spacer()
-//                            }
-//                        }
-//                        .listRowBackground(Color.ColorSystem.systemGray4)
-//                    }
-                } header: {
-                    Text("Workouts")
-                        .foregroundStyle(Color.ColorSystem.primaryText)
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .navigationBarTitleDisplayMode(.inline)
+                .background(Color.ColorSystem.systemBackground)
+                .alert(isPresented: $viewModel.didReturnError, content: {
+                    Alert(title: Text(viewModel.returnedErrorMessage))
+                })
+                .sheet(isPresented: $presentPurchaseModal) {
+                    PurchaseModalView()
+                        .presentationDetents([.height(200)])
                 }
-                .headerProminence(.increased)
-            }
-            .listStyle(.insetGrouped)
-            .scrollContentBackground(.hidden)
-            .navigationBarTitleDisplayMode(.inline)
-            .background(Color.ColorSystem.systemGray5)
-            .toolbar(content: {
-                ToolbarItem(placement: .topBarTrailing) {
-//                    if UserService.currentUser?.id == viewModel.program?.uid {
-//                        Menu("", systemImage: "ellipsis") {
-//                            Button("Edit", role: .none) {
-//                                presentEditProgram.toggle()
-//                            }
-//                            
-//                            Button("Delete", role: .destructive) {
-//                                presentConfirmDelete.toggle()
-//                            }
-//                        }
-//                    }
-                }
-            })
-            .fullScreenCover(isPresented: $presentEditProgram, content: {
-                EditProgramView(viewModel: EditProgramViewModel(
-                    programImage: viewModel.programImage,
-                    program: viewModel.program!), presentEditProgram: $presentEditProgram) { editedProgram, programImage in
-                        viewModel.program = editedProgram
-                        viewModel.programImage = programImage
-                    }
-            })
-            .alert(Text("Delete program?"), isPresented: $presentConfirmDelete) {
-                Button(role: .destructive) {
-                    viewModel.deleteProgram()
-                    dismiss()
-                } label: {
-                    Text("Delete")
-                }
-            }
-            .alert(Text("Unsave program?"), isPresented: $presentConfirmUnsave) {
-                Button(role: .destructive) {
-//                    viewModel.unsaveProgram(programId: viewModel.program!.id)
-                } label: {
-                    Text("Unsave")
+                .sheet(isPresented: $presentStartProgram) {
+                    StartProgramView(
+                        programId: viewModel.program!.id,
+                        weeks: viewModel.program!.weeks,
+                        pages: viewModel.program!.weeks / 4 + 1,
+                        remainder: viewModel.program!.weeks % 4
+                    )
                 }
             }
         }
@@ -215,6 +288,5 @@ struct ProgramDetailView: View {
 }
 
 #Preview {
-    EmptyView()
-//    ProgramDetailView(viewModel: ProgramDetailViewModel(savedProgram: SavedProgram(program_id: "", saved_by: "", created_by: "")))
+    ProgramDetailView(viewModel: ProgramDetailViewModel(programId: "b6619681-8e20-43f7-a67c-b6ed9750c731"), path: .constant([NavigationDestinationTypes]()))
 }

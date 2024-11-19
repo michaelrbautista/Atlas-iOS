@@ -13,10 +13,10 @@ struct UserDetailView: View {
     @FocusState var keyboardIsFocused: Bool
     
     // MARK: Data
-    @StateObject var viewModel: TeamDetailViewModel
+    @StateObject var viewModel: UserDetailViewModel
     
     var body: some View {
-        if viewModel.team == nil || viewModel.isLoading {
+        if viewModel.user == nil || viewModel.isLoading {
             VStack(alignment: .center) {
                 Spacer()
                 ProgressView()
@@ -33,18 +33,18 @@ struct UserDetailView: View {
             List {
                 // MARK: Image
                 Section {
-                    if viewModel.teamImageIsLoading {
+                    if viewModel.userProfilePictureIsLoading {
                         HStack {
                             ProgressView()
-                                .frame(width: UIScreen.main.bounds.size.width / 3, height: UIScreen.main.bounds.size.width / 3)
+                                .frame(width: 100, height: 100)
                                 .clipShape(Circle())
                         }
                         .frame(maxWidth: .infinity)
                         .listRowBackground(Color.ColorSystem.systemBackground)
                     } else {
-                        if viewModel.team?.imageUrl != nil {
+                        if viewModel.user?.profilePictureUrl != nil {
                             HStack {
-                                Image(uiImage: viewModel.teamImage!)
+                                Image(uiImage: viewModel.userImage!)
                                     .resizable()
                                     .scaledToFill()
                                     .frame(width: UIScreen.main.bounds.size.width / 3, height: UIScreen.main.bounds.size.width / 3)
@@ -69,15 +69,17 @@ struct UserDetailView: View {
                 } footer: {
                     VStack {
                         VStack(alignment: .leading, spacing: 10) {
-                            Text(viewModel.team!.name)
+                            Text(viewModel.user!.fullName)
                                 .font(Font.FontStyles.title2)
                                 .foregroundStyle(Color.ColorSystem.primaryText)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             
-                            Text(viewModel.team!.description ?? "")
-                                .font(Font.FontStyles.body)
-                                .foregroundStyle(Color.ColorSystem.systemGray)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            if viewModel.user?.bio != nil {
+                                Text(viewModel.user!.bio ?? "")
+                                    .font(Font.FontStyles.body)
+                                    .foregroundStyle(Color.ColorSystem.systemGray)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
                         }
                         .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
                     }
@@ -87,54 +89,26 @@ struct UserDetailView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
                 
-                // MARK: Join team
+                // MARK: Content
                 Section {
-                    if viewModel.isJoined {
-                        Button {
+                    NavigationLink(value: NavigationDestinationTypes.PostsView(userId: viewModel.user!.id)) {
+                        HStack(spacing: 16) {
+                            Image(systemName: "square.and.pencil")
+                                .frame(width: 20)
+                                .foregroundStyle(Color.ColorSystem.primaryText)
                             
-                        } label: {
-                            HStack {
-                                Spacer()
-                                if viewModel.isJoining {
-                                    ProgressView()
-                                        .frame(maxWidth: UIScreen.main.bounds.size.width)
-                                        .tint(Color.ColorSystem.primaryText)
-                                } else {
-                                    Text("Joined")
-                                        .font(Font.FontStyles.headline)
-                                        .foregroundStyle(Color.ColorSystem.systemGray)
-                                }
-                                Spacer()
-                            }
+                            Text("Posts")
+                                .font(Font.FontStyles.body)
+                                .foregroundStyle(Color.ColorSystem.primaryText)
+                            
+                            Spacer()
                         }
-                        .listRowBackground(Color.ColorSystem.systemGray5)
-                    } else {
-                        Button {
-                            Task {
-                                await viewModel.joinTeam()
-                            }
-                        } label: {
-                            HStack {
-                                Spacer()
-                                if viewModel.isJoining {
-                                    ProgressView()
-                                        .frame(maxWidth: UIScreen.main.bounds.size.width)
-                                        .tint(Color.ColorSystem.primaryText)
-                                } else {
-                                    Text("Join Team")
-                                        .font(Font.FontStyles.headline)
-                                        .foregroundStyle(Color.ColorSystem.primaryText)
-                                }
-                                Spacer()
-                            }
-                        }
-                        .listRowBackground(Color.ColorSystem.systemBlue)
+                        .frame(maxWidth: .infinity)
                     }
-                }
-                
-                // MARK: Programs
-                Section {
-                    NavigationLink(value: NavigationDestinationTypes.TeamPrograms(teamId: viewModel.team!.id)) {
+                    .listRowBackground(Color.ColorSystem.systemGray6)
+                    .listRowSeparator(.hidden)
+                    
+                    NavigationLink(value: NavigationDestinationTypes.UserPrograms(userId: viewModel.user!.id)) {
                         HStack(spacing: 16) {
                             Image(systemName: "figure.run")
                                 .frame(width: 20)
@@ -142,6 +116,7 @@ struct UserDetailView: View {
                             
                             Text("Programs")
                                 .font(Font.FontStyles.body)
+                                .foregroundStyle(Color.ColorSystem.primaryText)
                             
                             Spacer()
                         }
@@ -163,5 +138,5 @@ struct UserDetailView: View {
 }
 
 #Preview {
-    TeamDetailView(viewModel: TeamDetailViewModel(teamId: "789507a5-4dd2-4371-996d-e85ae21e13a8"))
+    UserDetailView(viewModel: UserDetailViewModel(userId: "e4d6f88c-d8c3-4a01-98d6-b5d56a366491"))
 }

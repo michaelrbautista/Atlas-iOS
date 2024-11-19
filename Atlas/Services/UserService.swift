@@ -5,83 +5,94 @@
 //  Created by Michael Bautista on 3/16/24.
 //
 
-import Firebase
-import FirebaseFirestore
-import FirebaseFirestoreSwift
+import SwiftUI
+import Supabase
 
 class UserService {
     
     public static let shared = UserService()
-    public static let db = Firestore.firestore()
     static var currentUser: User? = nil
     
-    // MARK: Update user
-    public func updateUser(user: User, updateUserRequest: UpdateUserRequest, completion: @escaping (_ user: User?, _ error: Error?) -> Void) {
-        var newUser = user
-        
-        // 1. Save image
-        StorageService.shared.saveImage(image: updateUserRequest.userImage, imagePath: user.userImagePath) { url, error in
-            if let error = error {
-                completion(nil, error)
-                return
-            }
+    // MARK: Search users
+    public func searchUsers(searchText: String) async throws -> [User] {
+        do {
+            let users: [User] = try await SupabaseService.shared.supabase
+                .from("users")
+                .select()
+                .textSearch("full_name", query: "'\(searchText)'")
+                .execute()
+                .value
             
-            // 2. Update and save user
-            newUser.userImageUrl = url?.absoluteString ?? ""
-            newUser.fullName = updateUserRequest.fullName
-            newUser.username = updateUserRequest.username
-            
-            UserService.shared.saveUser(user: newUser, uid: newUser.uid) { error in
-                if let error = error {
-                    completion(nil, error)
-                    return
-                }
-                
-                completion(newUser, nil)
-                return
-            }
+            return users
+        } catch {
+            throw error
         }
     }
     
-    // MARK: Save user
-    public func saveUser(user: User, uid: String, completion: @escaping (_ error: Error?) -> Void) {
-        let userRef = UserService.db.collection("users").document(uid)
-        
+    // MARK: Create user
+    public func createUser(user: User) async throws {
         do {
-            try userRef.setData(from: user)
-            completion(nil)
-        } catch let error {
-            completion(error)
+            try await SupabaseService.shared.supabase
+                .from("users")
+                .insert(user)
+                .execute()
+        } catch {
+            print("Error creating user in database")
+            throw error
         }
     }
     
     // MARK: Get user
-    public func getUser(uid: String, completion: @escaping (_ user: User?, _ error: Error?) -> ()) async {
-        let userRef = UserService.db.collection("users").document(uid)
-        
+    public func getUser(uid: String) async throws -> User {
         do {
-            let user = try await userRef.getDocument(as: User.self)
-            completion(user, nil)
+            let user: User = try await SupabaseService.shared.supabase
+                .from("users")
+                .select()
+                .eq("id", value: uid)
+                .single()
+                .execute()
+                .value
+            
+            return user
         } catch {
-            completion(nil, error)
+            print("Couldn't get user")
+            throw error
         }
     }
     
     // MARK: Check if username exists
-    public func checkUsername(username: String, completion: @escaping (_ available: Bool?, _ error: Error?) -> Void) async {
+    public func checkUsername(username: String) async -> Bool {
         do {
-            let querySnapshot = try await UserService.db.collection("users").whereField("username", isEqualTo: username).getDocuments()
+            let count = try await SupabaseService.shared.supabase
+                .from("users")
+                .select("*", head: true, count: .exact)
+                .eq("username", value: username)
+                .execute()
+                .count
             
-            if querySnapshot.count > 0 {
-                completion(false, nil)
-                return
+            if let usernameCount = count {
+                if usernameCount > 0 {
+                    return false
+                } else {
+                    return true
+                }
             } else {
-                completion(true, nil)
-                return
+                return false
             }
         } catch {
-            completion(false, error)
-            return
+            print("Error checking username")
+            print(error.localizedDescription)
+            return false
+        }
+    }
+    
+    // MARK: Delete user
+    public func deleteUser(uid: String) async throws {
+        do {
+            try await SupabaseService.shared.supabase.rpc("delete_user")
+            .execute()
+        } catch {
+            throw error
         }
     }
     

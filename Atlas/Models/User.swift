@@ -6,29 +6,60 @@
 //
 
 import SwiftUI
-import Firebase
 
-struct User: Codable {
-    var uid: String
-    var fullName: String
-    var fullNameLowercase: String
-    var userImageUrl: String = ""
-    var userImagePath: String = ""
-    var username: String
+struct User: Codable, Identifiable, Hashable {
+    var id: String
+    var createdAt: String?
+    
     var email: String
+    var fullName: String
+    var username: String
+    
+    var bio: String?
+    
+    var profilePictureUrl: String?
+    var profilePicturePath: String?
+    
+    var stripeAccountId: String?
+    var paymentsEnabled: Bool
+    
+    var teamId: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case createdAt = "created_at"
+        
+        case email
+        case fullName = "full_name"
+        case username
+        
+        case bio
+        
+        case profilePictureUrl = "profile_picture_url"
+        case profilePicturePath = "profile_picture_path"
+        
+        case stripeAccountId = "stripe_account_id"
+        case paymentsEnabled = "payments_enabled"
+        
+        case teamId = "team_id"
+    }
+}
+
+struct FetchedUser: Codable, Hashable {
+    var fullName: String
+    var profilePictureUrl: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case fullName = "full_name"
+        case profilePictureUrl = "profile_picture_url"
+    }
 }
 
 // MARK: Requests
 struct CreateUserRequest {
-    var userImage: UIImage?
-    var fullName: String
+    var profile_picture: UIImage?
+    var full_name: String
     var username: String
     var email: String
     var password: String
-}
-
-struct UpdateUserRequest {
-    var userImage: UIImage?
-    var username: String
-    var fullName: String
 }

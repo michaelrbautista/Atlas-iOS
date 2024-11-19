@@ -10,6 +10,8 @@ import SwiftUI
 final class UserProgramsViewModel: ObservableObject {
     // MARK: Variables
     @Published var isLoading = true
+    
+    @Published var offset = 0
     @Published var endReached = false
     
     @Published var didReturnError = false
@@ -23,7 +25,7 @@ final class UserProgramsViewModel: ObservableObject {
         self.userId = userId
         
         Task {
-            await getUserPrograms()
+            await getCreatorsPrograms()
         }
     }
     
@@ -32,25 +34,27 @@ final class UserProgramsViewModel: ObservableObject {
         self.programs = [Program]()
         self.endReached = false
         
-        await getUserPrograms()
+        await getCreatorsPrograms()
     }
     
     @MainActor
-    public func getUserPrograms() async {
-//        do {
-//            let programs = try await ProgramService.shared.getTeamPrograms(teamId: self.teamId)
-//            
-//            self.programs = programs
-//            
-//            self.isLoading = false
-//            
-//            if programs.count > 8 {
-//                self.endReached = true
-//            }
-//        } catch {
-//            self.isLoading = false
-//            self.didReturnError = true
-//            self.returnedErrorMessage = error.localizedDescription
-//        }
+    public func getCreatorsPrograms() async {
+        do {
+            let programs = try await ProgramService.shared.getCreatorsPrograms(userId: self.userId)
+            
+            self.programs.append(contentsOf: programs)
+            
+            if programs.count < 10 {
+                self.endReached = true
+            } else {
+                offset += 10
+            }
+            
+            self.isLoading = false
+        } catch {
+            self.isLoading = false
+            self.didReturnError = true
+            self.returnedErrorMessage = error.localizedDescription
+        }
     }
 }

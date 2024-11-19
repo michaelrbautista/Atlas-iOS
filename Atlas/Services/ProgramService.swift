@@ -5,4 +5,179 @@
 //  Created by Michael Bautista on 5/18/24.
 //
 
-import Foundation
+import SwiftUI
+
+final class ProgramService {
+    
+    public static let shared = ProgramService()
+    
+    // MARK: Save program
+    public func saveProgram(purchasedProgram: PurchasedProgram) async throws {
+        do {
+            try await SupabaseService.shared.supabase
+                .from("purchased_programs")
+                .insert(purchasedProgram)
+                .execute()
+        } catch {
+            throw error
+        }
+    }
+    
+    // MARK: Search programs
+    public func searchPrograms(searchText: String) async throws -> [Program] {
+        do {
+            let programs: [Program] = try await SupabaseService.shared.supabase
+                .from("programs")
+                .select()
+                .textSearch("title", query: "'\(searchText)'")
+                .execute()
+                .value
+            
+            return programs
+        } catch {
+            throw error
+        }
+    }
+    
+    // MARK: Unsave program
+    public func unsaveProgram(program: Program) async throws {
+        guard let currentUser = UserService.currentUser else {
+            return
+        }
+        
+        do {
+            try await SupabaseService.shared.supabase
+                .from("purchased_programs")
+                .delete()
+                .eq("program_id", value: program.id)
+                .eq("purchased_by", value: currentUser.id)
+                .execute()
+        } catch {
+            throw error
+        }
+    }
+    
+    // MARK: Check if user purchased program
+    public func checkIfUserPurchasedProgram(programId: String) async throws -> Bool {
+        guard let currentUser = UserService.currentUser else {
+            return false
+        }
+        
+        do {
+            let programs: [PurchasedProgram] = try await SupabaseService.shared.supabase
+                .from("purchased_programs")
+                .select()
+                .eq("program_id", value: programId)
+                .eq("purchased_by", value: currentUser.id)
+                .execute()
+                .value
+            
+            return programs.count > 0
+        } catch {
+            throw error
+        }
+    }
+    
+    // MARK: Get creator's programs
+    public func getCreatorsPrograms(userId: String) async throws -> [Program] {
+        do {
+            let programs: [Program] = try await SupabaseService.shared.supabase
+                .from("programs")
+                .select()
+                .eq("created_by", value: userId)
+                .execute()
+                .value
+            
+            return programs
+        } catch {
+            throw error
+        }
+    }
+    
+    // MARK: Get user's purchased programs
+    public func getPurchasedPrograms(userId: String, offset: Int) async throws -> [PurchasedProgram] {
+        do {
+            let programs: [PurchasedProgram] = try await SupabaseService.shared.supabase
+                .from("purchased_programs")
+                .select(
+                    """
+                        *,
+                        users:created_by(full_name),
+                        programs(
+                            id,
+                            title,
+                            price,
+                            description,
+                            image_url
+                        )
+                    """
+                )
+                .eq("purchased_by", value: userId)
+                .order("created_at", ascending: false)
+                .range(from: offset, to: offset + 9)
+                .execute()
+                .value
+            
+            return programs
+        } catch {
+            print(error)
+            throw error
+        }
+    }
+    
+    // MARK: Get workout's exercises
+    public func getWorkoutExercises(workoutId: String) async throws -> [Exercise] {
+        do {
+            let exercises: [Exercise] = try await SupabaseService.shared.supabase
+                .from("exercises")
+                .select()
+                .eq("workout_id", value: workoutId)
+                .single()
+                .execute()
+                .value
+            
+            return exercises
+        } catch {
+            throw error
+        }
+    }
+    
+    // MARK: Get program workouts
+    public func getProgramWorkouts(programId: String, week: Int) async throws -> [Workout] {
+        do {
+            let workouts: [Workout] = try await SupabaseService.shared.supabase
+                .from("workouts")
+                .select()
+                .eq("program_id", value: programId)
+                .eq("week", value: week)
+                .execute()
+                .value
+            
+            return workouts
+        } catch {
+            throw error
+        }
+    }
+    
+    // MARK: Get program
+    public func getProgram(programId: String) async throws -> Program {
+        do {
+            let program: Program = try await SupabaseService.shared.supabase
+                .from("programs")
+                .select("""
+                    *,
+                    users(
+                        full_name
+                    )
+                """)
+                .eq("id", value: programId)
+                .single()
+                .execute()
+                .value
+            
+            return program
+        } catch {
+            throw error
+        }
+    }
+}

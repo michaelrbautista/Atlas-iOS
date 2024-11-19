@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct LandingPageView: View {
-    
     @EnvironmentObject var userViewModel: UserViewModel
     
     @State private var isLoading = false
@@ -34,7 +33,7 @@ struct LandingPageView: View {
                         Spacer()
                     }
                     .padding(EdgeInsets(top: 180, leading: 0, bottom: 120, trailing: 0))
-                    .listRowBackground(Color.ColorSystem.systemGray5)
+                    .listRowBackground(Color.ColorSystem.systemBackground)
                     .listRowSeparator(.hidden)
                 }
                 
@@ -44,17 +43,18 @@ struct LandingPageView: View {
                             .frame(maxWidth: .infinity)
                             .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
                             .font(Font.FontStyles.headline)
-                            .background(Color.ColorSystem.systemGray3)
+                            .background(Color.ColorSystem.systemGray6)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                         
                         NavigationLink {
                             LoginView()
+                                .environmentObject(userViewModel)
                         } label: {
                             EmptyView()
                         }
                         .opacity(0)
                     }
-                    .listRowBackground(Color.ColorSystem.systemGray5)
+                    .listRowBackground(Color.ColorSystem.systemBackground)
                     .listRowSeparator(.hidden)
                     
                     ZStack {
@@ -67,19 +67,20 @@ struct LandingPageView: View {
                         
                         NavigationLink {
                             CreateAccountView()
+                                .environmentObject(userViewModel)
                         } label: {
                             EmptyView()
                         }
                         .opacity(0)
                     }
-                    .listRowBackground(Color.ColorSystem.systemGray5)
+                    .listRowBackground(Color.ColorSystem.systemBackground)
                     .listRowSeparator(.hidden)
                 }
             }
             .scrollDisabled(true)
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
-            .background(Color.ColorSystem.systemGray5)
+            .background(Color.ColorSystem.systemBackground)
         }
     }
 }

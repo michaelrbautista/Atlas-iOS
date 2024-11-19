@@ -10,86 +10,83 @@ import PhotosUI
 import AVKit
 
 struct ExerciseDetailView: View {
+    @Environment(\.isPresented) var presentationMode
+    
     @EnvironmentObject var programViewModel: ProgramDetailViewModel
     
     // Video data
-    @State var presentEditExercise = false
     @State var presentVideoPlayer = false
     
     @StateObject var viewModel: ExerciseDetailViewModel
     
     var body: some View {
-        List {
-            // MARK: Name
-            Section {
-                Text(viewModel.exercise.name)
-                    .font(Font.FontStyles.title1)
-                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+        if viewModel.isLoading == true || viewModel.exercise == nil {
+            VStack(alignment: .center) {
+                Spacer()
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+                    .tint(Color.ColorSystem.primaryText)
+                Spacer()
             }
-            
-            // MARK: Video
-            if let videoUrl = URL(string: viewModel.exercise.videoUrl!) {
-                VideoCell(videoUrl: videoUrl) {
-                    presentVideoPlayer.toggle()
-                }
-            }
-            
-            Section {
-                Text(viewModel.exercise.sets == "1" ? "\(viewModel.exercise.sets) set" : "\(viewModel.exercise.sets) sets")
-                    .font(Font.FontStyles.body)
-                    .foregroundStyle(Color.ColorSystem.primaryText)
-                    .listRowBackground(Color.ColorSystem.systemGray4)
-                
-                Text(viewModel.exercise.reps == "1" ? "\(viewModel.exercise.reps) rep" : "\(viewModel.exercise.reps) reps")
-                    .font(Font.FontStyles.body)
-                    .foregroundStyle(Color.ColorSystem.primaryText)
-                    .listRowBackground(Color.ColorSystem.systemGray4)
-            }
-            
-            // MARK: Instructions
-            if viewModel.exercise.instructions != "" {
+            .background(Color.ColorSystem.systemBackground)
+            .navigationBarTitleDisplayMode(.inline)
+            .alert(isPresented: $viewModel.didReturnError, content: {
+                Alert(title: Text(viewModel.returnedErrorMessage))
+            })
+        } else {
+            List {
+                // MARK: Name
                 Section {
-                    Text(viewModel.exercise.instructions)
+                    Text(viewModel.exercise!.title)
+                        .font(Font.FontStyles.title1)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                        .listRowBackground(Color.ColorSystem.systemBackground)
+                }
+                
+                // MARK: Video
+                if let videoUrl = viewModel.exercise!.videoUrl {
+                    VideoCell(videoUrl: URL(string: videoUrl)!) {
+                        presentVideoPlayer.toggle()
+                    }
+                    .listRowBackground(Color.ColorSystem.systemBackground)
+                }
+                
+                Section {
+                    Text(viewModel.workoutExercise.sets == 1 ? "\(viewModel.workoutExercise.sets) set" : "\(viewModel.workoutExercise.sets) sets")
                         .font(Font.FontStyles.body)
                         .foregroundStyle(Color.ColorSystem.primaryText)
-                        .listRowBackground(Color.ColorSystem.systemGray4)
+                        .listRowBackground(Color.ColorSystem.systemGray6)
+                    
+                    Text(viewModel.workoutExercise.reps == 1 ? "\(viewModel.workoutExercise.reps) rep" : "\(viewModel.workoutExercise.reps) reps")
+                        .font(Font.FontStyles.body)
+                        .foregroundStyle(Color.ColorSystem.primaryText)
+                        .listRowBackground(Color.ColorSystem.systemGray6)
                 }
-            }
-        }
-        .listStyle(.insetGrouped)
-        .scrollContentBackground(.hidden)
-        .navigationBarTitleDisplayMode(.inline)
-        .background(Color.ColorSystem.systemGray5)
-        .toolbar(content: {
-            ToolbarItem(placement: .topBarTrailing) {
-                if UserService.currentUser?.id == viewModel.exercise.createdBy {
-                    Menu("", systemImage: "ellipsis") {
-                        Button("Edit", role: .none) {
-                            presentEditExercise.toggle()
-                        }
-                        
-//                            Button("Delete", role: .destructive) {
-//                                presentConfirmDelete.toggle()
-//                            }
+                
+                // MARK: Instructions
+                if viewModel.exercise!.instructions != "" {
+                    Section {
+                        Text(viewModel.exercise!.instructions!)
+                            .font(Font.FontStyles.body)
+                            .foregroundStyle(Color.ColorSystem.primaryText)
+                            .listRowBackground(Color.ColorSystem.systemGray6)
                     }
                 }
             }
-        })
-        .fullScreenCover(isPresented: $presentVideoPlayer, content: {
-            if let url = viewModel.exercise.videoUrl {
-                VideoViewURL(videoUrl: url)
-            }
-        })
-        .sheet(isPresented: $presentEditExercise, content: {
-            EditExerciseView(viewModel: EditExerciseViewModel(oldExercise: viewModel.exercise)) { exercise, newVideo in
-                viewModel.exercise = exercise
-            }
-        })
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .navigationBarTitleDisplayMode(.inline)
+            .background(Color.ColorSystem.systemBackground)
+            .fullScreenCover(isPresented: $presentVideoPlayer, content: {
+                if let url = viewModel.exercise!.videoUrl {
+                    VideoViewURL(videoUrl: url)
+                }
+            })
+        }
     }
 }
 
 #Preview {
-//    EmptyView()
-    ExerciseDetailView(viewModel: ExerciseDetailViewModel(exercise: Exercise(createdBy: "", workoutId: "", exerciseNumber: 2, name: "Test Exercise", sets: "2", reps: "2", instructions: "This exercise is just to test videos", videoUrl: "https://ltjnvfgpomlatmtqjxrk.supabase.co/storage/v1/object/public/exercise_videos/640b0902-fec9-449b-aead-8e226c7682db-965909189293864553.mp4?t=2024-06-20T01%3A33%3A11.186Z")))
+    ExerciseDetailView(viewModel: ExerciseDetailViewModel(workoutExercise: WorkoutExercise(id: "", createdAt: "", createdBy: "", workoutId: "", exerciseId: "", exerciseNumber: 1, title: "", sets: 1, reps: 1)))
         .environmentObject(ProgramDetailViewModel(programId: "beff379c-b74b-4423-8a1f-b14b077b31f3"))
 }

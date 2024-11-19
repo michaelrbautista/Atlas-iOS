@@ -6,8 +6,7 @@
 //
 
 import SwiftUI
-import Firebase
-import FirebaseAuth
+import Supabase
 import StripePaymentsUI
 
 @main
@@ -16,12 +15,16 @@ struct AtlasApp: App {
     @StateObject var userViewModel = UserViewModel()
     
     init() {
-        FirebaseApp.configure()
-        
+        #if DEBUG
+        StripeAPI.defaultPublishableKey = "pk_test_51P3659KRUtiKYn5dqjDEIBTZQSxzvgLXlLwwP7qNzoBCvHt9fONoV1N6nLwkSDD5bGmfT1NyuWrIkd7yAhkLQpvS00ZY9EsKzQ"
+        print()
+        print("INITIALIZING ATLAS IN DEBUG MODE")
+        #else
         StripeAPI.defaultPublishableKey = "pk_live_51P3659KRUtiKYn5dwsXjtLmId9RBxn7HcheF3xa7UUmIU9gB5muXSJ2O6QkzW4JXaA3KleatZqRpBLzWrKafaeNv007sERBIv3"
+        #endif
         
         let navAppearance = UINavigationBarAppearance()
-        navAppearance.backgroundColor = UIColor(Color.ColorSystem.systemGray5)
+        navAppearance.backgroundColor = UIColor(Color.ColorSystem.systemBackground)
         navAppearance.titleTextAttributes = [.foregroundColor: UIColor(Color.ColorSystem.primaryText)]
         navAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(Color.ColorSystem.primaryText)]
         navAppearance.shadowColor = .clear
@@ -29,7 +32,7 @@ struct AtlasApp: App {
         UINavigationBar.appearance().standardAppearance = navAppearance
         
         let tabAppearance = UITabBarAppearance()
-        tabAppearance.backgroundColor = UIColor(Color.ColorSystem.systemGray5)
+        tabAppearance.backgroundColor = UIColor(Color.ColorSystem.systemBackground)
         tabAppearance.shadowColor = .clear
         UITabBar.appearance().scrollEdgeAppearance = tabAppearance
         UITabBar.appearance().standardAppearance = tabAppearance
@@ -49,7 +52,7 @@ struct CheckAuthentication: View {
     
     var body: some View {
         if userViewModel.isBusy {
-            VStack {
+            VStack(spacing: 16) {
                 Spacer()
                 
                 ProgressView()
@@ -57,30 +60,26 @@ struct CheckAuthentication: View {
                 
                 Spacer()
             }
-            .background(Color.ColorSystem.systemGray5)
+            .background(Color.ColorSystem.systemBackground)
             .tint(Color.ColorSystem.primaryText)
         } else {
             if userViewModel.isLoggedIn {
-                if userViewModel.isCreatorView {
-                    CreatorView()
-                        .environmentObject(userViewModel)
-                } else {
-                    UserView()
-                        .environmentObject(userViewModel)
-                }
+                UserView()
+                    .environmentObject(userViewModel)
             } else {
                 LandingPageView()
                     .environmentObject(userViewModel)
             }
         }
     }
-    
 }
 
 class UserViewModel: ObservableObject {
     @Published var isLoggedIn = false
     @Published var isBusy = false
-    @Published var isCreatorView = false
+    
+    @Published var event: AuthChangeEvent? = nil
+    @Published var session: Session? = nil
     
     init() {
         self.isBusy = true
@@ -90,35 +89,33 @@ class UserViewModel: ObservableObject {
         }
     }
     
+    @MainActor
     public func checkAuth() async {
-        DispatchQueue.main.async {
-            self.isBusy = true
-        }
+        self.isBusy = true
         
-        if Auth.auth().currentUser == nil {
-            DispatchQueue.main.async {
-                self.isLoggedIn = false
-                self.isBusy = false
-            }
-        } else {
-            await UserService.shared.getUser(uid: Auth.auth().currentUser!.uid) { user, error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    DispatchQueue.main.async {
-                        self.isLoggedIn = false
-                        self.isBusy = false
-                    }
-                    return
-                }
-                
-                UserService.currentUser = user
-                
-                DispatchQueue.main.async {
-                    self.isLoggedIn = true
-                    self.isBusy = false
-                    self.isCreatorView = false
-                }
-            }
+        do {
+            let _ = try await SupabaseService.shared.supabase.auth.session
+            
+//            print(session)
+            
+            let authUser = try await SupabaseService.shared.supabase.auth.session.user
+            
+            let user: User = try await SupabaseService.shared.supabase
+                .from("users")
+                .select()
+                .eq("id", value: authUser.id)
+                .single()
+                .execute()
+                .value
+            
+            UserService.currentUser = user
+            
+            isLoggedIn = true
+            isBusy = false
+        } catch {
+            print(error)
+            isLoggedIn = false
+            isBusy = false
         }
     }
 }

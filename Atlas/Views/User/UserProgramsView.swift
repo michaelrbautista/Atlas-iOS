@@ -1,5 +1,5 @@
 //
-//  TeamProgramsView.swift
+//  UserProgramsView.swift
 //  Atlas
 //
 //  Created by Michael Bautista on 9/9/24.
@@ -7,50 +7,43 @@
 
 import SwiftUI
 
-struct TeamProgramsView: View {
+struct UserProgramsView: View {
     // MARK: UI state
     @Environment(\.dismiss) private var dismiss
     @FocusState var keyboardIsFocused: Bool
     
     // MARK: Data
-    @StateObject var viewModel: TeamProgramsViewModel
+    @StateObject var viewModel: UserProgramsViewModel
     
     var body: some View {
         List {
             Section {
                 ForEach(viewModel.programs) { program in
                     ZStack {
-//                        ProgramCell(programId: program.id)
-//                        
-//                        NavigationLink(value: NavigationDestinationTypes.ProgramDetail(programId: program.id)) {
-//                            
-//                        }
-//                        .opacity(0)
+                        ProgramCell(title: program.title, imageUrl: program.imageUrl, userFullName: program.users?.fullName ?? "")
+                        
+                        NavigationLink(value: NavigationDestinationTypes.ProgramDetail(programId: program.id)) {
+                            
+                        }
+                        .opacity(0)
                     }
                     .listRowInsets(EdgeInsets(top: 16, leading: 20, bottom: 0, trailing: 20))
                     .listRowSeparator(.hidden)
                 }
                 
-                Color.ColorSystem.systemBackground
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 16)
-                    .padding(0)
-                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                    .listRowSeparator(.hidden)
-                
-//                    if !viewModel.isLoading && !viewModel.endReached && viewModel.returnedErrorMessage == nil {
-//                        ProgressView()
-//                            .frame(maxWidth: .infinity)
-//                            .frame(height: 48)
-//                            .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
-//                            .foregroundStyle(Color.ColorSystem.primaryText)
-//                            .onAppear(perform: {
-//                                // Get more programs
-//                                Task {
-//                                    await viewModel.getSavedPrograms()
-//                                }
-//                            })
-//                    }
+                if !viewModel.isLoading && !viewModel.endReached && viewModel.returnedErrorMessage == "" {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 48)
+                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
+                        .foregroundStyle(Color.ColorSystem.primaryText)
+                        .onAppear(perform: {
+                            // Get more programs
+                            Task {
+                                await viewModel.getCreatorsPrograms()
+                            }
+                        })
+                }
             }
         }
         .listStyle(.plain)
@@ -69,5 +62,5 @@ struct TeamProgramsView: View {
 }
 
 #Preview {
-    TeamProgramsView(viewModel: TeamProgramsViewModel(teamId: ""))
+    UserProgramsView(viewModel: UserProgramsViewModel(userId: ""))
 }

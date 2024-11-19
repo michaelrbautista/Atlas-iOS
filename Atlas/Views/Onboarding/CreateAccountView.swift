@@ -9,9 +9,7 @@ import SwiftUI
 import PhotosUI
 
 struct CreateAccountView: View {
-    
     @EnvironmentObject var userViewModel: UserViewModel
-    
     @StateObject var viewModel = CreateAccountViewModel()
     
     @State var goToNextPage = false
@@ -19,154 +17,111 @@ struct CreateAccountView: View {
     @State var isAlertShown = false
     @State var alertMessage = ""
     
-    @State private var isLoading = false
-    
     @FocusState var keyboardIsFocused: Bool
     
     var body: some View {
-        NavigationStack {
-            List {
-                // MARK: Image
-                Section {
-                    VStack {
-                        // Add photo
-                        if let image = viewModel.profilePicture {
-                            PhotosPicker(selection: $viewModel.imageSelection, matching: .images) {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: UIScreen.main.bounds.size.width / 2)
-                                    .background(Color.ColorSystem.systemGray4)
-                                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                                    .foregroundStyle(Color.ColorSystem.secondaryText)
-                            }
-                            .buttonStyle(.plain)
-                            .disabled(isLoading)
-                        } else {
-                            PhotosPicker(selection: $viewModel.imageSelection, matching: .images) {
-                                Image(systemName: "camera.fill")
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: UIScreen.main.bounds.size.width / 2)
-                                    .background(Color.ColorSystem.systemGray4)
-                                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                                    .foregroundStyle(Color.ColorSystem.secondaryText)
-                            }
-                            .buttonStyle(.plain)
-                            .disabled(isLoading)
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                    .listRowSeparator(.hidden)
-                }
-                
-                // MARK: Full name
-                Section {
-                    TextField(text: $viewModel.fullName, prompt: Text("Full Name")) {
-                        Text("Full Name")
-                    }
-                    .foregroundStyle(Color.ColorSystem.primaryText)
+        List {
+            // MARK: Full name
+            Section {
+                TextField("", text: $viewModel.fullName, axis: .vertical)
                     .textInputAutocapitalization(.words)
-                    .autocorrectionDisabled(true)
-                    .listRowBackground(Color.ColorSystem.systemGray4)
-                    .disabled(isLoading)
-                }
-                
-                // MARK: Email/username
-                Section {
-                    TextField(text: $viewModel.email, prompt: Text("Email")) {
-                        Text("Email")
-                    }
                     .foregroundStyle(Color.ColorSystem.primaryText)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled(true)
-                    .listRowBackground(Color.ColorSystem.systemGray4)
-                    .disabled(isLoading)
-                    
-                    TextField(text: $viewModel.username, prompt: Text("Username")) {
-                        Text("Username")
-                    }
-                    .foregroundStyle(Color.ColorSystem.primaryText)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled(true)
-                    .listRowBackground(Color.ColorSystem.systemGray4)
-                    .disabled(isLoading)
-                }
-                
-                // MARK: Password
-                Section {
-                    SecureField(text: $viewModel.password, prompt: Text("Password")) {
-                        Text("Password")
-                    }
-                    .foregroundStyle(Color.ColorSystem.primaryText)
-                    .listRowBackground(Color.ColorSystem.systemGray4)
-                    .disabled(isLoading)
-                    
-                    SecureField(text: $viewModel.confirmPassword, prompt: Text("Confirm Password")) {
-                        Text("Confirm Password")
-                    }
-                    .foregroundStyle(Color.ColorSystem.primaryText)
-                    .listRowBackground(Color.ColorSystem.systemGray4)
-                    .disabled(isLoading)
-                }
-                
-                // MARK: Create account button
-                Section {
-                    Button(action: {
-                        keyboardIsFocused = false
-                        isLoading = true
-                        
-                        Task {
-                            await viewModel.createUser { wasCreated, errorMessage, error in
-                                if let error = error {
-                                    viewModel.didReturnError = true
-                                    viewModel.returnedErrorMessage = error.localizedDescription
-                                    return
-                                }
-                                
-                                if let errorMessage = errorMessage {
-                                    viewModel.didReturnError = true
-                                    viewModel.returnedErrorMessage = errorMessage
-                                    return
-                                }
-                                
-                                DispatchQueue.main.async {
-                                    userViewModel.isLoggedIn = true
-                                }
-                            }
-                        }
-                    }, label: {
-                        if isLoading {
-                            HStack {
-                                Spacer()
-                                ProgressView()
-                                    .foregroundStyle(Color.ColorSystem.primaryText)
-                                Spacer()
-                            }
-                        } else {
-                            HStack {
-                                Spacer()
-                                Text("Create Account")
-                                    .font(Font.FontStyles.headline)
-                                Spacer()
-                            }
-                        }
-                    })
-                    .disabled(isLoading)
-                    .foregroundStyle(Color.ColorSystem.primaryText)
-                    .listRowBackground(Color.ColorSystem.systemBlue)
-                }
+                    .listRowBackground(Color.ColorSystem.systemGray6)
+                    .disabled(viewModel.isSaving)
+            } header: {
+                Text("Full Name")
             }
-            .listStyle(.insetGrouped)
-            .scrollContentBackground(.hidden)
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Create Account")
-            .background(Color.ColorSystem.systemGray5)
-            .alert(isPresented: $viewModel.didReturnError, content: {
-                Alert(title: Text(viewModel.returnedErrorMessage ?? "Couldn't get workouts."))
-            })
+            
+            // MARK: Email
+            Section {
+                TextField("", text: $viewModel.email, axis: .vertical)
+                    .textInputAutocapitalization(.never)
+                    .foregroundStyle(Color.ColorSystem.primaryText)
+                    .listRowBackground(Color.ColorSystem.systemGray6)
+                    .disabled(viewModel.isSaving)
+            } header: {
+                Text("Email")
+            }
+            
+            // MARK: Username
+            Section {
+                TextField("", text: $viewModel.username, axis: .vertical)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .foregroundStyle(Color.ColorSystem.primaryText)
+                    .listRowBackground(Color.ColorSystem.systemGray6)
+                    .disabled(viewModel.isSaving)
+            } header: {
+                Text("Username")
+            }
+            
+            // MARK: Password
+            Section {
+                SecureField(text: $viewModel.password, prompt: Text("")) {
+                    Text("Password")
+                }
+                .textInputAutocapitalization(.never)
+                .foregroundStyle(Color.ColorSystem.primaryText)
+                .listRowBackground(Color.ColorSystem.systemGray6)
+                .disabled(viewModel.isSaving)
+            } header: {
+                Text("Password")
+            }
+            
+            Section {
+                SecureField(text: $viewModel.confirmPassword, prompt: Text("")) {
+                    Text("Confirm password")
+                }
+                .textInputAutocapitalization(.never)
+                .foregroundStyle(Color.ColorSystem.primaryText)
+                .listRowBackground(Color.ColorSystem.systemGray6)
+                .disabled(viewModel.isSaving)
+            } header: {
+                Text("Confirm Password")
+            }
+            
+            // MARK: Create account button
+            Section {
+                Button(action: {
+                    keyboardIsFocused = false
+                    
+                    Task {
+                        await viewModel.createUser()
+                        if viewModel.wasSuccessfullyCreated {
+                            userViewModel.isLoggedIn = true
+                        }
+                    }
+                }, label: {
+                    if viewModel.isSaving {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                                .foregroundStyle(Color.ColorSystem.primaryText)
+                            Spacer()
+                        }
+                    } else {
+                        HStack {
+                            Spacer()
+                            Text("Create Account")
+                                .font(Font.FontStyles.headline)
+                            Spacer()
+                        }
+                    }
+                })
+                .disabled(viewModel.isSaving)
+                .foregroundStyle(Color.ColorSystem.primaryText)
+                .listRowBackground(Color.ColorSystem.systemBlue)
+            }
         }
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .scrollDismissesKeyboard(.interactively)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Create Account")
+        .background(Color.ColorSystem.systemBackground)
+        .alert(isPresented: $viewModel.returnedError, content: {
+            Alert(title: Text(viewModel.errorMessage ?? "Couldn't get workouts."))
+        })
     }
 }
 

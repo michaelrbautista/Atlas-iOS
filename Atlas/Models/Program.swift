@@ -1,100 +1,98 @@
 //
-//  Workout.swift
+//  Program.swift
 //  stayhard
 //
 //  Created by Michael Bautista on 3/16/24.
 //
 
-//import SwiftUI
-import Firebase
 import SwiftUI
-import PhotosUI
 
-// MARK: Program
+// MARK: Models
 struct Program: Codable, Identifiable, Hashable {
-    // id is Firebase documentId
     var id: String
+    var createdAt: String
+    var createdBy: String
     
     var title: String
     var description: String?
-    var imageUrl: String = ""
-    var imagePath: String = ""
-    var uid: String
-    var dateSaved: Date
     
-    var workouts: [Workout] = [Workout]()
+    var free: Bool
+    var price: Int
+    var currency: String
+    
+    var weeks: Int
+    
+    var imageUrl: String?
+    var imagePath: String?
+    
+    var workouts: [FetchedWorkout]?
+    var users: FetchedUser?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case createdAt = "created_at"
+        case createdBy = "created_by"
+        
+        case title
+        case description
+        
+        case free
+        case price
+        case currency
+        
+        case weeks
+        
+        case imageUrl = "image_url"
+        case imagePath = "image_path"
+        
+        case workouts
+        case users
+    }
 }
 
-// MARK: Workout
-struct Workout: Codable, Identifiable, Hashable {
-    // id is used to keep track of workout number
-    var id: Int
-    
-    var title: String
-    var description: String?
-    var exercises: [Exercise] = [Exercise]()
-}
-
-// MARK: Exercise
-struct Exercise: Codable, Identifiable, Hashable {
-    // id used to keep track of exercise number
-    var id: Int
-    
-    var title: String
-    var sets: String
-    var reps: String
-    var instructions: String?
-    
-    var videoUrl: String?
-}
-
-// MARK: Exercise video
-struct ExerciseVideo {
-    var video: PhotosPickerItem
-    var exerciseNumber: Int
-    var workoutNumber: Int
-}
-
-// MARK: Saved program - reference to program that was saved by a user
-struct SavedProgram: Codable, Identifiable, Hashable {
-    // id is documentId
+struct FetchedProgram: Codable, Hashable {
     var id: String
+    var title: String
+    var imageUrl: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case imageUrl = "image_url"
+    }
+}
+
+// Reference to a program saved by a user
+struct PurchasedProgram: Codable, Identifiable, Hashable {
+    var id: String?
+    
+    // Reference to program
+    var programId: String
     
     // User that saved the program
-    var uid: String
+    var purchasedBy: String
+    var createdBy: String
     
-    var creatorId: String
-    var teamId: String?
-    var programId: String
-    var dateSaved: Date
+    var users: FetchedPurchasedProgramUser?
+    var programs: FetchedProgram?
     
-    // Reference variables - these will change when edited
-    var imageUrl: String
-    var title: String
-    var username: String
+    enum CodingKeys: String, CodingKey {
+        case id
+        
+        case programId = "program_id"
+        
+        case purchasedBy = "purchased_by"
+        case createdBy = "created_by"
+        
+        case users
+        case programs
+    }
 }
 
-// MARK: Requests
-struct AddExerciseVideoRequest {
-    let programId: String
-    let workoutNumber: String
-    let exerciseNumber: String
-}
-
-struct GetProgramsRequest {
-    let uid: String
-    let lastProgramRef: QueryDocumentSnapshot?
-}
-
-struct GetTeamProgramsRequest {
-    let teamId: String
-    let lastProgramRef: QueryDocumentSnapshot?
-}
-
-struct CreateProgramRequest {
-    var programImage: UIImage?
-    var title: String
-    var description: String
-    var teamId: String?
-    var workouts: [Workout]
+struct FetchedPurchasedProgramUser: Codable, Hashable {
+    var fullName: String
+    
+    enum CodingKeys: String, CodingKey {
+        case fullName = "full_name"
+    }
 }

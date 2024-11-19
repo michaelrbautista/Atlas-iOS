@@ -7,24 +7,11 @@
 
 import SwiftUI
 
-struct NutritionPlan {
+struct NutritionPlan: Codable {
     var age: Int
-    var sex: Sex
+    var sex: String
     var height: Int
     var weight: Int
-    var goal: NutritionGoal
-    var baseCalories: Int
-}
-
-enum Sex {
-    case Male
-    case Female
-    case None
-}
-
-enum NutritionGoal {
-    case LoseWeight
-    case MaintainWeight
-    case GainWeight
-    case None
+    var goal: String
+    var bmr: Int
 }

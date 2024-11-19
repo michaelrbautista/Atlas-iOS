@@ -22,6 +22,9 @@ struct ProfileView: View {
     @StateObject var viewModel = ProfileViewModel()
     @EnvironmentObject var userViewModel: UserViewModel
     
+    // MARK: Navigation path
+    @State var path = NavigationPath()
+    
     var body: some View {
         if viewModel.isLoading {
             VStack(alignment: .center) {
@@ -38,47 +41,57 @@ struct ProfileView: View {
             NavigationStack {
                 List {
                     Section {
-                        VStack(spacing: 16) {
-                            if viewModel.userImage != nil {
-                                Image(uiImage: viewModel.userImage!)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: UIScreen.main.bounds.size.width / 2)
+                        HStack() {
+                            Spacer()
+                            if viewModel.user?.profilePictureUrl != nil {
+                                if viewModel.profilePicture != nil {
+                                    Image(uiImage: viewModel.profilePicture!)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: UIScreen.main.bounds.size.width / 2, height: UIScreen.main.bounds.size.width / 2 ,alignment: .center)
+                                        .clipShape(Circle())
+                                } else {
+                                    ProgressView()
+                                        .frame(width: UIScreen.main.bounds.size.width / 2, height: UIScreen.main.bounds.size.width / 2)
+                                        .clipShape(Circle())
+                                        .tint(Color.ColorSystem.primaryText)
+                                }
                             } else {
                                 Image(systemName: "person.circle.fill")
                                     .resizable()
                                     .scaledToFill()
                                     .frame(maxWidth: .infinity)
-                                    .frame(height: UIScreen.main.bounds.size.width / 2)
+                                    .frame(height: 48)
                                     .foregroundStyle(Color.ColorSystem.systemGray3)
                             }
+                            Spacer()
                         }
                         .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                        .listRowBackground(Color.ColorSystem.systemGray4)
+                        .listRowBackground(Color.ColorSystem.systemGray5)
                     } footer: {
-                        VStack(alignment: .leading, spacing: 0) {
+                        VStack(alignment: .center, spacing: 0) {
                             Text(viewModel.user?.fullName ?? "")
                                 .font(Font.FontStyles.title1)
                                 .foregroundStyle(Color.ColorSystem.primaryText)
                             
                             Text("@\(viewModel.user?.username ?? "")")
                                 .font(Font.FontStyles.headline)
-                                .foregroundStyle(Color.ColorSystem.secondaryText)
+                                .foregroundStyle(Color.ColorSystem.systemGray)
                         }
+                        .frame(maxWidth: .infinity)
                         .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 16, trailing: 0))
                     }
                     
                     Section {
                         NavigationLink {
-                            UserProgramsView(viewModel: UserProgramsViewModel(creatorUid: viewModel.user!.uid), isFromHomePage: false)
+                            
                         } label: {
                             HStack(spacing: 8) {
                                 Image(systemName: "figure.run")
                                     .frame(width: 20)
                                     .foregroundStyle(Color.ColorSystem.primaryText)
                                 
-                                Text("My programs")
+                                Text("My Programs")
                                     .font(Font.FontStyles.body)
                                 
                                 Spacer()
@@ -88,19 +101,19 @@ struct ProfileView: View {
                         .listRowBackground(Color.ColorSystem.systemGray4)
                     }
                     
-                    Section {
-                        Button(action: {
-                            
-                        }, label: {
-                            HStack {
-                                Text("Edit profile")
-                                    .foregroundStyle(Color.ColorSystem.secondaryText)
-                                Spacer()
-                            }
-                        })
-                        .listRowBackground(Color.ColorSystem.systemGray4)
-                        .disabled(true)
-                    }
+//                    Section {
+//                        Button(action: {
+//                            
+//                        }, label: {
+//                            HStack {
+//                                Text("Edit profile")
+//                                    .foregroundStyle(Color.ColorSystem.secondaryText)
+//                                Spacer()
+//                            }
+//                        })
+//                        .listRowBackground(Color.ColorSystem.systemGray4)
+//                        .disabled(true)
+//                    }
                 }
                 .listStyle(.insetGrouped)
                 .scrollContentBackground(.hidden)
@@ -119,7 +132,6 @@ struct ProfileView: View {
             .sheet(isPresented: $settingsIsPresented, content: {
                 SettingsView(user: viewModel.user!)
                     .environmentObject(userViewModel)
-                    .presentationDetents([.medium])
             })
             .alert(isPresented: $viewModel.didReturnError, content: {
                 Alert(title: Text(viewModel.returnedErrorMessage))

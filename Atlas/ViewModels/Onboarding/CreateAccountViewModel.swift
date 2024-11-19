@@ -7,9 +7,9 @@
 
 import SwiftUI
 import PhotosUI
+import Supabase
 
 final class CreateAccountViewModel: ObservableObject {
-    
     // MARK: Variables
     @Published var profilePicture: UIImage? = nil
     @Published var imageSelection: PhotosPickerItem? = nil {
@@ -24,8 +24,11 @@ final class CreateAccountViewModel: ObservableObject {
     @Published var password: String = ""
     @Published var confirmPassword: String = ""
     
-    @Published var didReturnError = false
-    @Published var returnedErrorMessage: String? = nil
+    @Published var isSaving = false
+    @Published var wasSuccessfullyCreated = false
+    
+    @Published var returnedError = false
+    @Published var errorMessage: String? = nil
     
     init() {}
     
@@ -47,49 +50,63 @@ final class CreateAccountViewModel: ObservableObject {
     }
     
     // MARK: Create user
-    public func createUser(completion: @escaping (_ wasCreated: Bool?, _ errorMessage: String?, _ error: Error?) -> Void) async {
-        if email == "" || password == "" || confirmPassword == "" || fullName == "" || username == "" {
-            completion(false, "Please fill in all fields.", nil)
-            return
-        }
-        
-        if !Validator.validateUsernameRegex(for: username) {
-            completion(false, "Username must be at least 4 characters and cannot contain special characters.", nil)
-            return
-        }
-        
-        if !Validator.validateEmail(for: email) {
-            completion(false, "Please enter a valid email.", nil)
-            return
-        }
-        
-        if !Validator.validatePassword(for: password) {
-            completion(false, "Your password must have at least 8 characaters, including a number and a special character.", nil)
-            return
-        }
-        
-        if password != confirmPassword {
-            completion(false, "Please make sure both passwords are the same.", nil)
-            return
-        }
+    @MainActor
+    public func createUser() async {
+        isSaving = true
         
         let createUserRequest = CreateUserRequest(
-            profilePicture: self.profilePicture,
-            fullName: self.fullName,
+            profile_picture: self.profilePicture,
+            full_name: self.fullName,
             username: self.username,
             email: self.email,
             password: self.password
         )
         
-        await AuthService.shared.createUser(createUserRequest: createUserRequest) { wasCreated, error in
-            if let error = error {
-                completion(false, nil, error)
-                return
-            }
+        do {
+            // Check if username is available
+            let usernameAvailable = await UserService.shared.checkUsername(username: createUserRequest.username)
             
-            completion(true, nil, nil)
-            return
+            if usernameAvailable {
+                try await AuthService.shared.createUser(email: createUserRequest.email, password: createUserRequest.password)
+                
+                let currentUser = try await SupabaseService.shared.supabase.auth.user()
+                
+                var user = User(
+                    id: currentUser.id.description,
+                    email: createUserRequest.email,
+                    fullName: createUserRequest.full_name,
+                    username: createUserRequest.username,
+                    paymentsEnabled: false
+                )
+                
+                if createUserRequest.profile_picture != nil {
+                    let profilePicturePath = "\(currentUser.id.description)\(Date().hashValue).jpg"
+                    
+                    guard let imageData = createUserRequest.profile_picture!.pngData() else {
+                        print("Couldn't get data from image.")
+                        return
+                    }
+                    
+                    let profilePictureUrl = try await StorageService.shared.saveFile(file: imageData, bucketName: "profile_pictures", fileName: profilePicturePath)
+                    
+                    user.profilePictureUrl = profilePictureUrl
+                    user.profilePicturePath = profilePicturePath
+                }
+                
+                try await UserService.shared.createUser(user: user)
+                
+                UserService.currentUser = user
+                wasSuccessfullyCreated = true
+                isSaving = false
+            } else {
+                self.isSaving = false
+                self.returnedError = true
+                self.errorMessage = "Username is already taken."
+            }
+        } catch {
+            self.isSaving = false
+            self.returnedError = true
+            self.errorMessage = error.localizedDescription
         }
     }
-    
 }

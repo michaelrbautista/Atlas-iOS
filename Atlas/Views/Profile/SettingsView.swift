@@ -9,7 +9,6 @@ import SwiftUI
 import Supabase
 
 struct SettingsView: View {
-    
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var userViewModel: UserViewModel
     
@@ -30,113 +29,26 @@ struct SettingsView: View {
                     
                     Text("@\(user.username)")
                         .font(Font.FontStyles.headline)
-                        .foregroundStyle(Color.ColorSystem.secondaryText)
+                        .foregroundStyle(Color.ColorSystem.systemGray)
                 }
-                .listRowBackground(Color.ColorSystem.systemGray5)
+                .listRowBackground(Color.ColorSystem.systemBackground)
                 .listRowInsets(.none)
                 .listRowSeparator(.hidden)
             }
             
-            // MARK: Switch view
+            // MARK: Buttons
             Section {
                 VStack(spacing: 16) {
-                    if user.stripeAccountId != nil {
-                        if userViewModel.isCreatorView {
-                            // MARK: User view
-                            Button(action: {
-                                dismiss()
-                                userViewModel.isCreatorView.toggle()
-                                UserDefaults.standard.set(false, forKey: "isCreatorView")
-                            }, label: {
-                                HStack {
-                                    Spacer()
-                                    Text("Switch to user view")
-                                        .font(Font.FontStyles.headline)
-                                        .foregroundStyle(Color.ColorSystem.primaryText)
-                                    Spacer()
-                                }
-                            })
-                            .buttonStyle(.plain)
-                            .frame(maxWidth: .infinity)
-                            .padding(12)
-                            .background(Color.ColorSystem.systemGray3)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                        } else {
-                            // MARK: Creator view
-                            Button(action: {
-                                dismiss()
-                                userViewModel.isCreatorView.toggle()
-                                UserDefaults.standard.set(true, forKey: "isCreatorView")
-                            }, label: {
-                                HStack {
-                                    Spacer()
-                                    Text("Switch to creator view")
-                                        .font(Font.FontStyles.headline)
-                                        .foregroundStyle(Color.ColorSystem.primaryText)
-                                    Spacer()
-                                }
-                            })
-                            .buttonStyle(.plain)
-                            .frame(maxWidth: .infinity)
-                            .padding(12)
-                            .background(Color.ColorSystem.systemGray3)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                        }
-                    } else {
-                        if userViewModel.isCreatorView {
-                            // MARK: User View
-                            Button(action: {
-                                presentBecomeCreatorView.toggle()
-                            }, label: {
-                                HStack {
-                                    Spacer()
-                                    Text("Switch to user view")
-                                        .font(Font.FontStyles.headline)
-                                        .foregroundStyle(Color.ColorSystem.primaryText)
-                                    Spacer()
-                                }
-                            })
-                            .buttonStyle(.plain)
-                            .frame(maxWidth: .infinity)
-                            .padding(12)
-                            .background(Color.ColorSystem.systemGray3)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .disabled(true)
-                        } else {
-                            // MARK: Become creator
-                            Button(action: {
-                                presentBecomeCreatorView.toggle()
-                            }, label: {
-                                HStack {
-                                    Spacer()
-                                    Text("Become a creator")
-                                        .font(Font.FontStyles.headline)
-                                        .foregroundStyle(Color.ColorSystem.primaryText)
-                                    Spacer()
-                                }
-                            })
-                            .buttonStyle(.plain)
-                            .frame(maxWidth: .infinity)
-                            .padding(12)
-                            .background(Color.ColorSystem.systemGray3)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                        }
-                    }
-                    
                     // MARK: Logout
                     Button(action: {
                         isLoading = true
                         
                         Task {
                             do {
-                                try await supabase.auth.signOut()
+                                try await SupabaseService.shared.supabase.auth.signOut()
                                 
                                 DispatchQueue.main.async {
                                     self.userViewModel.isLoggedIn = false
-                                    self.userViewModel.isCreatorView = false
-                                    
-                                    // Reset default screen user vs. creator
-                                    UserDefaults.standard.removeObject(forKey: "isCreatorView")
                                 }
                             } catch {
                                 print(error.localizedDescription)
@@ -159,7 +71,7 @@ struct SettingsView: View {
                     .buttonStyle(.plain)
                     .frame(maxWidth: .infinity)
                     .padding(12)
-                    .background(Color.ColorSystem.systemGray3)
+                    .background(Color.ColorSystem.systemGray6)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     
                     // MARK: Delete account
@@ -180,15 +92,12 @@ struct SettingsView: View {
                     .background(Color.ColorSystem.systemRed)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                .listRowBackground(Color.ColorSystem.systemGray5)
+                .listRowBackground(Color.ColorSystem.systemBackground)
                 .listRowSeparator(.hidden)
             }
         }
         .listStyle(.plain)
-        .background(Color.ColorSystem.systemGray5)
-        .sheet(isPresented: $presentBecomeCreatorView, content: {
-            BecomeCreatorView(viewModel: BecomeCreatorViewModel())
-        })
+        .background(Color.ColorSystem.systemBackground)
         .alert(Text("Are you sure you want to delete your account?"), isPresented: $confirmDeleteAccount) {
             Button(role: .destructive) {
                 // Delete account
@@ -198,7 +107,6 @@ struct SettingsView: View {
                         
                         DispatchQueue.main.async {
                             self.userViewModel.isLoggedIn = false
-                            self.userViewModel.isCreatorView = false
                             
                             // Reset default screen user vs. creator
                             UserDefaults.standard.removeObject(forKey: "isCreatorView")
@@ -215,6 +123,6 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView(user: User(id: "", createdAt: "", email: "", fullName: "Test user", username: "testuser", stripeDetailsSubmitted: false))
+    SettingsView(user: User(id: "", createdAt: "", email: "", fullName: "Test user", username: "testuser", paymentsEnabled: false))
         .environmentObject(UserViewModel())
 }

@@ -25,7 +25,7 @@ final class UserPostsViewModel: ObservableObject {
         self.userId = userId
         
         Task {
-            await getUserPosts()
+            await getCreatorsPosts()
         }
     }
     
@@ -34,11 +34,11 @@ final class UserPostsViewModel: ObservableObject {
         self.posts = [Post]()
         self.endReached = false
         
-        await getUserPosts()
+        await getCreatorsPosts()
     }
     
     @MainActor
-    public func getUserPosts() async {
+    public func getCreatorsPosts() async {
         do {
             let posts = try await PostService.shared.getCreatorsPosts(userId: self.userId, offset: offset)
 
