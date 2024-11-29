@@ -13,12 +13,6 @@ struct UserView: View {
     
     var body: some View {
         TabView {
-//            HomeView()
-//                .tabItem {
-//                    Image(systemName: "house.fill")
-//                }
-//                .environmentObject(userViewModel)
-            
             TrainingView()
                 .tabItem {
                     Image(systemName: "figure.run")
@@ -30,12 +24,6 @@ struct UserView: View {
                     Image(systemName: "magnifyingglass")
                 }
                 .environmentObject(userViewModel)
-            
-//            TrainingView()
-//                .tabItem {
-//                    Image(systemName: "figure.run")
-//                }
-//                .environmentObject(userViewModel)
             
             LibraryView()
                 .tabItem {

@@ -14,7 +14,7 @@ final class DayViewModel: ObservableObject {
     var week: Int
     var day: String
     
-    @Published var workouts: [Workout]? = nil
+    @Published var workouts: [FetchedProgramWorkout]? = nil
     
     @Published var isLoading = true
     

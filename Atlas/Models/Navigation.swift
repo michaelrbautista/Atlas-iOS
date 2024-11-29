@@ -11,19 +11,15 @@ import SwiftUI
 enum NavigationDestinationTypes: Hashable {
     case UserDetail(userId: String)
     case UserPrograms(userId: String)
-    case PostsView(userId: String)
-    case PostDetail(post: Post)
     case ProgramsView(userId: String)
     case ProgramDetail(programId: String)
     case WorkoutDetail(workoutId: String)
-    case ExerciseDetail(workoutExercise: WorkoutExercise)
+    case ExerciseDetail(programExercise: FetchedProgramExercise)
     case CalendarView(program: Program)
     
     func getId() -> String {
         switch self {
         case .UserDetail(let userId):
-            return userId
-        case .PostsView(let userId):
             return userId
         case .UserPrograms(let userId):
             return userId
@@ -38,15 +34,6 @@ enum NavigationDestinationTypes: Hashable {
         }
     }
     
-    func getPost() -> Post {
-        switch self {
-        case .PostDetail(let post):
-            return post
-        default:
-            return Post(id: "", createdAt: "", createdBy: "")
-        }
-    }
-    
     func getProgram() -> Program {
         switch self {
         case .CalendarView(let program):
@@ -56,12 +43,12 @@ enum NavigationDestinationTypes: Hashable {
         }
     }
     
-    func getWorkoutExercise() -> WorkoutExercise {
+    func getProgramExercise() -> FetchedProgramExercise {
         switch self {
-        case .ExerciseDetail(let workoutExercise):
-            return workoutExercise
+        case .ExerciseDetail(let programExercise):
+            return programExercise
         default:
-            return WorkoutExercise(id: "", createdAt: "", createdBy: "", workoutId: "", exerciseId: "", exerciseNumber: 1, title: "", sets: 1, reps: 1)
+            return FetchedProgramExercise(id: "123", exerciseId: "123", exerciseNumber: 0)
         }
     }
 }

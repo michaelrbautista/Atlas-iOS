@@ -20,14 +20,7 @@ final class TrainingViewModel: ObservableObject {
     @Published var daysSinceStarted: Int? = nil
 
     @Published var program: Program? = nil
-    @Published var workouts: [Workout]? = nil
-    
-    @Published var nutritionPlan: NutritionPlan? = nil
-    @Published var basicActivity = 0
-    @Published var nutritionWorkouts = [HealthKitWorkout]()
-    @Published var totalCalories = 0
-    
-    @Published var hasAuthorizedHealthData = false
+    @Published var workouts: [FetchedProgramWorkout]? = nil
     
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
@@ -38,66 +31,9 @@ final class TrainingViewModel: ObservableObject {
         self.startDayAsNumber = UserDefaults.standard.value(forKey: "startDayAsNumber") as? Int
         self.startDate = UserDefaults.standard.value(forKey: "startDate") as? Date
         
-        let write: Set<HKSampleType> = [
-            .workoutType()
-        ]
-        
-        let read: Set = [
-            .workoutType(),
-            HKSeriesType.activitySummaryType(),
-            HKSeriesType.workoutType()
-        ]
-        
-        HealthKitService.healthStore.getRequestStatusForAuthorization(toShare: write, read: read) { authorizationRequestStatus, error in
-            switch authorizationRequestStatus {
-            case .shouldRequest:
-                DispatchQueue.main.async {
-                    self.hasAuthorizedHealthData = false
-                }
-            case .unknown:
-                DispatchQueue.main.async {
-                    self.hasAuthorizedHealthData = false
-                }
-            case .unnecessary:
-                DispatchQueue.main.async {
-                    self.hasAuthorizedHealthData = true
-                }
-            default:
-                break
-            }
-        }
-        
         Task {
             await getStartedProgram()
-            await getNutritionPlan()
         }
-    }
-    
-    @MainActor
-    public func addWorkoutCaloriesToTotal(workout: HealthKitWorkout) {
-        self.nutritionWorkouts.append(workout)
-        self.totalCalories += Int(workout.calories) ?? 0
-    }
-    
-    @MainActor
-    func requestPermission() async -> Bool {
-        let write: Set<HKSampleType> = [
-            .workoutType()
-        ]
-        
-        let read: Set = [
-            .workoutType(),
-            HKSeriesType.activitySummaryType(),
-            HKSeriesType.workoutType()
-        ]
-
-        let res: ()? = try? await HealthKitService.healthStore.requestAuthorization(toShare: write, read: read)
-        guard res != nil else {
-            return false
-        }
-
-        self.hasAuthorizedHealthData = true
-        return true
     }
     
     @MainActor
@@ -108,25 +44,9 @@ final class TrainingViewModel: ObservableObject {
         
         self.program = nil
         self.workouts = nil
-        self.nutritionPlan = nil
 
         Task {
             await getStartedProgram()
-            await getNutritionPlan()
-        }
-    }
-    
-    @MainActor
-    public func getNutritionPlan() {
-        if let data = UserDefaults.standard.object(forKey: "nutritionPlan") as? Data,
-           let userNutritionPlan = try? JSONDecoder().decode(NutritionPlan.self, from: data) {
-            nutritionPlan = userNutritionPlan
-            
-            self.basicActivity = Int(Double(userNutritionPlan.bmr) * 0.2)
-            
-            self.totalCalories = userNutritionPlan.bmr + self.basicActivity
-        } else {
-            print("No nutrition plan found.")
         }
     }
     
@@ -148,7 +68,7 @@ final class TrainingViewModel: ObservableObject {
             let program = try await ProgramService.shared.getProgram(programId: self.startedProgram!)
 
             self.program = program
-            self.workouts = [Workout]()
+            self.workouts = [FetchedProgramWorkout]()
 
             let workouts = try await WorkoutService.shared.getDayWorkouts(
                 programId: program.id,

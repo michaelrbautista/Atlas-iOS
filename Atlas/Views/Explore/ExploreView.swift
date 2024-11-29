@@ -65,12 +65,6 @@ struct ExploreView: View {
             })
             .navigationDestination(for: NavigationDestinationTypes.self, destination: { destination in
                 switch destination {
-                case .PostsView:
-                    let vm = UserPostsViewModel(userId: destination.getId())
-                    UserPostsView(viewModel: vm)
-                case .PostDetail:
-                    let vm = PostDetailViewModel(post: destination.getPost())
-                    PostDetailView(viewModel: vm)
                 case .UserDetail:
                     let vm = UserDetailViewModel(userId: destination.getId())
                     UserDetailView(viewModel: vm)
@@ -94,7 +88,7 @@ struct ExploreView: View {
                     let vm = WorkoutDetailViewModel(workoutId: destination.getId())
                     WorkoutDetailView(viewModel: vm)
                 case .ExerciseDetail:
-                    let vm = ExerciseDetailViewModel(workoutExercise: destination.getWorkoutExercise())
+                    let vm = ExerciseDetailViewModel(programExercise: destination.getProgramExercise())
                     ExerciseDetailView(viewModel: vm)
                 }
             })

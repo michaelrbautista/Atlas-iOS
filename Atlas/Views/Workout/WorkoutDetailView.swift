@@ -33,7 +33,7 @@ struct WorkoutDetailView: View {
         } else {
             List {
                 // MARK: Description
-                if viewModel.workout!.description != "" {
+                if viewModel.workout!.description != nil {
                     Section {
                         Text(viewModel.workout!.description ?? "")
                             .listRowBackground(Color.ColorSystem.systemGray6)
@@ -47,19 +47,17 @@ struct WorkoutDetailView: View {
                         Text(viewModel.workout!.title)
                             .font(Font.FontStyles.title1)
                             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                            .listRowBackground(Color.ColorSystem.systemBackground)
                     }
                 }
                 
                 // MARK: Exercises
-                if viewModel.workout!.workoutExercises!.count > 0 {
+                if viewModel.workout!.programExercises!.count > 0 {
                     Section {
-                        ForEach(viewModel.workout!.workoutExercises ?? [WorkoutExercise]()) { exercise in
-                            NavigationLink(value: NavigationDestinationTypes.ExerciseDetail(workoutExercise: exercise)) {
+                        ForEach(viewModel.workout!.programExercises ?? [FetchedProgramExercise]()) { exercise in
+                            NavigationLink(value: NavigationDestinationTypes.ExerciseDetail(programExercise: exercise)) {
                                 ExerciseCell(
-                                    exerciseId: exercise.exerciseId,
-                                    exerciseNumber: exercise.exerciseNumber,
-                                    sets: exercise.sets,
-                                    reps: exercise.reps
+                                    exercise: exercise
                                 )
                             }
                         }

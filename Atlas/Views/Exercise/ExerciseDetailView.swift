@@ -52,19 +52,19 @@ struct ExerciseDetailView: View {
                 }
                 
                 Section {
-                    Text(viewModel.workoutExercise.sets == 1 ? "\(viewModel.workoutExercise.sets) set" : "\(viewModel.workoutExercise.sets) sets")
+                    Text(viewModel.programExercise.sets == 1 ? "\(viewModel.programExercise.sets ?? 1) set" : "\(viewModel.programExercise.sets ?? 1) sets")
                         .font(Font.FontStyles.body)
                         .foregroundStyle(Color.ColorSystem.primaryText)
                         .listRowBackground(Color.ColorSystem.systemGray6)
                     
-                    Text(viewModel.workoutExercise.reps == 1 ? "\(viewModel.workoutExercise.reps) rep" : "\(viewModel.workoutExercise.reps) reps")
+                    Text(viewModel.programExercise.reps == 1 ? "\(viewModel.programExercise.reps ?? 1) rep" : "\(viewModel.programExercise.reps ?? 1) reps")
                         .font(Font.FontStyles.body)
                         .foregroundStyle(Color.ColorSystem.primaryText)
                         .listRowBackground(Color.ColorSystem.systemGray6)
                 }
                 
                 // MARK: Instructions
-                if viewModel.exercise!.instructions != "" {
+                if viewModel.exercise!.instructions != nil {
                     Section {
                         Text(viewModel.exercise!.instructions!)
                             .font(Font.FontStyles.body)
@@ -87,6 +87,6 @@ struct ExerciseDetailView: View {
 }
 
 #Preview {
-    ExerciseDetailView(viewModel: ExerciseDetailViewModel(workoutExercise: WorkoutExercise(id: "", createdAt: "", createdBy: "", workoutId: "", exerciseId: "", exerciseNumber: 1, title: "", sets: 1, reps: 1)))
+    ExerciseDetailView(viewModel: ExerciseDetailViewModel(programExercise: FetchedProgramExercise(id: "1234", exerciseId: "asdf", exerciseNumber: 0)))
         .environmentObject(ProgramDetailViewModel(programId: "beff379c-b74b-4423-8a1f-b14b077b31f3"))
 }

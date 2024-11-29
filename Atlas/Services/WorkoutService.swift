@@ -12,10 +12,10 @@ final class WorkoutService {
     public static let shared = WorkoutService()
     
     // MARK: Get workouts for day
-    public func getDayWorkouts(programId: String, week: Int, day: String) async throws -> [Workout] {
+    public func getDayWorkouts(programId: String, week: Int, day: String) async throws -> [FetchedProgramWorkout] {
         do {
-            let workouts: [Workout] = try await SupabaseService.shared.supabase
-                .from("workouts")
+            let workouts: [FetchedProgramWorkout] = try await SupabaseService.shared.supabase
+                .from("program_workouts")
                 .select()
                 .eq("program_id", value: programId)
                 .eq("week", value: week)
@@ -30,11 +30,30 @@ final class WorkoutService {
     }
     
     // MARK: Get single workout
-    public func getWorkout(workoutId: String) async throws -> Workout {
+    public func getWorkout(workoutId: String) async throws -> FetchedProgramWorkout {
         do {
-            let workout: Workout = try await SupabaseService.shared.supabase
-                .from("workouts")
-                .select("*, workout_exercises(*)")
+            let workout: FetchedProgramWorkout = try await SupabaseService.shared.supabase
+                .from("program_workouts")
+                .select(
+                    """
+                        id,
+                        title,
+                        description,
+                        program_exercises(
+                            id,
+                            exercise_id,
+                            exercise_number,
+                            sets,
+                            reps,
+                            time,
+                            exercises(
+                                title,
+                                instructions,
+                                video_url
+                            )
+                        )
+                    """
+                )
                 .eq("id", value: workoutId)
                 .single()
                 .execute()
@@ -42,6 +61,7 @@ final class WorkoutService {
             
             return workout
         } catch {
+            print(error)
             throw error
         }
     }

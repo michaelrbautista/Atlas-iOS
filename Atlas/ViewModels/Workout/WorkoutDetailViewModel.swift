@@ -10,7 +10,7 @@ import SwiftUI
 final class WorkoutDetailViewModel: ObservableObject {
     
     // MARK: Variables
-    @Published var workout: Workout?
+    @Published var workout: FetchedProgramWorkout?
     
     @Published var isLoading: Bool = true
     
@@ -23,27 +23,13 @@ final class WorkoutDetailViewModel: ObservableObject {
         
         Task {
             do {
-                // Get program
+                // Get workout
                 let workout = try await WorkoutService.shared.getWorkout(workoutId: workoutId)
-                let sortedExercises = workout.workoutExercises?.sorted { $0.exerciseNumber < $1.exerciseNumber}
-                
-                let newWorkout = Workout(
-                    id: workout.id,
-                    createdAt: workout.createdAt,
-                    createdBy: workout.createdBy,
-                    programId: workout.programId,
-                    week: workout.week,
-                    day: workout.day,
-                    title: workout.title,
-                    description: workout.description,
-                    isFree: workout.isFree,
-                    workoutExercises: sortedExercises
-                )
                 
                 DispatchQueue.main.async {
-                    self.workout = newWorkout
-                    if workout.workoutExercises == nil {
-                        self.workout?.workoutExercises = [WorkoutExercise]()
+                    self.workout = workout
+                    if workout.programExercises == nil {
+                        self.workout?.programExercises = [FetchedProgramExercise]()
                     }
                     self.isLoading = false
                 }

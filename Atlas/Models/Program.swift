@@ -25,7 +25,7 @@ struct Program: Codable, Identifiable, Hashable {
     var imageUrl: String?
     var imagePath: String?
     
-    var workouts: [FetchedWorkout]?
+    var workouts: [FetchedProgramWorkout]?
     var users: FetchedUser?
     
     enum CodingKeys: String, CodingKey {
@@ -47,18 +47,6 @@ struct Program: Codable, Identifiable, Hashable {
         
         case workouts
         case users
-    }
-}
-
-struct FetchedProgram: Codable, Hashable {
-    var id: String
-    var title: String
-    var imageUrl: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case id
-        case title
-        case imageUrl = "image_url"
     }
 }
 
@@ -86,6 +74,14 @@ struct PurchasedProgram: Codable, Identifiable, Hashable {
         
         case users
         case programs
+    }
+}
+
+struct FetchedUser: Codable, Hashable {
+    var fullName: String
+    
+    enum CodingKeys: String, CodingKey {
+        case fullName = "full_name"
     }
 }
 

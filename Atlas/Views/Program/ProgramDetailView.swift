@@ -117,30 +117,30 @@ struct ProgramDetailView: View {
                     
                     if viewModel.isPurchased {
                         Section {
-                            if viewModel.program!.free {
-                                // MARK: Saved program
-                                Button {
-                                    Task {
-                                        try await viewModel.unsaveProgram()
-                                    }
-                                } label: {
-                                    HStack {
-                                        Spacer()
-                                        
-                                        Text("Saved")
-                                            .font(Font.FontStyles.headline)
-                                            .foregroundStyle(Color.ColorSystem.systemGray)
-                                        
-                                        Spacer()
-                                    }
-                                    .padding(10)
-                                    .background(Color.ColorSystem.systemGray5)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                }
-                                .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 10, trailing: 20))
-                                .listRowSeparator(.hidden)
-                                .disabled(true)
-                            }
+//                            if viewModel.program!.free {
+//                                // MARK: Saved program
+//                                Button {
+//                                    Task {
+//                                        try await viewModel.unsaveProgram()
+//                                    }
+//                                } label: {
+//                                    HStack {
+//                                        Spacer()
+//                                        
+//                                        Text("Saved")
+//                                            .font(Font.FontStyles.headline)
+//                                            .foregroundStyle(Color.ColorSystem.systemGray)
+//                                        
+//                                        Spacer()
+//                                    }
+//                                    .padding(10)
+//                                    .background(Color.ColorSystem.systemGray5)
+//                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+//                                }
+//                                .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 10, trailing: 20))
+//                                .listRowSeparator(.hidden)
+//                                .disabled(true)
+//                            }
                             
                             if viewModel.isStarted {
                                 // MARK: Started program
@@ -267,6 +267,23 @@ struct ProgramDetailView: View {
                 .scrollContentBackground(.hidden)
                 .navigationBarTitleDisplayMode(.inline)
                 .background(Color.ColorSystem.systemBackground)
+                .toolbar(content: {
+                    if viewModel.isPurchased {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Menu {
+                                Button {
+                                    
+                                } label: {
+                                    Text("Unsave program")
+                                }
+
+                            } label: {
+                                Image(systemName: "ellipsis")
+                            }
+
+                        }
+                    }
+                })
                 .alert(isPresented: $viewModel.didReturnError, content: {
                     Alert(title: Text(viewModel.returnedErrorMessage))
                 })

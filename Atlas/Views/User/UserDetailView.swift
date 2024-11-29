@@ -91,23 +91,6 @@ struct UserDetailView: View {
                 
                 // MARK: Content
                 Section {
-                    NavigationLink(value: NavigationDestinationTypes.PostsView(userId: viewModel.user!.id)) {
-                        HStack(spacing: 16) {
-                            Image(systemName: "square.and.pencil")
-                                .frame(width: 20)
-                                .foregroundStyle(Color.ColorSystem.primaryText)
-                            
-                            Text("Posts")
-                                .font(Font.FontStyles.body)
-                                .foregroundStyle(Color.ColorSystem.primaryText)
-                            
-                            Spacer()
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                    .listRowBackground(Color.ColorSystem.systemGray6)
-                    .listRowSeparator(.hidden)
-                    
                     NavigationLink(value: NavigationDestinationTypes.UserPrograms(userId: viewModel.user!.id)) {
                         HStack(spacing: 16) {
                             Image(systemName: "figure.run")

@@ -21,8 +21,8 @@ struct ProgramsView: View {
             Section {
                 ForEach(viewModel.programs) { program in
                     ZStack {
-                        if program.users != nil && program.programs != nil {
-                            ProgramCell(title: program.programs!.title, imageUrl: program.programs!.imageUrl, userFullName: program.users!.fullName)
+                        if program.createdBy != nil && program.programs != nil {
+                            ProgramCell(title: program.programs!.title, imageUrl: program.programs!.imageUrl, userFullName: program.createdBy!.fullName)
                             
                             NavigationLink(value: NavigationDestinationTypes.ProgramDetail(programId: program.programs!.id)) {
                                 

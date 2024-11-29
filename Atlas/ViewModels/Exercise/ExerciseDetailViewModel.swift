@@ -10,7 +10,7 @@ import SwiftUI
 final class ExerciseDetailViewModel: ObservableObject {
     
     // MARK: Variables
-    var workoutExercise: WorkoutExercise
+    var programExercise: FetchedProgramExercise
     
     @Published var exercise: Exercise?
     
@@ -20,15 +20,15 @@ final class ExerciseDetailViewModel: ObservableObject {
     @Published var returnedErrorMessage = ""
     
     // MARK: Initializer
-    init(workoutExercise: WorkoutExercise) {
+    init(programExercise: FetchedProgramExercise) {
         isLoading = true
         
-        self.workoutExercise = workoutExercise
+        self.programExercise = programExercise
         
         Task {
             do {
                 // Get program
-                let exercise = try await ExerciseService.shared.getExercise(exerciseId: workoutExercise.exerciseId)
+                let exercise = try await ExerciseService.shared.getExercise(exerciseId: programExercise.exerciseId)
                 
                 DispatchQueue.main.async {
                     self.exercise = exercise

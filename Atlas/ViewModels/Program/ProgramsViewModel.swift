@@ -18,7 +18,7 @@ final class ProgramsViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
     
-    @Published var programs = [PurchasedProgram]()
+    @Published var programs = [FetchedPurchasedProgram]()
     
     var userId: String
     
@@ -41,7 +41,7 @@ final class ProgramsViewModel: ObservableObject {
     // MARK: Refresh
     @MainActor
     public func pulledRefresh() async {
-        self.programs = [PurchasedProgram]()
+        self.programs = [FetchedPurchasedProgram]()
 //        self.endReached = false
 //        
         await getPurchasedPrograms()
@@ -69,7 +69,7 @@ final class ProgramsViewModel: ObservableObject {
         }
     }
     
-    public func addPrograms(newPrograms: [PurchasedProgram]) {
+    public func addPrograms(newPrograms: [FetchedPurchasedProgram]) {
         DispatchQueue.main.async {
             self.programs.append(contentsOf: newPrograms)
         }

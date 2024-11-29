@@ -41,18 +41,6 @@ struct Workout: Codable, Identifiable, Hashable {
     }
 }
 
-struct FetchedWorkout: Codable, Hashable {
-    var id: String
-    var title: String
-    var description: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case id
-        case title
-        case description
-    }
-}
-
 struct WorkoutExercise: Codable, Identifiable, Hashable {
     var id: String
     var createdAt: String
@@ -79,10 +67,4 @@ struct WorkoutExercise: Codable, Identifiable, Hashable {
         case sets
         case reps
     }
-}
-
-struct HealthKitWorkout: Hashable {
-    var type: String
-    var date: String
-    var calories: String
 }

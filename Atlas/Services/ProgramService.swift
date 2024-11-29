@@ -95,14 +95,16 @@ final class ProgramService {
     }
     
     // MARK: Get user's purchased programs
-    public func getPurchasedPrograms(userId: String, offset: Int) async throws -> [PurchasedProgram] {
+    public func getPurchasedPrograms(userId: String, offset: Int) async throws -> [FetchedPurchasedProgram] {
         do {
-            let programs: [PurchasedProgram] = try await SupabaseService.shared.supabase
+            let programs: [FetchedPurchasedProgram] = try await SupabaseService.shared.supabase
                 .from("purchased_programs")
                 .select(
                     """
-                        *,
-                        users:created_by(full_name),
+                        id,
+                        created_by:users!saved_workouts_created_by_fkey(
+                            full_name
+                        ),
                         programs(
                             id,
                             title,
