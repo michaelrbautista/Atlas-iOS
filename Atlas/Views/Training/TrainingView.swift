@@ -24,9 +24,9 @@ struct TrainingView: View {
             List {
                 // MARK: Workouts
                 Section {
-                    if viewModel.startedProgram != nil && viewModel.workouts != nil {
+                    if viewModel.startedProgram != nil && viewModel.workouts != nil && !viewModel.isLoading {
                         if viewModel.workouts!.count == 0 {
-                            Text("No workouts")
+                            Text("No workouts today.")
                                 .foregroundStyle(Color.ColorSystem.systemGray)
                         } else {
                             ForEach(viewModel.workouts!) { workout in
@@ -48,18 +48,20 @@ struct TrainingView: View {
                             }
                         }
                     } else {
-                        HStack {
-                            Text("You haven't started a program yet.")
-                                .font(Font.FontStyles.headline)
-                                .foregroundStyle(Color.ColorSystem.systemGray)
-                                .padding(10)
-                            
-                            Spacer()
+                        if !viewModel.isLoading {
+                            HStack {
+                                Text("You haven't started a program yet.")
+                                    .font(Font.FontStyles.headline)
+                                    .foregroundStyle(Color.ColorSystem.systemGray)
+                                    .padding(10)
+                                
+                                Spacer()
+                            }
+                            .background(Color.ColorSystem.systemGray6)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 10, trailing: 20))
+                            .listRowSeparator(.hidden)
                         }
-                        .background(Color.ColorSystem.systemGray6)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 10, trailing: 20))
-                        .listRowSeparator(.hidden)
                     }
                 } header: {
                     Text("Training")
@@ -71,7 +73,8 @@ struct TrainingView: View {
             .listStyle(.plain)
             .listRowSeparator(.hidden)
             .scrollContentBackground(.hidden)
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
+            .navigationTitle(Date.now.formatted(date: .abbreviated, time: .omitted))
             .background(Color.ColorSystem.systemBackground)
             .refreshable(action: {
                 viewModel.refreshHome()

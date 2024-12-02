@@ -15,6 +15,7 @@ struct ProgramDetailView: View {
     
     @State var presentStartProgram = false
     @State var presentPurchaseModal = false
+    @State var presentFinishProgram = false
     
     // MARK: Data
     @ObservedObject var viewModel: ProgramDetailViewModel
@@ -117,35 +118,10 @@ struct ProgramDetailView: View {
                     
                     if viewModel.isPurchased {
                         Section {
-//                            if viewModel.program!.free {
-//                                // MARK: Saved program
-//                                Button {
-//                                    Task {
-//                                        try await viewModel.unsaveProgram()
-//                                    }
-//                                } label: {
-//                                    HStack {
-//                                        Spacer()
-//                                        
-//                                        Text("Saved")
-//                                            .font(Font.FontStyles.headline)
-//                                            .foregroundStyle(Color.ColorSystem.systemGray)
-//                                        
-//                                        Spacer()
-//                                    }
-//                                    .padding(10)
-//                                    .background(Color.ColorSystem.systemGray5)
-//                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-//                                }
-//                                .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 10, trailing: 20))
-//                                .listRowSeparator(.hidden)
-//                                .disabled(true)
-//                            }
-                            
                             if viewModel.isStarted {
                                 // MARK: Started program
                                 Button {
-                                    
+                                    presentFinishProgram.toggle()
                                 } label: {
                                     HStack {
                                         Spacer()
@@ -162,7 +138,6 @@ struct ProgramDetailView: View {
                                 }
                                 .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
                                 .listRowSeparator(.hidden)
-                                .disabled(true)
                             } else {
                                 // MARK: Start program
                                 Button {
@@ -276,7 +251,6 @@ struct ProgramDetailView: View {
                                 } label: {
                                     Text("Unsave program")
                                 }
-
                             } label: {
                                 Image(systemName: "ellipsis")
                             }
@@ -290,6 +264,16 @@ struct ProgramDetailView: View {
                 .sheet(isPresented: $presentPurchaseModal) {
                     PurchaseModalView()
                         .presentationDetents([.height(200)])
+                }
+                .alert(Text("Are you sure you want to finish this program?"), isPresented: $presentFinishProgram) {
+                    Button(role: .destructive) {
+                        UserDefaults.standard.removeObject(forKey: "startedProgram")
+                        UserDefaults.standard.removeObject(forKey: "startDayAsNumber")
+                        UserDefaults.standard.removeObject(forKey: "startDate")
+                        viewModel.isStarted = false
+                    } label: {
+                        Text("Yes")
+                    }
                 }
                 .sheet(isPresented: $presentStartProgram) {
                     StartProgramView(
