@@ -16,6 +16,9 @@ enum NavigationDestinationTypes: Hashable {
     case WorkoutDetail(workoutId: String)
     case ExerciseDetail(programExercise: FetchedProgramExercise)
     case CalendarView(program: Program)
+    case CreatorProgramsView(userId: String)
+    case CreatorWorkoutsView(userId: String)
+    case CreatorExercisesView(userId: String)
     
     func getId() -> String {
         switch self {
@@ -29,6 +32,12 @@ enum NavigationDestinationTypes: Hashable {
             return programId
         case .WorkoutDetail(let workoutId):
             return workoutId
+        case .CreatorProgramsView(let userId):
+            return userId
+        case .CreatorWorkoutsView(let userId):
+            return userId
+        case .CreatorExercisesView(let userId):
+            return userId
         default:
             return "nil"
         }

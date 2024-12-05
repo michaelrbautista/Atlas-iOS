@@ -23,8 +23,6 @@ struct User: Codable, Identifiable, Hashable {
     var stripeAccountId: String?
     var paymentsEnabled: Bool
     
-    var teamId: String?
-    
     enum CodingKeys: String, CodingKey {
         case id
         case createdAt = "created_at"
@@ -40,8 +38,6 @@ struct User: Codable, Identifiable, Hashable {
         
         case stripeAccountId = "stripe_account_id"
         case paymentsEnabled = "payments_enabled"
-        
-        case teamId = "team_id"
     }
 }
 

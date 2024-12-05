@@ -16,10 +16,32 @@ struct LibraryView: View {
     var body: some View {
         NavigationStack(path: $path) {
             List {
-                Section {
-                    if let currentUserId = UserService.currentUser?.id {
-                        NavigationLink(value: NavigationDestinationTypes.ProgramsView(userId: currentUserId)) {
+                if let currentUser = UserService.currentUser {
+                    // MARK: User
+                    Section {
+                        NavigationLink(value: NavigationDestinationTypes.ProgramsView(userId: currentUser.id)) {
                             Text("Programs")
+                        }
+                    } header: {
+                        Text("User")
+                    }
+                    
+                    if currentUser.paymentsEnabled {
+                        // MARK: Creator
+                        Section {
+                            NavigationLink(value: NavigationDestinationTypes.CreatorProgramsView(userId: currentUser.id)) {
+                                Text("My programs")
+                            }
+                            
+                            NavigationLink(value: NavigationDestinationTypes.CreatorWorkoutsView(userId: currentUser.id)) {
+                                Text("My workouts")
+                            }
+                            
+                            NavigationLink(value: NavigationDestinationTypes.CreatorExercisesView(userId: currentUser.id)) {
+                                Text("My exercises")
+                            }
+                        } header: {
+                            Text("Creator")
                         }
                     }
                 }
@@ -54,6 +76,12 @@ struct LibraryView: View {
                 case .ExerciseDetail:
                     let vm = ExerciseDetailViewModel(programExercise: destination.getProgramExercise())
                     ExerciseDetailView(viewModel: vm)
+                case .CreatorProgramsView:
+                    CreatorProgramsView(path: $path)
+                case .CreatorWorkoutsView:
+                    EmptyView()
+                case .CreatorExercisesView:
+                    EmptyView()
                 }
             })
         }

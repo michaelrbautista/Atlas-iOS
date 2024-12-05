@@ -90,6 +90,12 @@ struct ExploreView: View {
                 case .ExerciseDetail:
                     let vm = ExerciseDetailViewModel(programExercise: destination.getProgramExercise())
                     ExerciseDetailView(viewModel: vm)
+                case .CreatorProgramsView:
+                    EmptyView()
+                case .CreatorWorkoutsView:
+                    EmptyView()
+                case .CreatorExercisesView:
+                    EmptyView()
                 }
             })
         }

@@ -1,15 +1,15 @@
 //
-//  ProgramsView.swift
-//  stayhard
+//  CreatorProgramsView.swift
+//  Atlas
 //
-//  Created by Michael Bautista on 3/16/24.
+//  Created by Michael Bautista on 12/5/24.
 //
 
 import SwiftUI
 
-struct ProgramsView: View {
+struct CreatorProgramsView: View {
     // MARK: Data
-    @StateObject private var viewModel = ProgramsViewModel()
+    @StateObject private var viewModel = CreatorProgramsViewModel()
     
     @Binding var path: [NavigationDestinationTypes]
     
@@ -18,17 +18,12 @@ struct ProgramsView: View {
             Section {
                 ForEach(viewModel.programs) { program in
                     ZStack {
-                        if program.createdBy != nil && program.programs != nil {
-                            ProgramCell(title: program.programs!.title, imageUrl: program.programs!.imageUrl, userFullName: program.createdBy!.fullName)
-                            
-                            NavigationLink(value: NavigationDestinationTypes.ProgramDetail(programId: program.programs!.id)) {
-                                
+                        if let createdBy = program.createdBy {
+                            NavigationLink(value: NavigationDestinationTypes.ProgramDetail(programId: program.id)) {
+                                ProgramCell(title: program.title, imageUrl: program.imageUrl, userFullName: createdBy.fullName)
                             }
-                            .opacity(0)
                         }
                     }
-                    .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 10, trailing: 20))
-                    .listRowSeparator(.hidden)
                 }
                 
                 Color.ColorSystem.systemBackground
@@ -57,7 +52,7 @@ struct ProgramsView: View {
         .listRowSeparator(.hidden)
         .scrollContentBackground(.hidden)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Programs")
+        .navigationTitle("My Programs")
         .background(Color.ColorSystem.systemBackground)
         .refreshable(action: {
             await viewModel.pulledRefresh()
@@ -69,6 +64,5 @@ struct ProgramsView: View {
 }
 
 #Preview {
-    ProgramsView(path: .constant([]))
-        .environmentObject(UserViewModel())
+    CreatorProgramsView(path: .constant([]))
 }

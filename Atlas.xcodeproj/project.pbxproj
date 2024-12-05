@@ -75,6 +75,9 @@
 		89D5A8A42BBA443C0001CFB3 /* ExerciseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D5A8A32BBA443C0001CFB3 /* ExerciseDetailView.swift */; };
 		89E046E32C1BED74006BCE71 /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E046E22C1BED74006BCE71 /* Workout.swift */; };
 		89E046E52C1BED7B006BCE71 /* Exercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E046E42C1BED7B006BCE71 /* Exercise.swift */; };
+		89E3A83D2D02648A00624C72 /* CreatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A83C2D02648A00624C72 /* CreatorView.swift */; };
+		89E3A8472D02675000624C72 /* CreatorProgramsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A8462D02675000624C72 /* CreatorProgramsView.swift */; };
+		89E3A8492D02679100624C72 /* CreatorProgramsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A8482D02678C00624C72 /* CreatorProgramsViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -140,6 +143,9 @@
 		89D5A8B82BC392080001CFB3 /* Atlas.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Atlas.entitlements; sourceTree = "<group>"; };
 		89E046E22C1BED74006BCE71 /* Workout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
 		89E046E42C1BED7B006BCE71 /* Exercise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exercise.swift; sourceTree = "<group>"; };
+		89E3A83C2D02648A00624C72 /* CreatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorView.swift; sourceTree = "<group>"; };
+		89E3A8462D02675000624C72 /* CreatorProgramsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorProgramsView.swift; sourceTree = "<group>"; };
+		89E3A8482D02678C00624C72 /* CreatorProgramsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorProgramsViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -272,6 +278,7 @@
 		89D5A7D32BA654C60001CFB3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				89E3A83E2D02667C00624C72 /* Creator */,
 				89766E762CDC20ED0022C4F5 /* Training */,
 				890715D62CB08B160079200F /* Explore */,
 				89F6980E2BEE74EE00DFB3AD /* Program */,
@@ -289,6 +296,7 @@
 		89D5A7D42BA654CA0001CFB3 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				89E3A8422D02669500624C72 /* Creator */,
 				89766E792CDC70C20022C4F5 /* Training */,
 				890715D72CB08B290079200F /* Explore */,
 				89F698102BEE755000DFB3AD /* Program */,
@@ -358,6 +366,7 @@
 			children = (
 				89D5A7A02BA64D100001CFB3 /* AtlasApp.swift */,
 				89D5A7A22BA64D100001CFB3 /* UserView.swift */,
+				89E3A83C2D02648A00624C72 /* CreatorView.swift */,
 			);
 			path = Setup;
 			sourceTree = "<group>";
@@ -411,6 +420,70 @@
 				89B400172BF987B800A832AA /* WorkoutDetailViewModel.swift */,
 			);
 			path = Workout;
+			sourceTree = "<group>";
+		};
+		89E3A83E2D02667C00624C72 /* Creator */ = {
+			isa = PBXGroup;
+			children = (
+				89E3A83F2D02668200624C72 /* Program */,
+				89E3A8402D02668900624C72 /* Workout */,
+				89E3A8412D02668C00624C72 /* Exercise */,
+			);
+			path = Creator;
+			sourceTree = "<group>";
+		};
+		89E3A83F2D02668200624C72 /* Program */ = {
+			isa = PBXGroup;
+			children = (
+				89E3A8462D02675000624C72 /* CreatorProgramsView.swift */,
+			);
+			path = Program;
+			sourceTree = "<group>";
+		};
+		89E3A8402D02668900624C72 /* Workout */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Workout;
+			sourceTree = "<group>";
+		};
+		89E3A8412D02668C00624C72 /* Exercise */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Exercise;
+			sourceTree = "<group>";
+		};
+		89E3A8422D02669500624C72 /* Creator */ = {
+			isa = PBXGroup;
+			children = (
+				89E3A8452D0266A200624C72 /* Program */,
+				89E3A8442D02669F00624C72 /* Workout */,
+				89E3A8432D02669A00624C72 /* Exercise */,
+			);
+			path = Creator;
+			sourceTree = "<group>";
+		};
+		89E3A8432D02669A00624C72 /* Exercise */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Exercise;
+			sourceTree = "<group>";
+		};
+		89E3A8442D02669F00624C72 /* Workout */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Workout;
+			sourceTree = "<group>";
+		};
+		89E3A8452D0266A200624C72 /* Program */ = {
+			isa = PBXGroup;
+			children = (
+				89E3A8482D02678C00624C72 /* CreatorProgramsViewModel.swift */,
+			);
+			path = Program;
 			sourceTree = "<group>";
 		};
 		89F6980E2BEE74EE00DFB3AD /* Program */ = {
@@ -547,6 +620,7 @@
 				896E018E2BFC39E90085968A /* ExerciseService.swift in Sources */,
 				89D5A8142BA6581A0001CFB3 /* LoginView.swift in Sources */,
 				89B400182BF987B800A832AA /* WorkoutDetailViewModel.swift in Sources */,
+				89E3A8472D02675000624C72 /* CreatorProgramsView.swift in Sources */,
 				89930A7E2CB5CCEA004CF2B1 /* SearchProgramCell.swift in Sources */,
 				89D5A87C2BABC90D0001CFB3 /* WorkoutDetailView.swift in Sources */,
 				89E046E32C1BED74006BCE71 /* Workout.swift in Sources */,
@@ -576,6 +650,7 @@
 				89B4001A2BF9960900A832AA /* ProgramService.swift in Sources */,
 				89930A802CB5CCF3004CF2B1 /* SearchUserCell.swift in Sources */,
 				89D5A86D2BA65AEF0001CFB3 /* ExerciseCell.swift in Sources */,
+				89E3A83D2D02648A00624C72 /* CreatorView.swift in Sources */,
 				898D0B1C2C939E8100898957 /* DayView.swift in Sources */,
 				898D0B0C2C8F674200898957 /* UserProgramsView.swift in Sources */,
 				897F0A322BDC6A6000E58F4A /* SupabaseService.swift in Sources */,
@@ -585,6 +660,7 @@
 				898D0B102C8F722200898957 /* UserProgramsViewModel.swift in Sources */,
 				89D5A7FC2BA657AD0001CFB3 /* ProgramDetailView.swift in Sources */,
 				89D5A7A12BA64D100001CFB3 /* AtlasApp.swift in Sources */,
+				89E3A8492D02679100624C72 /* CreatorProgramsViewModel.swift in Sources */,
 				89D5A8122BA658170001CFB3 /* LandingPageView.swift in Sources */,
 				89766E7B2CDC70D10022C4F5 /* TrainingViewModel.swift in Sources */,
 				896E01922BFD35E30085968A /* ExerciseDetailViewModel.swift in Sources */,
@@ -728,7 +804,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Atlas/Atlas.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"Atlas/Preview Content\"";
 				DEVELOPMENT_TEAM = T2V9U83CKZ;
 				ENABLE_PREVIEWS = YES;
@@ -766,7 +842,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Atlas/Atlas.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"Atlas/Preview Content\"";
 				DEVELOPMENT_TEAM = T2V9U83CKZ;
 				ENABLE_PREVIEWS = YES;

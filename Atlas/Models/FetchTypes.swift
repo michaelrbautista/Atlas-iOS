@@ -11,9 +11,8 @@ struct FetchedPurchasedProgram: Codable, Hashable, Identifiable {
     var programs: FetchedProgram?
     
     enum CodingKeys: String, CodingKey {
-        case id
+        case id, programs
         case createdBy = "created_by"
-        case programs
     }
 }
 
@@ -25,19 +24,23 @@ struct FetchedUsername: Codable, Hashable {
     }
 }
 
-struct FetchedProgram: Codable, Hashable {
+struct FetchedProgram: Identifiable, Codable, Hashable {
     var id: String
     var title: String
-    var price: Int
     var description: String?
     var imageUrl: String?
+    var price: Int
+    var currency: String
+    var weeks: Int
+    var free: Bool
+    var isPrivate: Bool
+    var createdBy: FetchedUsername?
     
     enum CodingKeys: String, CodingKey {
-        case id
-        case title
-        case price
-        case description
+        case id, title, description, price, currency, weeks, free
         case imageUrl = "image_url"
+        case isPrivate = "private"
+        case createdBy = "created_by"
     }
 }
 
@@ -49,10 +52,7 @@ struct FetchedProgramWorkout: Codable, Hashable, Identifiable {
     var programExercises: [FetchedProgramExercise]?
     
     enum CodingKeys: String, CodingKey {
-        case id
-        case title
-        case description
-        
+        case id, title, description
         case programExercises = "program_exercises"
     }
 }
@@ -67,13 +67,9 @@ struct FetchedProgramExercise: Codable, Hashable, Identifiable {
     var exercises: FetchedExercise?
     
     enum CodingKeys: String, CodingKey {
-        case id
+        case id, sets, reps, time, exercises
         case exerciseId = "exercise_id"
         case exerciseNumber = "exercise_number"
-        case sets
-        case reps
-        case time
-        case exercises
     }
 }
 
@@ -83,8 +79,7 @@ struct FetchedExercise: Codable, Hashable {
     var videoUrl: String?
     
     enum CodingKeys: String, CodingKey {
-        case title
-        case instructions
+        case title, instructions
         case videoUrl = "video_url"
     }
 }

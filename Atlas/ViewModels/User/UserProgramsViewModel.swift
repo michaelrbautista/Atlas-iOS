@@ -42,7 +42,7 @@ final class UserProgramsViewModel: ObservableObject {
         do {
             let programs = try await ProgramService.shared.getCreatorsPrograms(userId: self.userId)
             
-            self.programs.append(contentsOf: programs)
+//            self.programs.append(contentsOf: programs)
             
             if programs.count < 10 {
                 self.endReached = true

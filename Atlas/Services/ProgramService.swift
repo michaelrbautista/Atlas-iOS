@@ -79,11 +79,26 @@ final class ProgramService {
     }
     
     // MARK: Get creator's programs
-    public func getCreatorsPrograms(userId: String) async throws -> [Program] {
+    public func getCreatorsPrograms(userId: String) async throws -> [FetchedProgram] {
         do {
-            let programs: [Program] = try await SupabaseService.shared.supabase
+            let programs: [FetchedProgram] = try await SupabaseService.shared.supabase
                 .from("programs")
-                .select()
+                .select(
+                    """
+                        id,
+                        title,
+                        description,
+                        image_url,
+                        price,
+                        currency,
+                        weeks,
+                        free,
+                        private,
+                        created_by:users!programs_created_by_fkey(
+                            full_name
+                        )
+                    """
+                )
                 .eq("created_by", value: userId)
                 .execute()
                 .value

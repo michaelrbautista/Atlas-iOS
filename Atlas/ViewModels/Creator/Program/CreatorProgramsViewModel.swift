@@ -1,13 +1,13 @@
 //
-//  WorkoutViewModel.swift
-//  stayhard
+//  CreatorProgramsViewModel.swift
+//  Atlas
 //
-//  Created by Michael Bautista on 3/16/24.
+//  Created by Michael Bautista on 12/5/24.
 //
 
 import SwiftUI
 
-final class ProgramsViewModel: ObservableObject {
+final class CreatorProgramsViewModel: ObservableObject {
     // MARK: Variables
     @Published var isLoading = true
     
@@ -17,7 +17,7 @@ final class ProgramsViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
     
-    @Published var programs = [FetchedPurchasedProgram]()
+    @Published var programs = [FetchedProgram]()
     
     var userId: String
     
@@ -33,24 +33,24 @@ final class ProgramsViewModel: ObservableObject {
         self.userId = currentUserId
         
         Task {
-            await getPurchasedPrograms()
+            await getCreatorsPrograms()
         }
     }
     
     // MARK: Refresh
     @MainActor
     public func pulledRefresh() async {
-        self.programs = [FetchedPurchasedProgram]()
+        self.programs = [FetchedProgram]()
 //        self.endReached = false
-//        
-        await getPurchasedPrograms()
+//
+        await getCreatorsPrograms()
     }
     
     // MARK: Get my saved programs
     @MainActor
-    public func getPurchasedPrograms() async {
+    public func getCreatorsPrograms() async {
         do {
-            let programs = try await ProgramService.shared.getPurchasedPrograms(userId: self.userId, offset: offset)
+            let programs = try await ProgramService.shared.getCreatorsPrograms(userId: self.userId)
             
             self.programs.append(contentsOf: programs)
             
@@ -68,14 +68,15 @@ final class ProgramsViewModel: ObservableObject {
         }
     }
     
-}
-
-extension Calendar {
-    func numberOfDaysBetween(_ from: Date, and to: Date) -> Int {
-        let fromDate = startOfDay(for: from) // <1>
-        let toDate = startOfDay(for: to) // <2>
-        let numberOfDays = dateComponents([.day], from: fromDate, to: toDate) // <3>
-        
-        return numberOfDays.day!
+    public func addPrograms(newPrograms: [FetchedProgram]) {
+        DispatchQueue.main.async {
+            self.programs.append(contentsOf: newPrograms)
+        }
+    }
+    
+    public func removeProgram(programIndex: Int) {
+        DispatchQueue.main.async {
+            self.programs.remove(at: programIndex)
+        }
     }
 }

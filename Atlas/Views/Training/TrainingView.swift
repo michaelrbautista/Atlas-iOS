@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import HealthKit
 
 struct TrainingView: View {
     // MARK: UI State
@@ -124,6 +123,12 @@ struct TrainingView: View {
                 case .ExerciseDetail:
                     let vm = ExerciseDetailViewModel(programExercise: destination.getProgramExercise())
                     ExerciseDetailView(viewModel: vm)
+                case .CreatorProgramsView:
+                    EmptyView()
+                case .CreatorWorkoutsView:
+                    EmptyView()
+                case .CreatorExercisesView:
+                    EmptyView()
                 }
             })
         }

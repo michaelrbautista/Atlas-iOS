@@ -14,20 +14,19 @@ struct ProgramCell: View {
     var userFullName: String
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        HStack(spacing: 10) {
             if imageUrl != nil {
                 AsyncImage(url: URL(string: imageUrl!)) { image in
                     image
                         .resizable()
                         .scaledToFill()
-                        .frame(maxWidth: UIScreen.main.bounds.size.width - 32)
-                        .frame(height: 180)
+                        .frame(width: 100, height: 100)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                         .clipped()
                 } placeholder: {
                     ProgressView()
                         .tint(Color.ColorSystem.primaryText)
-                        .frame(maxWidth: UIScreen.main.bounds.size.width - 32)
-                        .frame(height: 180)
+                        .frame(width: 100, height: 100)
                 }
             } else {
                 VStack {
@@ -35,13 +34,14 @@ struct ProgramCell: View {
                     Image(systemName: "figure.run")
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 48)
+                        .frame(height: 32)
                         .foregroundStyle(Color.ColorSystem.systemGray)
                     Spacer()
                 }
-                .frame(maxWidth: .infinity)
-                .frame(height: 180)
-                .background(Color.ColorSystem.systemGray5)
+                .frame(width: 100, height: 100)
+                .background(Color.ColorSystem.systemGray6)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .clipped()
             }
             
             VStack {
@@ -56,11 +56,14 @@ struct ProgramCell: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundStyle(Color.ColorSystem.systemGray)
                     .font(Font.FontStyles.headline)
+                
+                
+                
+                Spacer()
             }
-            .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
         }
-        .background(Color.ColorSystem.systemGray6)
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .frame(maxWidth: .infinity)
+        .frame(height: 100)
     }
 }
 

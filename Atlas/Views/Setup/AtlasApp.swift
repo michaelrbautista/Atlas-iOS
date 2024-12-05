@@ -77,6 +77,7 @@ struct CheckAuthentication: View {
 class UserViewModel: ObservableObject {
     @Published var isLoggedIn = false
     @Published var isBusy = false
+//    @Published var creatorView = false
     
     @Published var event: AuthChangeEvent? = nil
     @Published var session: Session? = nil
@@ -95,8 +96,6 @@ class UserViewModel: ObservableObject {
         
         do {
             let _ = try await SupabaseService.shared.supabase.auth.session
-            
-//            print(session)
             
             let authUser = try await SupabaseService.shared.supabase.auth.session.user
             

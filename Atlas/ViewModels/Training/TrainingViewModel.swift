@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import HealthKit
 
 final class TrainingViewModel: ObservableObject {
     
