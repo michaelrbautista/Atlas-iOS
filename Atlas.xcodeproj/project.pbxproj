@@ -78,6 +78,12 @@
 		89E3A83D2D02648A00624C72 /* CreatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A83C2D02648A00624C72 /* CreatorView.swift */; };
 		89E3A8472D02675000624C72 /* CreatorProgramsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A8462D02675000624C72 /* CreatorProgramsView.swift */; };
 		89E3A8492D02679100624C72 /* CreatorProgramsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A8482D02678C00624C72 /* CreatorProgramsViewModel.swift */; };
+		89E3A84B2D026F5200624C72 /* NewProgramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A84A2D026F5200624C72 /* NewProgramView.swift */; };
+		89E3A84D2D029E8D00624C72 /* NewProgramViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A84C2D029E8800624C72 /* NewProgramViewModel.swift */; };
+		89E3A84F2D03823E00624C72 /* CreatorWorkoutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A84E2D03823E00624C72 /* CreatorWorkoutsView.swift */; };
+		89E3A8512D03826C00624C72 /* CreatorWorkoutsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A8502D03826800624C72 /* CreatorWorkoutsViewModel.swift */; };
+		89E3A8532D03BBE400624C72 /* CreatorProgramDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A8522D03BBDD00624C72 /* CreatorProgramDetailViewModel.swift */; };
+		89E3A8552D03BBEF00624C72 /* CreatorProgramDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A8542D03BBEF00624C72 /* CreatorProgramDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -146,6 +152,12 @@
 		89E3A83C2D02648A00624C72 /* CreatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorView.swift; sourceTree = "<group>"; };
 		89E3A8462D02675000624C72 /* CreatorProgramsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorProgramsView.swift; sourceTree = "<group>"; };
 		89E3A8482D02678C00624C72 /* CreatorProgramsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorProgramsViewModel.swift; sourceTree = "<group>"; };
+		89E3A84A2D026F5200624C72 /* NewProgramView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProgramView.swift; sourceTree = "<group>"; };
+		89E3A84C2D029E8800624C72 /* NewProgramViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProgramViewModel.swift; sourceTree = "<group>"; };
+		89E3A84E2D03823E00624C72 /* CreatorWorkoutsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorWorkoutsView.swift; sourceTree = "<group>"; };
+		89E3A8502D03826800624C72 /* CreatorWorkoutsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorWorkoutsViewModel.swift; sourceTree = "<group>"; };
+		89E3A8522D03BBDD00624C72 /* CreatorProgramDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorProgramDetailViewModel.swift; sourceTree = "<group>"; };
+		89E3A8542D03BBEF00624C72 /* CreatorProgramDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorProgramDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -436,6 +448,8 @@
 			isa = PBXGroup;
 			children = (
 				89E3A8462D02675000624C72 /* CreatorProgramsView.swift */,
+				89E3A8542D03BBEF00624C72 /* CreatorProgramDetailView.swift */,
+				89E3A84A2D026F5200624C72 /* NewProgramView.swift */,
 			);
 			path = Program;
 			sourceTree = "<group>";
@@ -443,6 +457,7 @@
 		89E3A8402D02668900624C72 /* Workout */ = {
 			isa = PBXGroup;
 			children = (
+				89E3A84E2D03823E00624C72 /* CreatorWorkoutsView.swift */,
 			);
 			path = Workout;
 			sourceTree = "<group>";
@@ -474,6 +489,7 @@
 		89E3A8442D02669F00624C72 /* Workout */ = {
 			isa = PBXGroup;
 			children = (
+				89E3A8502D03826800624C72 /* CreatorWorkoutsViewModel.swift */,
 			);
 			path = Workout;
 			sourceTree = "<group>";
@@ -482,6 +498,8 @@
 			isa = PBXGroup;
 			children = (
 				89E3A8482D02678C00624C72 /* CreatorProgramsViewModel.swift */,
+				89E3A8522D03BBDD00624C72 /* CreatorProgramDetailViewModel.swift */,
+				89E3A84C2D029E8800624C72 /* NewProgramViewModel.swift */,
 			);
 			path = Program;
 			sourceTree = "<group>";
@@ -620,10 +638,13 @@
 				896E018E2BFC39E90085968A /* ExerciseService.swift in Sources */,
 				89D5A8142BA6581A0001CFB3 /* LoginView.swift in Sources */,
 				89B400182BF987B800A832AA /* WorkoutDetailViewModel.swift in Sources */,
+				89E3A84D2D029E8D00624C72 /* NewProgramViewModel.swift in Sources */,
 				89E3A8472D02675000624C72 /* CreatorProgramsView.swift in Sources */,
 				89930A7E2CB5CCEA004CF2B1 /* SearchProgramCell.swift in Sources */,
 				89D5A87C2BABC90D0001CFB3 /* WorkoutDetailView.swift in Sources */,
 				89E046E32C1BED74006BCE71 /* Workout.swift in Sources */,
+				89E3A8512D03826C00624C72 /* CreatorWorkoutsViewModel.swift in Sources */,
+				89E3A84F2D03823E00624C72 /* CreatorWorkoutsView.swift in Sources */,
 				89D5A82B2BA658D50001CFB3 /* ProgramsViewModel.swift in Sources */,
 				89D5A8002BA657B50001CFB3 /* ProgramsView.swift in Sources */,
 				898D0B1E2C939EA100898957 /* DayViewModel.swift in Sources */,
@@ -635,6 +656,7 @@
 				890715D92CB08B370079200F /* ExploreViewModel.swift in Sources */,
 				89D5A84F2BA659940001CFB3 /* AuthService.swift in Sources */,
 				89D5A82F2BA658E10001CFB3 /* ProgramDetailViewModel.swift in Sources */,
+				89E3A84B2D026F5200624C72 /* NewProgramView.swift in Sources */,
 				89D5A86B2BA65AE90001CFB3 /* WorkoutCell.swift in Sources */,
 				89D5A8372BA659170001CFB3 /* CreateAccountViewModel.swift in Sources */,
 				89D5A7A32BA64D100001CFB3 /* UserView.swift in Sources */,
@@ -657,6 +679,7 @@
 				8959323D2CF78CF700DCF3FA /* FetchTypes.swift in Sources */,
 				896F30F52C227A0E0007EBFA /* VideoViewURL.swift in Sources */,
 				89D5A8102BA658130001CFB3 /* CreateAccountView.swift in Sources */,
+				89E3A8532D03BBE400624C72 /* CreatorProgramDetailViewModel.swift in Sources */,
 				898D0B102C8F722200898957 /* UserProgramsViewModel.swift in Sources */,
 				89D5A7FC2BA657AD0001CFB3 /* ProgramDetailView.swift in Sources */,
 				89D5A7A12BA64D100001CFB3 /* AtlasApp.swift in Sources */,
@@ -672,6 +695,7 @@
 				89766E782CDC21090022C4F5 /* TrainingView.swift in Sources */,
 				898D0B122C8F7CCB00898957 /* Navigation.swift in Sources */,
 				89D5A8612BA65AC20001CFB3 /* User.swift in Sources */,
+				89E3A8552D03BBEF00624C72 /* CreatorProgramDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

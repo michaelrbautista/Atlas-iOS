@@ -35,13 +35,13 @@ struct ExploreView: View {
                     if viewModel.searchText != "" {
                         if viewModel.filter == "Programs" {
                             ForEach(viewModel.programs) { program in
-                                NavigationLink(value: NavigationDestinationTypes.ProgramDetail(programId: program.id)) {
+                                NavigationLink(value: NavigationDestinationTypes.ProgramDetailView(programId: program.id)) {
                                     SearchProgramCell(program: program)
                                 }
                             }
                         } else {
                             ForEach(viewModel.users) { user in
-                                NavigationLink(value: NavigationDestinationTypes.UserDetail(userId: user.id)) {
+                                NavigationLink(value: NavigationDestinationTypes.UserDetailView(userId: user.id)) {
                                     SearchUserCell(user: user)
                                 }
                             }
@@ -65,15 +65,15 @@ struct ExploreView: View {
             })
             .navigationDestination(for: NavigationDestinationTypes.self, destination: { destination in
                 switch destination {
-                case .UserDetail:
+                case .UserDetailView:
                     let vm = UserDetailViewModel(userId: destination.getId())
                     UserDetailView(viewModel: vm)
-                case .UserPrograms:
+                case .UserProgramsView:
                     let vm = UserProgramsViewModel(userId: destination.getId())
                     UserProgramsView(viewModel: vm)
                 case .ProgramsView:
                     ProgramsView(path: $path)
-                case .ProgramDetail:
+                case .ProgramDetailView:
                     let vm = ProgramDetailViewModel(programId: destination.getId())
                     ProgramDetailView(viewModel: vm, path: $path)
                 case .CalendarView:
@@ -84,15 +84,20 @@ struct ExploreView: View {
                         pages: program.weeks / 4 + 1,
                         remainder: program.weeks % 4
                     )
-                case .WorkoutDetail:
+                case .WorkoutDetailView:
                     let vm = WorkoutDetailViewModel(workoutId: destination.getId())
                     WorkoutDetailView(viewModel: vm)
-                case .ExerciseDetail:
+                case .ExerciseDetailView:
                     let vm = ExerciseDetailViewModel(programExercise: destination.getProgramExercise())
                     ExerciseDetailView(viewModel: vm)
                 case .CreatorProgramsView:
                     EmptyView()
+                case .CreatorProgramDetailView:
+                    let vm = CreatorProgramDetailViewModel(programId: destination.getId())
+                    CreatorProgramDetailView(viewModel: vm, path: $path)
                 case .CreatorWorkoutsView:
+                    EmptyView()
+                case .CreatorWorkoutDetailView:
                     EmptyView()
                 case .CreatorExercisesView:
                     EmptyView()

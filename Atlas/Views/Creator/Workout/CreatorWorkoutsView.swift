@@ -1,27 +1,33 @@
 //
-//  ProgramsView.swift
-//  stayhard
+//  CreatorWorkoutsView.swift
+//  Atlas
 //
-//  Created by Michael Bautista on 3/16/24.
+//  Created by Michael Bautista on 12/6/24.
 //
 
 import SwiftUI
 
-struct ProgramsView: View {
+struct CreatorWorkoutsView: View {
     // MARK: Data
-    @StateObject private var viewModel = ProgramsViewModel()
+    @StateObject private var viewModel = CreatorWorkoutsViewModel()
     
     @Binding var path: [NavigationDestinationTypes]
+    
+    @State var presentNewWorkout = false
     
     var body: some View {
         List {
             Section {
-                ForEach(viewModel.programs) { program in
-                    if let createdBy = program.createdBy, let program = program.programs {
-                        NavigationLink(value: NavigationDestinationTypes.ProgramDetailView(programId: program.id)) {
-                            ProgramCell(title: program.title, imageUrl: program.imageUrl, userFullName: createdBy.fullName)
+                ForEach(viewModel.workouts) { workout in
+                    ZStack {
+                        WorkoutCell(title: workout.title, description: workout.description)
+                        
+                        NavigationLink(value: NavigationDestinationTypes.CreatorWorkoutDetailView(workoutId: workout.id)) {
+                            
                         }
+                        .opacity(0)
                     }
+                    .listRowBackground(Color.ColorSystem.systemBackground)
                 }
                 
                 Color.ColorSystem.systemBackground
@@ -40,7 +46,7 @@ struct ProgramsView: View {
                         .onAppear(perform: {
                             // Get more programs
                             Task {
-                                await viewModel.getPurchasedPrograms()
+                                await viewModel.getCreatorsPrograms()
                             }
                         })
                 }
@@ -50,10 +56,20 @@ struct ProgramsView: View {
         .listRowSeparator(.hidden)
         .scrollContentBackground(.hidden)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Programs")
+        .navigationTitle("My Workouts")
         .background(Color.ColorSystem.systemBackground)
         .refreshable(action: {
             await viewModel.pulledRefresh()
+        })
+        .toolbar(content: {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("", systemImage: "plus") {
+                    presentNewWorkout.toggle()
+                }
+            }
+        })
+        .sheet(isPresented: $presentNewWorkout, content: {
+            
         })
         .alert(isPresented: $viewModel.didReturnError, content: {
             Alert(title: Text(viewModel.returnedErrorMessage))
@@ -62,6 +78,5 @@ struct ProgramsView: View {
 }
 
 #Preview {
-    ProgramsView(path: .constant([]))
-        .environmentObject(UserViewModel())
+    CreatorWorkoutsView(path: .constant([]))
 }

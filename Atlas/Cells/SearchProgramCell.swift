@@ -64,5 +64,5 @@ struct SearchProgramCell: View {
 }
 
 #Preview {
-    SearchProgramCell(program: Program(id: "", createdAt: "", createdBy: "", title: "Test Program", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla quam ligula. Suspendisse egestas ultrices orci, ac fermentum dolor bibendum sit amet.", free: false, price: 20, currency: "usd", weeks: 10))
+    SearchProgramCell(program: Program(id: "", createdAt: "", createdBy: "", title: "Test Program", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla quam ligula. Suspendisse egestas ultrices orci, ac fermentum dolor bibendum sit amet.", free: false, price: 20, currency: "usd", weeks: 10, isPrivate: false))
 }

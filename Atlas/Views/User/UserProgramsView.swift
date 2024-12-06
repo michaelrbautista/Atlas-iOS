@@ -19,16 +19,11 @@ struct UserProgramsView: View {
         List {
             Section {
                 ForEach(viewModel.programs) { program in
-                    ZStack {
-                        ProgramCell(title: program.title, imageUrl: program.imageUrl, userFullName: program.users?.fullName ?? "")
-                        
-                        NavigationLink(value: NavigationDestinationTypes.ProgramDetail(programId: program.id)) {
-                            
+                    if let createdBy = program.createdBy {
+                        NavigationLink(value: NavigationDestinationTypes.ProgramDetailView(programId: program.id)) {
+                            ProgramCell(title: program.title, imageUrl: program.imageUrl, userFullName: createdBy.fullName)
                         }
-                        .opacity(0)
                     }
-                    .listRowInsets(EdgeInsets(top: 16, leading: 20, bottom: 0, trailing: 20))
-                    .listRowSeparator(.hidden)
                 }
                 
                 if !viewModel.isLoading && !viewModel.endReached && viewModel.returnedErrorMessage == "" {

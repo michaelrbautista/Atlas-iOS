@@ -41,8 +41,8 @@ final class ProgramsViewModel: ObservableObject {
     @MainActor
     public func pulledRefresh() async {
         self.programs = [FetchedPurchasedProgram]()
-//        self.endReached = false
-//        
+        self.endReached = false
+        
         await getPurchasedPrograms()
     }
     

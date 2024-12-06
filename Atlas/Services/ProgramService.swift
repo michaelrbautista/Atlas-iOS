@@ -11,6 +11,18 @@ final class ProgramService {
     
     public static let shared = ProgramService()
     
+    // MARK: Create program
+    public func createProgram(createProgramRequest: CreateProgramRequest) async throws {
+        do {
+            try await SupabaseService.shared.supabase
+                .from("programs")
+                .insert(createProgramRequest)
+                .execute()
+        } catch {
+            throw error
+        }
+    }
+    
     // MARK: Save program
     public func saveProgram(purchasedProgram: PurchasedProgram) async throws {
         do {
@@ -79,7 +91,7 @@ final class ProgramService {
     }
     
     // MARK: Get creator's programs
-    public func getCreatorsPrograms(userId: String) async throws -> [FetchedProgram] {
+    public func getCreatorsPrograms(userId: String, offset: Int) async throws -> [FetchedProgram] {
         do {
             let programs: [FetchedProgram] = try await SupabaseService.shared.supabase
                 .from("programs")
@@ -90,7 +102,6 @@ final class ProgramService {
                         description,
                         image_url,
                         price,
-                        currency,
                         weeks,
                         free,
                         private,
@@ -100,6 +111,8 @@ final class ProgramService {
                     """
                 )
                 .eq("created_by", value: userId)
+                .order("created_at", ascending: false)
+                .range(from: offset, to: offset + 9)
                 .execute()
                 .value
             
@@ -124,7 +137,6 @@ final class ProgramService {
                             id,
                             title,
                             price,
-                            description,
                             image_url
                         )
                     """

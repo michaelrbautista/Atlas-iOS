@@ -11,6 +11,43 @@ final class WorkoutService {
     
     public static let shared = WorkoutService()
     
+    // MARK: Get creator's workouts
+    public func getCreatorsWorkouts(userId: String, offset: Int) async throws -> [FetchedWorkout] {
+        do {
+            let workouts: [FetchedWorkout] = try await SupabaseService.shared.supabase
+                .from("workouts")
+                .select(
+                    """
+                        id,
+                        title,
+                        description,
+                        program_exercises(
+                            id,
+                            exercise_number,
+                            sets,
+                            reps,
+                            time,
+                            exercises(
+                                id,
+                                title,
+                                instructions,
+                                video_url
+                            )
+                        )
+                    """
+                )
+                .eq("created_by", value: userId)
+                .order("created_at", ascending: false)
+                .range(from: offset, to: offset + 9)
+                .execute()
+                .value
+            
+            return workouts
+        } catch {
+            throw error
+        }
+    }
+    
     // MARK: Get workouts for day
     public func getDayWorkouts(programId: String, week: Int, day: String) async throws -> [FetchedProgramWorkout] {
         do {

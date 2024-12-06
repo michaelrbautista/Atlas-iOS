@@ -87,6 +87,6 @@ struct ExerciseDetailView: View {
 }
 
 #Preview {
-    ExerciseDetailView(viewModel: ExerciseDetailViewModel(programExercise: FetchedProgramExercise(id: "1234", exerciseId: "asdf", exerciseNumber: 0)))
+    ExerciseDetailView(viewModel: ExerciseDetailViewModel(programExercise: FetchedProgramExercise(id: "1234", exerciseNumber: 0)))
         .environmentObject(ProgramDetailViewModel(programId: "beff379c-b74b-4423-8a1f-b14b077b31f3"))
 }

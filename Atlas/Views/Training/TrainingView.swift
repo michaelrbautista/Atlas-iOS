@@ -37,7 +37,7 @@ struct TrainingView: View {
                                     .background(Color.ColorSystem.systemGray6)
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
                                     
-                                    NavigationLink(value: NavigationDestinationTypes.WorkoutDetail(workoutId: workout.id)) {
+                                    NavigationLink(value: NavigationDestinationTypes.WorkoutDetailView(workoutId: workout.id)) {
                                         
                                     }
                                     .opacity(0)
@@ -98,15 +98,15 @@ struct TrainingView: View {
             })
             .navigationDestination(for: NavigationDestinationTypes.self, destination: { destination in
                 switch destination {
-                case .UserDetail:
+                case .UserDetailView:
                     let vm = UserDetailViewModel(userId: destination.getId())
                     UserDetailView(viewModel: vm)
-                case .UserPrograms:
+                case .UserProgramsView:
                     let vm = UserProgramsViewModel(userId: destination.getId())
                     UserProgramsView(viewModel: vm)
                 case .ProgramsView:
                     ProgramsView(path: $path)
-                case .ProgramDetail:
+                case .ProgramDetailView:
                     let vm = ProgramDetailViewModel(programId: destination.getId())
                     ProgramDetailView(viewModel: vm, path: $path)
                 case .CalendarView:
@@ -117,15 +117,20 @@ struct TrainingView: View {
                         pages: program.weeks / 4 + 1,
                         remainder: program.weeks % 4
                     )
-                case .WorkoutDetail:
+                case .WorkoutDetailView:
                     let vm = WorkoutDetailViewModel(workoutId: destination.getId())
                     WorkoutDetailView(viewModel: vm)
-                case .ExerciseDetail:
+                case .ExerciseDetailView:
                     let vm = ExerciseDetailViewModel(programExercise: destination.getProgramExercise())
                     ExerciseDetailView(viewModel: vm)
                 case .CreatorProgramsView:
                     EmptyView()
+                case .CreatorProgramDetailView:
+                    let vm = CreatorProgramDetailViewModel(programId: destination.getId())
+                    CreatorProgramDetailView(viewModel: vm, path: $path)
                 case .CreatorWorkoutsView:
+                    EmptyView()
+                case .CreatorWorkoutDetailView:
                     EmptyView()
                 case .CreatorExercisesView:
                     EmptyView()

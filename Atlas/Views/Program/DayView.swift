@@ -41,7 +41,7 @@ struct DayView: View {
                             .background(Color.ColorSystem.systemGray6)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                             
-                            NavigationLink(value: NavigationDestinationTypes.WorkoutDetail(workoutId: workout.id)) {
+                            NavigationLink(value: NavigationDestinationTypes.WorkoutDetailView(workoutId: workout.id)) {
                                 
                             }
                             .opacity(0)

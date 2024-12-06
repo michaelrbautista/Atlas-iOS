@@ -42,5 +42,5 @@ struct ExerciseCell: View {
 }
 
 #Preview {
-    ExerciseCell(exercise: FetchedProgramExercise(id: "1234", exerciseId: "1234", exerciseNumber: 0))
+    ExerciseCell(exercise: FetchedProgramExercise(id: "1234", exerciseNumber: 0))
 }

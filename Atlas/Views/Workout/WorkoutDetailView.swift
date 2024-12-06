@@ -55,7 +55,7 @@ struct WorkoutDetailView: View {
                 if viewModel.workout!.programExercises!.count > 0 {
                     Section {
                         ForEach(viewModel.workout!.programExercises ?? [FetchedProgramExercise]()) { exercise in
-                            NavigationLink(value: NavigationDestinationTypes.ExerciseDetail(programExercise: exercise)) {
+                            NavigationLink(value: NavigationDestinationTypes.ExerciseDetailView(programExercise: exercise)) {
                                 ExerciseCell(
                                     exercise: exercise
                                 )

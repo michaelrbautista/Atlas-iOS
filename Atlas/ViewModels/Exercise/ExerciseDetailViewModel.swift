@@ -26,21 +26,21 @@ final class ExerciseDetailViewModel: ObservableObject {
         self.programExercise = programExercise
         
         Task {
-            do {
-                // Get program
-                let exercise = try await ExerciseService.shared.getExercise(exerciseId: programExercise.exerciseId)
-                
-                DispatchQueue.main.async {
-                    self.exercise = exercise
-                    self.isLoading = false
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.didReturnError = true
-                    self.returnedErrorMessage = error.localizedDescription
-                }
-            }
+//            do {
+//                // Get program
+//                let exercise = try await ExerciseService.shared.getExercise(exerciseId: programExercise.exerciseId)
+//                
+//                DispatchQueue.main.async {
+//                    self.exercise = exercise
+//                    self.isLoading = false
+//                }
+//            } catch {
+//                DispatchQueue.main.async {
+//                    self.isLoading = false
+//                    self.didReturnError = true
+//                    self.returnedErrorMessage = error.localizedDescription
+//                }
+//            }
         }
     }
 }

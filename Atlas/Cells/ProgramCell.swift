@@ -48,16 +48,14 @@ struct ProgramCell: View {
                 Text(title)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundStyle(Color.ColorSystem.primaryText)
-                    .font(Font.FontStyles.title2)
+                    .font(Font.FontStyles.headline)
                     .multilineTextAlignment(.leading)
                     .lineLimit(2)
                 
                 Text(userFullName)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundStyle(Color.ColorSystem.systemGray)
-                    .font(Font.FontStyles.headline)
-                
-                
+                    .font(Font.FontStyles.subhead)
                 
                 Spacer()
             }

@@ -22,6 +22,8 @@ struct Program: Codable, Identifiable, Hashable {
     
     var weeks: Int
     
+    var isPrivate: Bool
+    
     var imageUrl: String?
     var imagePath: String?
     
@@ -41,6 +43,8 @@ struct Program: Codable, Identifiable, Hashable {
         case currency
         
         case weeks
+        
+        case isPrivate = "private"
         
         case imageUrl = "image_url"
         case imagePath = "image_path"
@@ -90,5 +94,23 @@ struct FetchedPurchasedProgramUser: Codable, Hashable {
     
     enum CodingKeys: String, CodingKey {
         case fullName = "full_name"
+    }
+}
+
+struct CreateProgramRequest: Codable {
+    var title: String
+    var description: String?
+    var imageUrl: String?
+    var imagePath: String?
+    var price: Int?
+    var weeks: Int
+    var free: Bool
+    var isPrivate: Bool
+    
+    enum CodingKeys: String, CodingKey {
+        case title, description, price, weeks, free
+        case imageUrl = "image_url"
+        case imagePath = "image_path"
+        case isPrivate = "private"
     }
 }

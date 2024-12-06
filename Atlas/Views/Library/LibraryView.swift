@@ -30,15 +30,15 @@ struct LibraryView: View {
                         // MARK: Creator
                         Section {
                             NavigationLink(value: NavigationDestinationTypes.CreatorProgramsView(userId: currentUser.id)) {
-                                Text("My programs")
+                                Text("My Programs")
                             }
                             
                             NavigationLink(value: NavigationDestinationTypes.CreatorWorkoutsView(userId: currentUser.id)) {
-                                Text("My workouts")
+                                Text("My Workouts")
                             }
                             
                             NavigationLink(value: NavigationDestinationTypes.CreatorExercisesView(userId: currentUser.id)) {
-                                Text("My exercises")
+                                Text("My Exercises")
                             }
                         } header: {
                             Text("Creator")
@@ -51,15 +51,15 @@ struct LibraryView: View {
             .navigationTitle("Library")
             .navigationDestination(for: NavigationDestinationTypes.self, destination: { destination in
                 switch destination {
-                case .UserDetail:
+                case .UserDetailView:
                     let vm = UserDetailViewModel(userId: destination.getId())
                     UserDetailView(viewModel: vm)
-                case .UserPrograms:
+                case .UserProgramsView:
                     let vm = UserProgramsViewModel(userId: destination.getId())
                     UserProgramsView(viewModel: vm)
                 case .ProgramsView:
                     ProgramsView(path: $path)
-                case .ProgramDetail:
+                case .ProgramDetailView:
                     let vm = ProgramDetailViewModel(programId: destination.getId())
                     ProgramDetailView(viewModel: vm, path: $path)
                 case .CalendarView:
@@ -70,15 +70,20 @@ struct LibraryView: View {
                         pages: program.weeks / 4 + 1,
                         remainder: program.weeks % 4
                     )
-                case .WorkoutDetail:
+                case .WorkoutDetailView:
                     let vm = WorkoutDetailViewModel(workoutId: destination.getId())
                     WorkoutDetailView(viewModel: vm)
-                case .ExerciseDetail:
+                case .ExerciseDetailView:
                     let vm = ExerciseDetailViewModel(programExercise: destination.getProgramExercise())
                     ExerciseDetailView(viewModel: vm)
                 case .CreatorProgramsView:
                     CreatorProgramsView(path: $path)
+                case .CreatorProgramDetailView:
+                    let vm = CreatorProgramDetailViewModel(programId: destination.getId())
+                    CreatorProgramDetailView(viewModel: vm, path: $path)
                 case .CreatorWorkoutsView:
+                    CreatorWorkoutsView(path: $path)
+                case .CreatorWorkoutDetailView:
                     EmptyView()
                 case .CreatorExercisesView:
                     EmptyView()

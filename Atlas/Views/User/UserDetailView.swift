@@ -91,7 +91,7 @@ struct UserDetailView: View {
                 
                 // MARK: Content
                 Section {
-                    NavigationLink(value: NavigationDestinationTypes.UserPrograms(userId: viewModel.user!.id)) {
+                    NavigationLink(value: NavigationDestinationTypes.UserProgramsView(userId: viewModel.user!.id)) {
                         HStack(spacing: 16) {
                             Image(systemName: "figure.run")
                                 .frame(width: 20)

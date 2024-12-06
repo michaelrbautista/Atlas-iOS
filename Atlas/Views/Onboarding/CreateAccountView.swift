@@ -120,7 +120,7 @@ struct CreateAccountView: View {
         .navigationTitle("Create Account")
         .background(Color.ColorSystem.systemBackground)
         .alert(isPresented: $viewModel.returnedError, content: {
-            Alert(title: Text(viewModel.errorMessage ?? "Couldn't get workouts."))
+            Alert(title: Text(viewModel.errorMessage ?? "Couldn't create account."))
         })
     }
 }

@@ -1,13 +1,13 @@
 //
-//  CreatorProgramsViewModel.swift
+//  CreatorWorkoutsView.swift
 //  Atlas
 //
-//  Created by Michael Bautista on 12/5/24.
+//  Created by Michael Bautista on 12/6/24.
 //
 
 import SwiftUI
 
-final class CreatorProgramsViewModel: ObservableObject {
+final class CreatorWorkoutsViewModel: ObservableObject {
     @Published var isLoading = true
     
     @Published var offset = 0
@@ -16,7 +16,7 @@ final class CreatorProgramsViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
     
-    @Published var programs = [FetchedProgram]()
+    @Published var workouts = [FetchedWorkout]()
     
     var userId: String
     
@@ -39,7 +39,7 @@ final class CreatorProgramsViewModel: ObservableObject {
     // MARK: Refresh
     @MainActor
     public func pulledRefresh() async {
-        self.programs = [FetchedProgram]()
+        self.workouts = [FetchedWorkout]()
         self.endReached = false
         
         await getCreatorsPrograms()
@@ -49,11 +49,11 @@ final class CreatorProgramsViewModel: ObservableObject {
     @MainActor
     public func getCreatorsPrograms() async {
         do {
-            let programs = try await ProgramService.shared.getCreatorsPrograms(userId: self.userId, offset: self.offset)
+            let workouts = try await WorkoutService.shared.getCreatorsWorkouts(userId: self.userId, offset: self.offset)
             
-            self.programs.append(contentsOf: programs)
+            self.workouts.append(contentsOf: workouts)
             
-            if programs.count < 10 {
+            if workouts.count < 10 {
                 self.endReached = true
             } else {
                 offset += 10
@@ -66,16 +66,5 @@ final class CreatorProgramsViewModel: ObservableObject {
             self.returnedErrorMessage = error.localizedDescription
         }
     }
-    
-    public func addPrograms(newPrograms: [FetchedProgram]) {
-        DispatchQueue.main.async {
-            self.programs.append(contentsOf: newPrograms)
-        }
-    }
-    
-    public func removeProgram(programIndex: Int) {
-        DispatchQueue.main.async {
-            self.programs.remove(at: programIndex)
-        }
-    }
 }
+
