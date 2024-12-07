@@ -33,7 +33,7 @@ final class NewProgramViewModel: ObservableObject {
         self.isLoading = true
         
         // Check fields
-        if title == "" || weeks == "" || (!free && price == "") {
+        if title == "" || weeks == "" || Int(weeks)! < 1 || (!free && price == "") {
             didReturnError = true
             returnedErrorMessage = "Please fill in all fields"
             return

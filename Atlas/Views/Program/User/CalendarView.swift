@@ -13,6 +13,7 @@ struct CalendarView: View {
     @State var isEnd = false
     
     var programId: String
+    var isCreator: Bool
     var weeks: Int
     var pages: Int
     var remainder: Int
@@ -20,6 +21,8 @@ struct CalendarView: View {
     var days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
     
     @State var selectedDay = (1, "sunday")
+    
+    @State var presentNewWorkout = false
     
     func calculateStartWeek() -> Int {
         return 1 + (4 * (currentPage - 1))
@@ -47,7 +50,7 @@ struct CalendarView: View {
                             Spacer()
                             
                             Image(systemName: "chevron.left")
-                                .foregroundStyle(isEnd ? Color.ColorSystem.systemGray3 : Color.ColorSystem.primaryText)
+                                .foregroundStyle(currentPage == 1 ? Color.ColorSystem.systemGray3 : Color.ColorSystem.primaryText)
                             
                             Spacer()
                         }
@@ -123,11 +126,34 @@ struct CalendarView: View {
             }
             
             // MARK: Workouts
-            DayView(viewModel: DayViewModel(programId: programId, week: selectedDay.0, day: selectedDay.1))
+            Section {
+                DayView(viewModel: DayViewModel(programId: programId, week: selectedDay.0, day: selectedDay.1))
+            } header: {
+                HStack {
+                    Text("Workouts")
+                        .font(Font.FontStyles.title3)
+                        .padding(EdgeInsets(top: 20, leading: 20, bottom: 0, trailing: 0))
+                    
+                    Spacer()
+                    
+                    if isCreator {
+                        Button {
+                            presentNewWorkout.toggle()
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+
+                    }
+                }
+            }
+            .headerProminence(.increased)
+        }
+        .sheet(isPresented: $presentNewWorkout) {
+            Text("New workout")
         }
     }
 }
 
 #Preview {
-    CalendarView(programId: "b6619681-8e20-43f7-a67c-b6ed9750c731", weeks: 5, pages: 4, remainder: 3)
+    CalendarView(programId: "b6619681-8e20-43f7-a67c-b6ed9750c731", isCreator: false, weeks: 5, pages: 4, remainder: 3)
 }

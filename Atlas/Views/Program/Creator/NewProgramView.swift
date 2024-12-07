@@ -11,16 +11,7 @@ import PhotosUI
 struct NewProgramView: View {
     @Environment(\.dismiss) var dismiss
     
-    @EnvironmentObject var userViewModel: UserViewModel
-    
     @StateObject var viewModel = NewProgramViewModel()
-    
-    @State var goToNextPage = false
-    
-    @State var isAlertShown = false
-    @State var alertMessage = ""
-    
-    @FocusState var keyboardIsFocused: Bool
     
     var body: some View {
         NavigationStack {
@@ -106,7 +97,7 @@ struct NewProgramView: View {
                     .listRowBackground(Color.ColorSystem.systemGray6)
                     .tint(Color.ColorSystem.systemBlue)
                     
-                    SecureField(text: $viewModel.price, prompt: Text("")) {
+                    TextField(text: $viewModel.price) {
                         Text("Price")
                     }
                     .textInputAutocapitalization(.never)

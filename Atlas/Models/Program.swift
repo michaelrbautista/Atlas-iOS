@@ -106,11 +106,16 @@ struct CreateProgramRequest: Codable {
     var weeks: Int
     var free: Bool
     var isPrivate: Bool
-    
-    enum CodingKeys: String, CodingKey {
-        case title, description, price, weeks, free
-        case imageUrl = "image_url"
-        case imagePath = "image_path"
-        case isPrivate = "private"
-    }
+}
+
+struct EditProgramRequest: Codable {
+    var programId: String
+    var title: String
+    var description: String?
+    var imageUrl: String?
+    var imagePath: String?
+    var price: Int?
+    var weeks: Int
+    var free: Bool
+    var isPrivate: Bool
 }

@@ -113,6 +113,7 @@ struct TrainingView: View {
                     let program = destination.getProgram()
                     CalendarView(
                         programId: program.id,
+                        isCreator: UserService.currentUser?.id == program.createdBy,
                         weeks: program.weeks,
                         pages: program.weeks / 4 + 1,
                         remainder: program.weeks % 4

@@ -11,6 +11,19 @@ final class ProgramService {
     
     public static let shared = ProgramService()
     
+    // MARK: Edit program
+    public func editProgram(editProgramRequest: EditProgramRequest) async throws {
+        do {
+            try await SupabaseService.shared.supabase
+                .from("programs")
+                .update(editProgramRequest)
+                .eq("id", value: editProgramRequest.programId)
+                .execute()
+        } catch {
+            throw error
+        }
+    }
+    
     // MARK: Create program
     public func createProgram(createProgramRequest: CreateProgramRequest) async throws {
         do {

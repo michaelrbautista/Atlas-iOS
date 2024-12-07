@@ -12,6 +12,8 @@ struct CreatorProgramDetailView: View {
     
     @Binding var path: [NavigationDestinationTypes]
     
+    @State var presentEditProgram = false
+    
     var body: some View {
         if viewModel.program == nil || viewModel.isLoading {
             VStack(alignment: .center) {
@@ -138,11 +140,14 @@ struct CreatorProgramDetailView: View {
                 .scrollContentBackground(.hidden)
                 .navigationBarTitleDisplayMode(.inline)
                 .background(Color.ColorSystem.systemBackground)
+                .sheet(isPresented: $presentEditProgram, content: {
+                    EditProgramView(viewModel: EditProgramViewModel(program: viewModel.program!))
+                })
                 .toolbar(content: {
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
                             Button {
-                                
+                                presentEditProgram.toggle()
                             } label: {
                                 Text("Edit program")
                             }

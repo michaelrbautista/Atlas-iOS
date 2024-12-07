@@ -84,6 +84,9 @@
 		89E3A8512D03826C00624C72 /* CreatorWorkoutsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A8502D03826800624C72 /* CreatorWorkoutsViewModel.swift */; };
 		89E3A8532D03BBE400624C72 /* CreatorProgramDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A8522D03BBDD00624C72 /* CreatorProgramDetailViewModel.swift */; };
 		89E3A8552D03BBEF00624C72 /* CreatorProgramDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A8542D03BBEF00624C72 /* CreatorProgramDetailView.swift */; };
+		89E3A85B2D03D5D900624C72 /* SaveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A85A2D03D5D900624C72 /* SaveButton.swift */; };
+		89E3A85D2D03F5A600624C72 /* EditProgramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A85C2D03F5A600624C72 /* EditProgramView.swift */; };
+		89E3A8612D03F5DD00624C72 /* EditProgramViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A8602D03F5D700624C72 /* EditProgramViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -158,6 +161,9 @@
 		89E3A8502D03826800624C72 /* CreatorWorkoutsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorWorkoutsViewModel.swift; sourceTree = "<group>"; };
 		89E3A8522D03BBDD00624C72 /* CreatorProgramDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorProgramDetailViewModel.swift; sourceTree = "<group>"; };
 		89E3A8542D03BBEF00624C72 /* CreatorProgramDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorProgramDetailView.swift; sourceTree = "<group>"; };
+		89E3A85A2D03D5D900624C72 /* SaveButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveButton.swift; sourceTree = "<group>"; };
+		89E3A85C2D03F5A600624C72 /* EditProgramView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProgramView.swift; sourceTree = "<group>"; };
+		89E3A8602D03F5D700624C72 /* EditProgramViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProgramViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -290,7 +296,6 @@
 		89D5A7D32BA654C60001CFB3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				89E3A83E2D02667C00624C72 /* Creator */,
 				89766E762CDC20ED0022C4F5 /* Training */,
 				890715D62CB08B160079200F /* Explore */,
 				89F6980E2BEE74EE00DFB3AD /* Program */,
@@ -405,7 +410,8 @@
 		89D5A7DD2BA656BD0001CFB3 /* Workout */ = {
 			isa = PBXGroup;
 			children = (
-				89D5A87B2BABC90D0001CFB3 /* WorkoutDetailView.swift */,
+				89E3A8582D03D34000624C72 /* Creator */,
+				89E3A8592D03D34600624C72 /* User */,
 			);
 			path = Workout;
 			sourceTree = "<group>";
@@ -432,41 +438,6 @@
 				89B400172BF987B800A832AA /* WorkoutDetailViewModel.swift */,
 			);
 			path = Workout;
-			sourceTree = "<group>";
-		};
-		89E3A83E2D02667C00624C72 /* Creator */ = {
-			isa = PBXGroup;
-			children = (
-				89E3A83F2D02668200624C72 /* Program */,
-				89E3A8402D02668900624C72 /* Workout */,
-				89E3A8412D02668C00624C72 /* Exercise */,
-			);
-			path = Creator;
-			sourceTree = "<group>";
-		};
-		89E3A83F2D02668200624C72 /* Program */ = {
-			isa = PBXGroup;
-			children = (
-				89E3A8462D02675000624C72 /* CreatorProgramsView.swift */,
-				89E3A8542D03BBEF00624C72 /* CreatorProgramDetailView.swift */,
-				89E3A84A2D026F5200624C72 /* NewProgramView.swift */,
-			);
-			path = Program;
-			sourceTree = "<group>";
-		};
-		89E3A8402D02668900624C72 /* Workout */ = {
-			isa = PBXGroup;
-			children = (
-				89E3A84E2D03823E00624C72 /* CreatorWorkoutsView.swift */,
-			);
-			path = Workout;
-			sourceTree = "<group>";
-		};
-		89E3A8412D02668C00624C72 /* Exercise */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Exercise;
 			sourceTree = "<group>";
 		};
 		89E3A8422D02669500624C72 /* Creator */ = {
@@ -497,22 +468,78 @@
 		89E3A8452D0266A200624C72 /* Program */ = {
 			isa = PBXGroup;
 			children = (
+			);
+			path = Program;
+			sourceTree = "<group>";
+		};
+		89E3A8562D03D31E00624C72 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				89D5A7FF2BA657B50001CFB3 /* ProgramsView.swift */,
+				89D5A7FB2BA657AD0001CFB3 /* ProgramDetailView.swift */,
+				89E3A85A2D03D5D900624C72 /* SaveButton.swift */,
+				898D0B192C93529800898957 /* CalendarView.swift */,
+				898D0B1B2C939E8100898957 /* DayView.swift */,
+				8917C6FA2CAB2358005B3D5B /* PurchaseModalView.swift */,
+				8917C6FC2CAB3F76005B3D5B /* StartProgramView.swift */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
+		89E3A8572D03D32400624C72 /* Creator */ = {
+			isa = PBXGroup;
+			children = (
+				89E3A8462D02675000624C72 /* CreatorProgramsView.swift */,
+				89E3A8542D03BBEF00624C72 /* CreatorProgramDetailView.swift */,
+				89E3A84A2D026F5200624C72 /* NewProgramView.swift */,
+				89E3A85C2D03F5A600624C72 /* EditProgramView.swift */,
+			);
+			path = Creator;
+			sourceTree = "<group>";
+		};
+		89E3A8582D03D34000624C72 /* Creator */ = {
+			isa = PBXGroup;
+			children = (
+				89E3A84E2D03823E00624C72 /* CreatorWorkoutsView.swift */,
+			);
+			path = Creator;
+			sourceTree = "<group>";
+		};
+		89E3A8592D03D34600624C72 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				89D5A87B2BABC90D0001CFB3 /* WorkoutDetailView.swift */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
+		89E3A85E2D03F5B700624C72 /* Creator */ = {
+			isa = PBXGroup;
+			children = (
 				89E3A8482D02678C00624C72 /* CreatorProgramsViewModel.swift */,
 				89E3A8522D03BBDD00624C72 /* CreatorProgramDetailViewModel.swift */,
 				89E3A84C2D029E8800624C72 /* NewProgramViewModel.swift */,
+				89E3A8602D03F5D700624C72 /* EditProgramViewModel.swift */,
 			);
-			path = Program;
+			path = Creator;
+			sourceTree = "<group>";
+		};
+		89E3A85F2D03F5BB00624C72 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				89D5A82A2BA658D50001CFB3 /* ProgramsViewModel.swift */,
+				89D5A82E2BA658E10001CFB3 /* ProgramDetailViewModel.swift */,
+				898D0B1D2C939EA100898957 /* DayViewModel.swift */,
+				8974FC6D2CAB43A50054281D /* StartProgramViewModel.swift */,
+			);
+			path = User;
 			sourceTree = "<group>";
 		};
 		89F6980E2BEE74EE00DFB3AD /* Program */ = {
 			isa = PBXGroup;
 			children = (
-				89D5A7FF2BA657B50001CFB3 /* ProgramsView.swift */,
-				89D5A7FB2BA657AD0001CFB3 /* ProgramDetailView.swift */,
-				898D0B192C93529800898957 /* CalendarView.swift */,
-				898D0B1B2C939E8100898957 /* DayView.swift */,
-				8917C6FA2CAB2358005B3D5B /* PurchaseModalView.swift */,
-				8917C6FC2CAB3F76005B3D5B /* StartProgramView.swift */,
+				89E3A8572D03D32400624C72 /* Creator */,
+				89E3A8562D03D31E00624C72 /* User */,
 			);
 			path = Program;
 			sourceTree = "<group>";
@@ -529,10 +556,8 @@
 		89F698102BEE755000DFB3AD /* Program */ = {
 			isa = PBXGroup;
 			children = (
-				89D5A82A2BA658D50001CFB3 /* ProgramsViewModel.swift */,
-				89D5A82E2BA658E10001CFB3 /* ProgramDetailViewModel.swift */,
-				898D0B1D2C939EA100898957 /* DayViewModel.swift */,
-				8974FC6D2CAB43A50054281D /* StartProgramViewModel.swift */,
+				89E3A85E2D03F5B700624C72 /* Creator */,
+				89E3A85F2D03F5BB00624C72 /* User */,
 			);
 			path = Program;
 			sourceTree = "<group>";
@@ -630,6 +655,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89E3A85D2D03F5A600624C72 /* EditProgramView.swift in Sources */,
 				89D5A8552BA65A450001CFB3 /* WorkoutService.swift in Sources */,
 				89D5A8A42BBA443C0001CFB3 /* ExerciseDetailView.swift in Sources */,
 				89766E752CDBF3840022C4F5 /* LibraryView.swift in Sources */,
@@ -649,9 +675,11 @@
 				89D5A8002BA657B50001CFB3 /* ProgramsView.swift in Sources */,
 				898D0B1E2C939EA100898957 /* DayViewModel.swift in Sources */,
 				89D5A8492BA659810001CFB3 /* Validators.swift in Sources */,
+				89E3A85B2D03D5D900624C72 /* SaveButton.swift in Sources */,
 				89D5A80C2BA657FA0001CFB3 /* ProfileView.swift in Sources */,
 				89E046E52C1BED7B006BCE71 /* Exercise.swift in Sources */,
 				89D5A8592BA65AA30001CFB3 /* StorageService.swift in Sources */,
+				89E3A8612D03F5DD00624C72 /* EditProgramViewModel.swift in Sources */,
 				8917C6FB2CAB2358005B3D5B /* PurchaseModalView.swift in Sources */,
 				890715D92CB08B370079200F /* ExploreViewModel.swift in Sources */,
 				89D5A84F2BA659940001CFB3 /* AuthService.swift in Sources */,
