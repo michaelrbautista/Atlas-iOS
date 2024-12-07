@@ -141,7 +141,7 @@ struct CreatorProgramDetailView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .background(Color.ColorSystem.systemBackground)
                 .sheet(isPresented: $presentEditProgram, content: {
-                    EditProgramView(viewModel: EditProgramViewModel(program: viewModel.program!))
+                    EditProgramView(viewModel: EditProgramViewModel(program: viewModel.program!, programImage: viewModel.programImage))
                 })
                 .toolbar(content: {
                     ToolbarItem(placement: .topBarTrailing) {

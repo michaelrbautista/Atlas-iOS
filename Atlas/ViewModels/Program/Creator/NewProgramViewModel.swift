@@ -51,6 +51,9 @@ final class NewProgramViewModel: ObservableObject {
         
         do {
             // Save image to storage
+            var imageUrl: String
+            var imagePath: String
+            
             if programImage != nil {
                 guard let currentUser = UserService.currentUser else {
                     print("Couldn't get current user.")

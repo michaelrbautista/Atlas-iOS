@@ -46,7 +46,7 @@ final class StorageService {
     }
     
     // MARK: Update file
-    public func udpateImage(imagePath: String, newImage: Data) async throws {
+    public func updateImage(imagePath: String, newImage: Data) async throws {
         do {
             try await SupabaseService.shared.supabase.storage
                 .from("program_images")

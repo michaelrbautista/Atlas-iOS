@@ -154,5 +154,5 @@ struct EditProgramView: View {
 }
 
 #Preview {
-    EditProgramView(viewModel: EditProgramViewModel(program: Program(id: "", createdAt: "", createdBy: "", title: "", free: true, price: 0, currency: "", weeks: 8, isPrivate: false)))
+    EditProgramView(viewModel: EditProgramViewModel(program: Program(id: "", createdAt: "", createdBy: "", title: "", free: true, price: 0, currency: "", weeks: 8, isPrivate: false), programImage: UIImage()))
 }
