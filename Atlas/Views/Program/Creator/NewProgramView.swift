@@ -13,6 +13,9 @@ struct NewProgramView: View {
     
     @StateObject var viewModel = NewProgramViewModel()
     
+    // FetchedProgram: newly created program
+    var addProgram: ((Program) -> Void)
+    
     var body: some View {
         NavigationStack {
             List {
@@ -89,7 +92,7 @@ struct NewProgramView: View {
                     .tint(Color.ColorSystem.systemBlue)
                 }
                 
-                // MARK: Free
+                // MARK: Price
                 Section {
                     Toggle(isOn: $viewModel.free) {
                         Text("Free")
@@ -101,7 +104,7 @@ struct NewProgramView: View {
                         Text("Price")
                     }
                     .textInputAutocapitalization(.never)
-                    .keyboardType(.numberPad)
+                    .keyboardType(.decimalPad)
                     .foregroundStyle(Color.ColorSystem.primaryText)
                     .listRowBackground(Color.ColorSystem.systemGray6)
                     .disabled(viewModel.isLoading || viewModel.free)
@@ -130,9 +133,12 @@ struct NewProgramView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         Task {
-                            await viewModel.saveProgram()
+                            let newProgram = await viewModel.saveProgram()
                             
-                            dismiss()
+                            if !viewModel.didReturnError && newProgram != nil {
+                                addProgram(newProgram!)
+                                dismiss()
+                            }
                         }
                     } label: {
                         if !viewModel.isLoading {
@@ -154,5 +160,5 @@ struct NewProgramView: View {
 }
 
 #Preview {
-    NewProgramView()
+    NewProgramView(addProgram: { workout in })
 }

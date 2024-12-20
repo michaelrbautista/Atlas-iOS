@@ -41,6 +41,16 @@ struct User: Codable, Identifiable, Hashable {
     }
 }
 
+struct FetchedUser: Codable, Hashable {
+    var id: String
+    var fullName: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case fullName = "full_name"
+    }
+}
+
 // MARK: Requests
 struct CreateUserRequest {
     var profile_picture: UIImage?

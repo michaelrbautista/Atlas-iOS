@@ -12,9 +12,12 @@ final class EditProgramViewModel: ObservableObject {
     @Published var isLoading = false
     
     @Published var programImage: UIImage? = nil
+    @Published var imageExtension: String = "jpeg"
     @Published var imageSelection: PhotosPickerItem? = nil {
         didSet {
-            setImage(selection: imageSelection)
+            Task {
+                await setImage(selection: imageSelection)
+            }
         }
     }
     
@@ -30,22 +33,30 @@ final class EditProgramViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
     
-    init(program: Program, programImage: UIImage?) {
+    init(program: EditProgramRequest, programImage: UIImage?) {
         self.programId = program.id
         self.imagePath = program.imagePath
         self.title = program.title
         self.weeks = String(program.weeks)
-        self.description = String(program.description ?? "")
+        self.description = program.description ?? ""
         self.isPrivate = program.isPrivate
         self.free = program.free
-        self.price = program.price == 0 ? "" : String(program.price)
+        self.price = String(format: "%.2f", program.price ?? 1.00)
         
         self.programImage = programImage
     }
     
     // MARK: Save program
+    @MainActor
     public func saveProgram() async {
         self.isLoading = true
+        
+        // Check fields
+        if self.title == "" {
+            didReturnError = true
+            returnedErrorMessage = "Please fill in all fields"
+            return
+        }
         
         do {
             var newProgram: EditProgramRequest
@@ -61,52 +72,53 @@ final class EditProgramViewModel: ObservableObject {
                 
                 // Check if image needs to be replaced or added
                 if self.imagePath != nil {
-                    try await StorageService.shared.updateImage(imagePath: self.imagePath!, newImage: imageData)
+                    try await StorageService.shared.updateImage(file: imageData, bucketName: "program_images", fileName: self.imagePath!, fileType: self.imageExtension)
                 } else {
                     guard let currentUser = UserService.currentUser else {
                         print("Couldn't get current user.")
                         return
                     }
                     
-                    let imagePath = "\(currentUser.id.description)\(Date().hashValue).jpg"
+                    let imagePath = "\(currentUser.id.description)/\(Date().hashValue).jpg"
                     
-                    guard let imageData = programImage!.pngData() else {
+                    guard let imageData = programImage!.jpegData(compressionQuality: 1) else {
                         print("Couldn't get data from image.")
                         return
                     }
                     
-                    let imageUrl = try await StorageService.shared.saveFile(file: imageData, bucketName: "program_images", fileName: imagePath)
+                    let imageUrl = try await StorageService.shared.saveImage(file: imageData, bucketName: "program_images", fileName: imagePath, fileType: self.imageExtension)
                     
                     newImageUrl = imageUrl
                     newImagePath = imagePath
                 }
                 
                 newProgram = EditProgramRequest(
-                    programId: self.programId,
+                    id: self.programId,
                     title: self.title,
-                    description: self.description,
+                    description: self.description == "" ? nil : self.description,
                     imageUrl: newImageUrl,
                     imagePath: newImagePath,
-                    price: Int(self.price),
-                    weeks: Int(self.weeks)!,
+                    price: Double(self.price),
+                    weeks: Int(self.weeks) ?? 1,
                     free: self.free,
                     isPrivate: self.isPrivate
                 )
             } else {
                 newProgram = EditProgramRequest(
-                    programId: self.programId,
+                    id: self.programId,
                     title: self.title,
-                    description: self.description,
-                    price: Int(self.price),
-                    weeks: Int(self.weeks)!,
+                    description: self.description == "" ? nil : self.description,
+                    price: Double(self.price),
+                    weeks: Int(self.weeks) ?? 1,
                     free: self.free,
                     isPrivate: self.isPrivate
                 )
             }
             
             // Update program
-            try await ProgramService.shared.editProgram(editProgramRequest: newProgram)
+            try await ProgramService.shared.editProgram(programId: self.programId, editProgramRequest: newProgram)
             
+            // Update program on UI
             
         } catch {
             self.isLoading = false
@@ -116,6 +128,7 @@ final class EditProgramViewModel: ObservableObject {
     }
     
     // MARK: Set image
+    @MainActor
     private func setImage(selection: PhotosPickerItem?) {
         guard let selection else {
             return
@@ -123,6 +136,7 @@ final class EditProgramViewModel: ObservableObject {
         
         Task {
             if let data = try? await selection.loadTransferable(type: Data.self) {
+                self.imageExtension = data.imageExtension
                 if let uiImage = UIImage(data: data) {
                     DispatchQueue.main.async {
                         self.programImage = uiImage

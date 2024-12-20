@@ -17,7 +17,7 @@ final class UserProgramsViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage: String? = nil
     
-    @Published var programs = [FetchedProgram]()
+    @Published var programs = [Program]()
     
     var userId: String
     
@@ -31,8 +31,7 @@ final class UserProgramsViewModel: ObservableObject {
     
     @MainActor
     public func pulledRefresh() async {
-        self.programs = [FetchedProgram]()
-        self.endReached = false
+        self.programs = [Program]()
         
         await getCreatorsPrograms()
     }
@@ -47,6 +46,7 @@ final class UserProgramsViewModel: ObservableObject {
             if programs.count < 10 {
                 self.endReached = true
             } else {
+                self.endReached = false
                 offset += 10
             }
             

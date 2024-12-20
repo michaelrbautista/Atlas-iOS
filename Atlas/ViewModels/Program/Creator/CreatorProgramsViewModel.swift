@@ -16,7 +16,7 @@ final class CreatorProgramsViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
     
-    @Published var programs = [FetchedProgram]()
+    @Published var programs = [Program]()
     
     var userId: String
     
@@ -39,8 +39,7 @@ final class CreatorProgramsViewModel: ObservableObject {
     // MARK: Refresh
     @MainActor
     public func pulledRefresh() async {
-        self.programs = [FetchedProgram]()
-        self.endReached = false
+        self.programs = [Program]()
         
         await getCreatorsPrograms()
     }
@@ -56,6 +55,7 @@ final class CreatorProgramsViewModel: ObservableObject {
             if programs.count < 10 {
                 self.endReached = true
             } else {
+                self.endReached = false
                 offset += 10
             }
             
@@ -64,18 +64,6 @@ final class CreatorProgramsViewModel: ObservableObject {
             self.isLoading = false
             self.didReturnError = true
             self.returnedErrorMessage = error.localizedDescription
-        }
-    }
-    
-    public func addPrograms(newPrograms: [FetchedProgram]) {
-        DispatchQueue.main.async {
-            self.programs.append(contentsOf: newPrograms)
-        }
-    }
-    
-    public func removeProgram(programIndex: Int) {
-        DispatchQueue.main.async {
-            self.programs.remove(at: programIndex)
         }
     }
 }

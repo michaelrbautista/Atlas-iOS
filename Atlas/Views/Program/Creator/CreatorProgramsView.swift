@@ -11,7 +11,7 @@ struct CreatorProgramsView: View {
     // MARK: Data
     @StateObject private var viewModel = CreatorProgramsViewModel()
     
-    @Binding var path: [NavigationDestinationTypes]
+    @Binding var path: [RootNavigationTypes]
     
     @State var presentNewProgram = false
     
@@ -20,7 +20,7 @@ struct CreatorProgramsView: View {
             Section {
                 ForEach(viewModel.programs) { program in
                     if let createdBy = program.createdBy {
-                        NavigationLink(value: NavigationDestinationTypes.CreatorProgramDetailView(programId: program.id)) {
+                        NavigationLink(value: RootNavigationTypes.ProgramDetailView(programId: program.id)) {
                             ProgramCell(title: program.title, imageUrl: program.imageUrl, userFullName: createdBy.fullName)
                         }
                     }
@@ -65,7 +65,11 @@ struct CreatorProgramsView: View {
             }
         })
         .sheet(isPresented: $presentNewProgram, content: {
-            NewProgramView()
+            NewProgramView(
+                addProgram: { newProgram in
+                    viewModel.programs.insert(newProgram, at: 0)
+                }
+            )
         })
         .alert(isPresented: $viewModel.didReturnError, content: {
             Alert(title: Text(viewModel.returnedErrorMessage))

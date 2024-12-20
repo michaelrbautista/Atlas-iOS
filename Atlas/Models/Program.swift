@@ -7,89 +7,66 @@
 
 import SwiftUI
 
-// MARK: Models
-struct Program: Codable, Identifiable, Hashable {
+struct Program: Identifiable, Codable, Hashable {
     var id: String
-    var createdAt: String
-    var createdBy: String
+    var title: String
+    var description: String?
+    var imageUrl: String?
+    var imagePath: String?
+    var price: Double
+    var weeks: Int
+    var free: Bool
+    var isPrivate: Bool
+    var createdBy: FetchedUser?
     
+    enum CodingKeys: String, CodingKey {
+        case id, title, description, price, weeks, free
+        case imageUrl = "image_url"
+        case imagePath = "image_path"
+        case isPrivate = "private"
+        case createdBy = "created_by"
+    }
+}
+
+struct ProgramWorkout: Codable, Hashable, Identifiable {
+    var id: String
+    var createdBy: String
     var title: String
     var description: String?
     
-    var free: Bool
-    var price: Int
-    var currency: String
+    var workoutExercises: [FetchedWorkoutExercise]?
     
-    var weeks: Int
+    enum CodingKeys: String, CodingKey {
+        case id, title, description
+        case createdBy = "created_by"
+        case workoutExercises = "workout_exercises"
+    }
+}
+
+struct PurchasedProgram: Identifiable, Codable, Hashable {
+    var id: String
+    var createdBy: FetchedUser?
+    var programs: PurchasedProgramForeignKey?
     
-    var isPrivate: Bool
-    
+    enum CodingKeys: String, CodingKey {
+        case id, programs
+        case createdBy = "created_by"
+    }
+}
+
+struct PurchasedProgramForeignKey: Identifiable, Codable, Hashable {
+    var id: String
+    var title: String
+    var price: Double
     var imageUrl: String?
-    var imagePath: String?
-    
-    var workouts: [FetchedProgramWorkout]?
-    var users: FetchedUser?
     
     enum CodingKeys: String, CodingKey {
-        case id
-        case createdAt = "created_at"
-        case createdBy = "created_by"
-        
-        case title
-        case description
-        
-        case free
-        case price
-        case currency
-        
-        case weeks
-        
-        case isPrivate = "private"
-        
+        case id, title, price
         case imageUrl = "image_url"
-        case imagePath = "image_path"
-        
-        case workouts
-        case users
     }
 }
 
-// Reference to a program saved by a user
-struct PurchasedProgram: Codable, Identifiable, Hashable {
-    var id: String?
-    
-    // Reference to program
-    var programId: String
-    
-    // User that saved the program
-    var purchasedBy: String
-    var createdBy: String
-    
-    var users: FetchedPurchasedProgramUser?
-    var programs: FetchedProgram?
-    
-    enum CodingKeys: String, CodingKey {
-        case id
-        
-        case programId = "program_id"
-        
-        case purchasedBy = "purchased_by"
-        case createdBy = "created_by"
-        
-        case users
-        case programs
-    }
-}
-
-struct FetchedUser: Codable, Hashable {
-    var fullName: String
-    
-    enum CodingKeys: String, CodingKey {
-        case fullName = "full_name"
-    }
-}
-
-struct FetchedPurchasedProgramUser: Codable, Hashable {
+struct PurchasedProgramUser: Codable, Hashable {
     var fullName: String
     
     enum CodingKeys: String, CodingKey {
@@ -102,20 +79,38 @@ struct CreateProgramRequest: Codable {
     var description: String?
     var imageUrl: String?
     var imagePath: String?
-    var price: Int?
+    var price: Double?
     var weeks: Int
     var free: Bool
     var isPrivate: Bool
+    
+    enum CodingKeys: String, CodingKey {
+        case title, description, price, weeks, free
+        case imageUrl = "image_url"
+        case imagePath = "image_path"
+        case isPrivate = "private"
+    }
 }
 
 struct EditProgramRequest: Codable {
-    var programId: String
+    var id: String
     var title: String
     var description: String?
     var imageUrl: String?
     var imagePath: String?
-    var price: Int?
+    var price: Double?
     var weeks: Int
     var free: Bool
     var isPrivate: Bool
+    
+    enum CodingKeys: String, CodingKey {
+        case id, title, description, price, weeks, free
+        case imageUrl = "image_url"
+        case imagePath = "image_path"
+        case isPrivate = "private"
+    }
+}
+
+struct ProgramId: Codable {
+    var id: String
 }

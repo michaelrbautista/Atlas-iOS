@@ -13,7 +13,7 @@ struct ExploreView: View {
     @EnvironmentObject var userViewModel: UserViewModel
     @StateObject private var viewModel = ExploreViewModel()
     
-    @State var path = [NavigationDestinationTypes]()
+    @State var path = [RootNavigationTypes]()
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -35,13 +35,13 @@ struct ExploreView: View {
                     if viewModel.searchText != "" {
                         if viewModel.filter == "Programs" {
                             ForEach(viewModel.programs) { program in
-                                NavigationLink(value: NavigationDestinationTypes.ProgramDetailView(programId: program.id)) {
+                                NavigationLink(value: RootNavigationTypes.ProgramDetailView(programId: program.id)) {
                                     SearchProgramCell(program: program)
                                 }
                             }
                         } else {
                             ForEach(viewModel.users) { user in
-                                NavigationLink(value: NavigationDestinationTypes.UserDetailView(userId: user.id)) {
+                                NavigationLink(value: RootNavigationTypes.UserDetailView(userId: user.id)) {
                                     SearchUserCell(user: user)
                                 }
                             }
@@ -63,47 +63,7 @@ struct ExploreView: View {
             .alert(isPresented: $viewModel.didReturnError, content: {
                 Alert(title: Text(viewModel.returnedErrorMessage))
             })
-            .navigationDestination(for: NavigationDestinationTypes.self, destination: { destination in
-                switch destination {
-                case .UserDetailView:
-                    let vm = UserDetailViewModel(userId: destination.getId())
-                    UserDetailView(viewModel: vm)
-                case .UserProgramsView:
-                    let vm = UserProgramsViewModel(userId: destination.getId())
-                    UserProgramsView(viewModel: vm)
-                case .ProgramsView:
-                    ProgramsView(path: $path)
-                case .ProgramDetailView:
-                    let vm = ProgramDetailViewModel(programId: destination.getId())
-                    ProgramDetailView(viewModel: vm, path: $path)
-                case .CalendarView:
-                    let program = destination.getProgram()
-                    CalendarView(
-                        programId: program.id,
-                        isCreator: UserService.currentUser?.id == program.createdBy,
-                        weeks: program.weeks,
-                        pages: program.weeks / 4 + 1,
-                        remainder: program.weeks % 4
-                    )
-                case .WorkoutDetailView:
-                    let vm = WorkoutDetailViewModel(workoutId: destination.getId())
-                    WorkoutDetailView(viewModel: vm)
-                case .ExerciseDetailView:
-                    let vm = ExerciseDetailViewModel(programExercise: destination.getProgramExercise())
-                    ExerciseDetailView(viewModel: vm)
-                case .CreatorProgramsView:
-                    EmptyView()
-                case .CreatorProgramDetailView:
-                    let vm = CreatorProgramDetailViewModel(programId: destination.getId())
-                    CreatorProgramDetailView(viewModel: vm, path: $path)
-                case .CreatorWorkoutsView:
-                    EmptyView()
-                case .CreatorWorkoutDetailView:
-                    EmptyView()
-                case .CreatorExercisesView:
-                    EmptyView()
-                }
-            })
+            .rootNavigationDestination(path: $path)
         }
     }
 }

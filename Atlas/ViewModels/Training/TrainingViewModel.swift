@@ -19,7 +19,7 @@ final class TrainingViewModel: ObservableObject {
     @Published var daysSinceStarted: Int? = nil
 
     @Published var program: Program? = nil
-    @Published var workouts: [FetchedProgramWorkout]? = nil
+    @Published var workouts: [ProgramWorkout]? = nil
     
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
@@ -67,7 +67,7 @@ final class TrainingViewModel: ObservableObject {
             let program = try await ProgramService.shared.getProgram(programId: self.startedProgram!)
 
             self.program = program
-            self.workouts = [FetchedProgramWorkout]()
+            self.workouts = [ProgramWorkout]()
 
             let workouts = try await WorkoutService.shared.getDayWorkouts(
                 programId: program.id,

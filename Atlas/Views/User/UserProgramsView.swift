@@ -20,7 +20,7 @@ struct UserProgramsView: View {
             Section {
                 ForEach(viewModel.programs) { program in
                     if let createdBy = program.createdBy {
-                        NavigationLink(value: NavigationDestinationTypes.ProgramDetailView(programId: program.id)) {
+                        NavigationLink(value: RootNavigationTypes.ProgramDetailView(programId: program.id)) {
                             ProgramCell(title: program.title, imageUrl: program.imageUrl, userFullName: createdBy.fullName)
                         }
                     }

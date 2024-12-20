@@ -39,7 +39,7 @@ struct VideoCell: View {
                 ProgressView()
                     .frame(width: 160, height: 200)
                     .tint(Color.ColorSystem.primaryText)
-                    .background(Color.ColorSystem.systemGray5)
+                    .background(Color.ColorSystem.systemGray6)
                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .onAppear(perform: {

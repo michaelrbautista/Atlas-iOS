@@ -11,7 +11,7 @@ struct CreatorWorkoutsView: View {
     // MARK: Data
     @StateObject private var viewModel = CreatorWorkoutsViewModel()
     
-    @Binding var path: [NavigationDestinationTypes]
+    @Binding var path: [RootNavigationTypes]
     
     @State var presentNewWorkout = false
     
@@ -19,15 +19,9 @@ struct CreatorWorkoutsView: View {
         List {
             Section {
                 ForEach(viewModel.workouts) { workout in
-                    ZStack {
+                    NavigationLink(value: RootNavigationTypes.LibraryWorkoutDetailView(workoutId: workout.id)) {
                         WorkoutCell(title: workout.title, description: workout.description)
-                        
-                        NavigationLink(value: NavigationDestinationTypes.CreatorWorkoutDetailView(workoutId: workout.id)) {
-                            
-                        }
-                        .opacity(0)
                     }
-                    .listRowBackground(Color.ColorSystem.systemBackground)
                 }
                 
                 Color.ColorSystem.systemBackground
@@ -69,7 +63,11 @@ struct CreatorWorkoutsView: View {
             }
         })
         .sheet(isPresented: $presentNewWorkout, content: {
-            
+            NewLibraryWorkoutView(
+                addWorkout: { newWorkout in
+                    viewModel.workouts.insert(newWorkout, at: 0)
+                }
+            )
         })
         .alert(isPresented: $viewModel.didReturnError, content: {
             Alert(title: Text(viewModel.returnedErrorMessage))

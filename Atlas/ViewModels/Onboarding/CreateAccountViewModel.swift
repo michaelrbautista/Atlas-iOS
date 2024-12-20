@@ -12,6 +12,7 @@ import Supabase
 final class CreateAccountViewModel: ObservableObject {
     // MARK: Variables
     @Published var profilePicture: UIImage? = nil
+    @Published var imageExtension: String = "jpeg"
     @Published var imageSelection: PhotosPickerItem? = nil {
         didSet {
             setImage(selection: imageSelection)
@@ -29,25 +30,6 @@ final class CreateAccountViewModel: ObservableObject {
     
     @Published var returnedError = false
     @Published var errorMessage: String? = nil
-    
-    init() {}
-    
-    // MARK: Set image
-    private func setImage(selection: PhotosPickerItem?) {
-        guard let selection else {
-            return
-        }
-        
-        Task {
-            if let data = try? await selection.loadTransferable(type: Data.self) {
-                if let uiImage = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self.profilePicture = uiImage
-                    }
-                }
-            }
-        }
-    }
     
     // MARK: Create user
     @MainActor
@@ -87,7 +69,7 @@ final class CreateAccountViewModel: ObservableObject {
                         return
                     }
                     
-                    let profilePictureUrl = try await StorageService.shared.saveFile(file: imageData, bucketName: "profile_pictures", fileName: profilePicturePath)
+                    let profilePictureUrl = try await StorageService.shared.saveImage(file: imageData, bucketName: "profile_pictures", fileName: profilePicturePath, fileType: self.imageExtension)
                     
                     user.profilePictureUrl = profilePictureUrl
                     user.profilePicturePath = profilePicturePath
@@ -107,6 +89,24 @@ final class CreateAccountViewModel: ObservableObject {
             self.isSaving = false
             self.returnedError = true
             self.errorMessage = error.localizedDescription
+        }
+    }
+    
+    // MARK: Set image
+    private func setImage(selection: PhotosPickerItem?) {
+        guard let selection else {
+            return
+        }
+        
+        Task {
+            if let data = try? await selection.loadTransferable(type: Data.self) {
+                self.imageExtension = data.imageExtension
+                if let uiImage = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self.profilePicture = uiImage
+                    }
+                }
+            }
         }
     }
 }

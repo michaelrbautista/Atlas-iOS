@@ -89,7 +89,7 @@ struct EditProgramView: View {
                     .tint(Color.ColorSystem.systemBlue)
                 }
                 
-                // MARK: Free
+                // MARK: Price
                 Section {
                     Toggle(isOn: $viewModel.free) {
                         Text("Free")
@@ -97,11 +97,11 @@ struct EditProgramView: View {
                     .listRowBackground(Color.ColorSystem.systemGray6)
                     .tint(Color.ColorSystem.systemBlue)
                     
-                    SecureField(text: $viewModel.price, prompt: Text("")) {
+                    TextField(text: $viewModel.price) {
                         Text("Price")
                     }
                     .textInputAutocapitalization(.never)
-                    .keyboardType(.numberPad)
+                    .keyboardType(.decimalPad)
                     .foregroundStyle(Color.ColorSystem.primaryText)
                     .listRowBackground(Color.ColorSystem.systemGray6)
                     .disabled(viewModel.isLoading || viewModel.free)
@@ -154,5 +154,5 @@ struct EditProgramView: View {
 }
 
 #Preview {
-    EditProgramView(viewModel: EditProgramViewModel(program: Program(id: "", createdAt: "", createdBy: "", title: "", free: true, price: 0, currency: "", weeks: 8, isPrivate: false), programImage: UIImage()))
+    EditProgramView(viewModel: EditProgramViewModel(program: EditProgramRequest(id: "", title: "", weeks: 8, free: false, isPrivate: false), programImage: UIImage()))
 }

@@ -16,7 +16,7 @@ struct TrainingView: View {
     // MARK: Data
     @StateObject private var viewModel = TrainingViewModel()
     
-    @State var path = [NavigationDestinationTypes]()
+    @State var path = [RootNavigationTypes]()
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -29,21 +29,10 @@ struct TrainingView: View {
                                 .foregroundStyle(Color.ColorSystem.systemGray)
                         } else {
                             ForEach(viewModel.workouts!) { workout in
-                                ZStack {
-                                    WorkoutCell(
-                                        title: workout.title,
-                                        description: workout.description ?? ""
-                                    )
-                                    .background(Color.ColorSystem.systemGray6)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    
-                                    NavigationLink(value: NavigationDestinationTypes.WorkoutDetailView(workoutId: workout.id)) {
-                                        
-                                    }
-                                    .opacity(0)
+                                NavigationLink(value: RootNavigationTypes.ProgramWorkoutDetailView(workoutId: workout.id)) {
+                                    WorkoutCell(title: workout.title, description: workout.description)
                                 }
-                                .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 16, trailing: 20))
-                                .listRowSeparator(.hidden)
+                                .listRowBackground(Color.ColorSystem.systemBackground)
                             }
                         }
                     } else {
@@ -96,47 +85,7 @@ struct TrainingView: View {
             .alert(isPresented: $viewModel.didReturnError, content: {
                 Alert(title: Text(viewModel.returnedErrorMessage))
             })
-            .navigationDestination(for: NavigationDestinationTypes.self, destination: { destination in
-                switch destination {
-                case .UserDetailView:
-                    let vm = UserDetailViewModel(userId: destination.getId())
-                    UserDetailView(viewModel: vm)
-                case .UserProgramsView:
-                    let vm = UserProgramsViewModel(userId: destination.getId())
-                    UserProgramsView(viewModel: vm)
-                case .ProgramsView:
-                    ProgramsView(path: $path)
-                case .ProgramDetailView:
-                    let vm = ProgramDetailViewModel(programId: destination.getId())
-                    ProgramDetailView(viewModel: vm, path: $path)
-                case .CalendarView:
-                    let program = destination.getProgram()
-                    CalendarView(
-                        programId: program.id,
-                        isCreator: UserService.currentUser?.id == program.createdBy,
-                        weeks: program.weeks,
-                        pages: program.weeks / 4 + 1,
-                        remainder: program.weeks % 4
-                    )
-                case .WorkoutDetailView:
-                    let vm = WorkoutDetailViewModel(workoutId: destination.getId())
-                    WorkoutDetailView(viewModel: vm)
-                case .ExerciseDetailView:
-                    let vm = ExerciseDetailViewModel(programExercise: destination.getProgramExercise())
-                    ExerciseDetailView(viewModel: vm)
-                case .CreatorProgramsView:
-                    EmptyView()
-                case .CreatorProgramDetailView:
-                    let vm = CreatorProgramDetailViewModel(programId: destination.getId())
-                    CreatorProgramDetailView(viewModel: vm, path: $path)
-                case .CreatorWorkoutsView:
-                    EmptyView()
-                case .CreatorWorkoutDetailView:
-                    EmptyView()
-                case .CreatorExercisesView:
-                    EmptyView()
-                }
-            })
+            .rootNavigationDestination(path: $path)
         }
     }
 }

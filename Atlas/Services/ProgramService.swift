@@ -11,13 +11,26 @@ final class ProgramService {
     
     public static let shared = ProgramService()
     
+    // MARK: Delete program
+    public func deleteProgram(programId: String) async throws {
+        do {
+            try await SupabaseService.shared.supabase
+                .from("programs")
+                .delete()
+                .eq("id", value: programId)
+                .execute()
+        } catch {
+            throw(error)
+        }
+    }
+    
     // MARK: Edit program
-    public func editProgram(editProgramRequest: EditProgramRequest) async throws {
+    public func editProgram(programId: String, editProgramRequest: EditProgramRequest) async throws {
         do {
             try await SupabaseService.shared.supabase
                 .from("programs")
                 .update(editProgramRequest)
-                .eq("id", value: editProgramRequest.programId)
+                .eq("id", value: programId)
                 .execute()
         } catch {
             throw error
@@ -25,12 +38,32 @@ final class ProgramService {
     }
     
     // MARK: Create program
-    public func createProgram(createProgramRequest: CreateProgramRequest) async throws {
+    public func createProgram(createProgramRequest: CreateProgramRequest) async throws -> Program {
         do {
-            try await SupabaseService.shared.supabase
+            let newProgram: Program = try await SupabaseService.shared.supabase
                 .from("programs")
                 .insert(createProgramRequest)
+                .select(
+                    """
+                        id,
+                        title,
+                        description,
+                        image_url,
+                        price,
+                        weeks,
+                        free,
+                        private,
+                        created_by:users!programs_created_by_fkey(
+                            id,
+                            full_name
+                        )
+                    """
+                )
+                .single()
                 .execute()
+                .value
+            
+            return newProgram
         } catch {
             throw error
         }
@@ -65,7 +98,7 @@ final class ProgramService {
     }
     
     // MARK: Unsave program
-    public func unsaveProgram(program: Program) async throws {
+    public func unsaveProgram(programId: String) async throws {
         guard let currentUser = UserService.currentUser else {
             return
         }
@@ -74,7 +107,7 @@ final class ProgramService {
             try await SupabaseService.shared.supabase
                 .from("purchased_programs")
                 .delete()
-                .eq("program_id", value: program.id)
+                .eq("program_id", value: programId)
                 .eq("purchased_by", value: currentUser.id)
                 .execute()
         } catch {
@@ -89,9 +122,9 @@ final class ProgramService {
         }
         
         do {
-            let programs: [PurchasedProgram] = try await SupabaseService.shared.supabase
+            let programs: [ProgramId] = try await SupabaseService.shared.supabase
                 .from("purchased_programs")
-                .select()
+                .select("id")
                 .eq("program_id", value: programId)
                 .eq("purchased_by", value: currentUser.id)
                 .execute()
@@ -99,14 +132,15 @@ final class ProgramService {
             
             return programs.count > 0
         } catch {
+            print(error)
             throw error
         }
     }
     
     // MARK: Get creator's programs
-    public func getCreatorsPrograms(userId: String, offset: Int) async throws -> [FetchedProgram] {
+    public func getCreatorsPrograms(userId: String, offset: Int) async throws -> [Program] {
         do {
-            let programs: [FetchedProgram] = try await SupabaseService.shared.supabase
+            let programs: [Program] = try await SupabaseService.shared.supabase
                 .from("programs")
                 .select(
                     """
@@ -119,6 +153,7 @@ final class ProgramService {
                         free,
                         private,
                         created_by:users!programs_created_by_fkey(
+                            id,
                             full_name
                         )
                     """
@@ -136,14 +171,15 @@ final class ProgramService {
     }
     
     // MARK: Get user's purchased programs
-    public func getPurchasedPrograms(userId: String, offset: Int) async throws -> [FetchedPurchasedProgram] {
+    public func getPurchasedPrograms(userId: String, offset: Int) async throws -> [PurchasedProgram] {
         do {
-            let programs: [FetchedPurchasedProgram] = try await SupabaseService.shared.supabase
+            let programs: [PurchasedProgram] = try await SupabaseService.shared.supabase
                 .from("purchased_programs")
                 .select(
                     """
                         id,
                         created_by:users!saved_workouts_created_by_fkey(
+                            id,
                             full_name
                         ),
                         programs(
@@ -206,12 +242,23 @@ final class ProgramService {
         do {
             let program: Program = try await SupabaseService.shared.supabase
                 .from("programs")
-                .select("""
-                    *,
-                    users(
-                        full_name
-                    )
-                """)
+                .select(
+                    """
+                        id,
+                        title,
+                        description,
+                        image_url,
+                        image_path,
+                        price,
+                        weeks,
+                        free,
+                        private,
+                        created_by:users!programs_created_by_fkey(
+                            id,
+                            full_name
+                        )
+                    """
+                )
                 .eq("id", value: programId)
                 .single()
                 .execute()

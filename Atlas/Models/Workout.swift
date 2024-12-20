@@ -41,6 +41,39 @@ struct Workout: Codable, Identifiable, Hashable {
     }
 }
 
+struct FetchedWorkout: Codable, Hashable, Identifiable {
+    var id: String
+    var createdBy: String
+    var title: String
+    var description: String?
+    
+    var workoutExercises: [FetchedWorkoutExercise]?
+    
+    enum CodingKeys: String, CodingKey {
+        case id, title, description
+        case createdBy = "created_by"
+        case workoutExercises = "workout_exercises"
+    }
+}
+
+struct FetchedWorkoutExercise: Codable, Hashable, Identifiable {
+    var id: String
+    var exerciseId: String
+    var exerciseNumber: Int
+    var sets: Int?
+    var reps: Int?
+    var time: String?
+    var other: String?
+    
+    var exercises: FetchedExercise?
+    
+    enum CodingKeys: String, CodingKey {
+        case id, sets, reps, time, other, exercises
+        case exerciseId = "exercise_id"
+        case exerciseNumber = "exercise_number"
+    }
+}
+
 struct WorkoutExercise: Codable, Identifiable, Hashable {
     var id: String
     var createdAt: String
@@ -66,5 +99,37 @@ struct WorkoutExercise: Codable, Identifiable, Hashable {
         case title
         case sets
         case reps
+    }
+}
+
+struct CreateWorkoutRequest: Codable {
+    var title: String
+    var description: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case title, description
+    }
+}
+
+struct addWorkoutToProgramRequest: Codable {
+    var title: String
+    var description: String?
+    var programId: String
+    var week: Int
+    var day: String
+    
+    enum CodingKeys: String, CodingKey {
+        case title, description, week, day
+        case programId = "program_id"
+    }
+}
+
+struct EditWorkoutRequest: Codable {
+    var id: String?
+    var title: String
+    var description: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id, title, description
     }
 }
