@@ -42,28 +42,30 @@ struct VideoCellFromData: View {
                     .background(Color.ColorSystem.systemGray6)
                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .onAppear(perform: {
-                        DispatchQueue.global().async {
-                            let directory = NSTemporaryDirectory()
-                            let fileName = "\(NSUUID().uuidString).mov"
-                            let fullURL = NSURL.fileURL(withPathComponents: [directory, fileName])
-                            try! videoData.write(to: fullURL!)
-                            let asset = AVAsset(url: fullURL!)
-                            let imageGenerator = AVAssetImageGenerator(asset: asset)
-                            let time = CMTime(value: 0, timescale: 60)
-                            let times = [NSValue(time: time)]
-                            imageGenerator.generateCGImagesAsynchronously(forTimes: times) { _, image, _, _, _ in
-                                if let image = image {
-                                    self.thumbnail = UIImage(cgImage: image)
-                                } else {
-                                    print("Couldn't get video thumbnail")
-                                }
-                            }
-                        }
-                    })
             }
             Spacer()
         }
+        .onAppear(perform: {
+            self.thumbnail = nil
+            
+            DispatchQueue.global().async {
+                let directory = NSTemporaryDirectory()
+                let fileName = "\(NSUUID().uuidString).mov"
+                let fullURL = NSURL.fileURL(withPathComponents: [directory, fileName])
+                try! videoData.write(to: fullURL!)
+                let asset = AVAsset(url: fullURL!)
+                let imageGenerator = AVAssetImageGenerator(asset: asset)
+                let time = CMTime(value: 0, timescale: 60)
+                let times = [NSValue(time: time)]
+                imageGenerator.generateCGImagesAsynchronously(forTimes: times) { _, image, _, _, _ in
+                    if let image = image {
+                        self.thumbnail = UIImage(cgImage: image)
+                    } else {
+                        print("Couldn't get video thumbnail")
+                    }
+                }
+            }
+        })
     }
 }
 

@@ -42,7 +42,7 @@ struct VideoCell: View {
                     .background(Color.ColorSystem.systemGray6)
                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .onAppear(perform: {
+                    .onAppear {
                         DispatchQueue.global().async {
                             let asset = AVAsset(url: videoUrl)
                             let imageGenerator = AVAssetImageGenerator(asset: asset)
@@ -56,7 +56,7 @@ struct VideoCell: View {
                                 }
                             }
                         }
-                    })
+                    }
             }
             Spacer()
         }
