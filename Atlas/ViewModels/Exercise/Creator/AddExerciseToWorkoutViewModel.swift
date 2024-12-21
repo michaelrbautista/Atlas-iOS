@@ -13,6 +13,7 @@ final class AddExerciseToWorkoutViewModel: ObservableObject {
     
     var workoutId: String?
     var programWorkoutId: String?
+    var exerciseNumber: Int
     
     var userId: String
     
@@ -25,9 +26,10 @@ final class AddExerciseToWorkoutViewModel: ObservableObject {
     @Published var returnedErrorMessage = ""
     
     @MainActor
-    init(workoutId: String?, programWorkoutId: String?) {
+    init(workoutId: String?, programWorkoutId: String?, exerciseNumber: Int) {
         guard let currentUserId = UserService.currentUser?.id.description else {
             userId = ""
+            self.exerciseNumber = 0
             self.didReturnError = true
             self.returnedErrorMessage = "Couldn't get current user."
             return
@@ -35,6 +37,8 @@ final class AddExerciseToWorkoutViewModel: ObservableObject {
         
         self.workoutId = workoutId
         self.programWorkoutId = programWorkoutId
+        self.exerciseNumber = exerciseNumber
+        
         self.userId = currentUserId
         
         Task {

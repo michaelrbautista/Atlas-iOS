@@ -15,11 +15,14 @@ struct AddExerciseToWorkoutView: View {
     
     @State var path = [SheetNavigationTypes]()
     
+    // FetchedProgram: newly created program
+//    var addProgram: ((Program) -> Void)
+    
     var body: some View {
         NavigationStack(path: $path) {
             List {
                 ForEach(viewModel.exercises) { exercise in
-                    NavigationLink(value: SheetNavigationTypes.ExerciseDetailForWorkoutView(workoutId: viewModel.workoutId, programWorkoutId: viewModel.programWorkoutId, exercise: exercise, exerciseNumber: viewModel.exercises.count + 1)) {
+                    NavigationLink(value: SheetNavigationTypes.ExerciseDetailForWorkoutView(workoutId: viewModel.workoutId, programWorkoutId: viewModel.programWorkoutId, exercise: exercise, exerciseNumber: viewModel.exerciseNumber)) {
                         WorkoutCell(title: exercise.title, description: exercise.instructions)
                     }
                     .listRowBackground(Color.ColorSystem.systemBackground)
@@ -53,5 +56,5 @@ struct AddExerciseToWorkoutView: View {
 }
 
 #Preview {
-    AddExerciseToWorkoutView(viewModel: AddExerciseToWorkoutViewModel(workoutId: "", programWorkoutId: ""))
+    AddExerciseToWorkoutView(viewModel: AddExerciseToWorkoutViewModel(workoutId: "", programWorkoutId: "", exerciseNumber: 1))
 }

@@ -13,7 +13,7 @@ struct NewProgramView: View {
     
     @StateObject var viewModel = NewProgramViewModel()
     
-    // FetchedProgram: newly created program
+    // Program: newly created program
     var addProgram: ((Program) -> Void)
     
     var body: some View {

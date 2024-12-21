@@ -125,7 +125,7 @@ struct ProgramWorkoutDetailView: View {
                 }
             }
             .sheet(isPresented: $presentNewExercise) {
-                AddExerciseToWorkoutView(viewModel: AddExerciseToWorkoutViewModel(workoutId: nil, programWorkoutId: viewModel.programWorkout!.id))
+                AddExerciseToWorkoutView(viewModel: AddExerciseToWorkoutViewModel(workoutId: nil, programWorkoutId: viewModel.programWorkout!.id, exerciseNumber: (viewModel.programWorkout!.workoutExercises?.count ?? 0) + 1))
             }
             .sheet(isPresented: $presentEditWorkout) {
                 EditWorkoutView(viewModel: EditWorkoutViewModel(isProgramWorkout: true, workout: EditWorkoutRequest(id: viewModel.programWorkout!.id, title: viewModel.programWorkout!.title, description: viewModel.programWorkout!.description)))

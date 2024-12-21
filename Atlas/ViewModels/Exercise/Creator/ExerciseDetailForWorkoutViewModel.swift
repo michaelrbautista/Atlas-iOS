@@ -37,6 +37,12 @@ final class ExerciseDetailForWorkoutViewModel: ObservableObject {
     @MainActor
     public func addExerciseToWorkout() async -> FetchedWorkoutExercise? {
         // Check fields
+        if sets == "" || reps == "" {
+            self.isAdding = false
+            self.didReturnError = true
+            self.returnedErrorMessage = "Sets and reps must be filled in."
+            return nil
+        }
         
         // Create new workout exercise object
         let newExercise = NewWorkoutExercise(
@@ -50,22 +56,18 @@ final class ExerciseDetailForWorkoutViewModel: ObservableObject {
             other: self.other
         )
         
-        print(newExercise)
+        self.isAdding = true
         
-        return FetchedWorkoutExercise(id: "", exerciseId: "", exerciseNumber: 9)
-        
-//        self.isAdding = true
-//        
-//        // Save to workout_exercises table
-//        do {
-//            let exercise: FetchedWorkoutExercise = try await ExerciseService.shared.addExerciseToWorkout(newExercise: newExercise)
-//            
-//            return exercise
-//        } catch {
-//            self.isAdding = false
-//            self.didReturnError = true
-//            self.returnedErrorMessage = error.localizedDescription
-//            return nil
-//        }
+        // Save to workout_exercises table
+        do {
+            let exercise: FetchedWorkoutExercise = try await ExerciseService.shared.addExerciseToWorkout(newExercise: newExercise)
+            
+            return exercise
+        } catch {
+            self.isAdding = false
+            self.didReturnError = true
+            self.returnedErrorMessage = error.localizedDescription
+            return nil
+        }
     }
 }

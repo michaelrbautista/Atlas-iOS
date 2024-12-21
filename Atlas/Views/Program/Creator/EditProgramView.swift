@@ -13,6 +13,9 @@ struct EditProgramView: View {
     
     @StateObject var viewModel: EditProgramViewModel
     
+    // Program: edited program
+    var editProgram: ((Program) -> Void)?
+    
     var body: some View {
         NavigationStack {
             List {
@@ -130,7 +133,11 @@ struct EditProgramView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         Task {
-                            await viewModel.saveProgram()
+                            let editedProgram = await viewModel.saveProgram()
+                            
+                            if let checkEditedProgram = editedProgram {
+                                self.editProgram?(checkEditedProgram)
+                            }
                             
                             dismiss()
                         }

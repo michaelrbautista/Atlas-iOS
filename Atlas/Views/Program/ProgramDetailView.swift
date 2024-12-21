@@ -25,6 +25,9 @@ struct ProgramDetailView: View {
     
     @Binding var path: [RootNavigationTypes]
     
+    // String: id of deleted program
+    var deleteProgram: ((String) -> Void)?
+    
     var body: some View {
         if viewModel.program == nil || viewModel.isLoading {
             VStack(alignment: .center) {
@@ -217,6 +220,8 @@ struct ProgramDetailView: View {
                     Button(role: .destructive) {
                         Task {
                             await viewModel.deleteProgram()
+                            
+                            self.deleteProgram?(viewModel.programId)
                         }
                         
                         path.removeLast(1)
@@ -235,7 +240,8 @@ struct ProgramDetailView: View {
                     }
                 }
                 .sheet(isPresented: $presentEditProgram, content: {
-                    EditProgramView(viewModel: EditProgramViewModel(
+                    EditProgramView(
+                        viewModel: EditProgramViewModel(
                         program: EditProgramRequest(
                             id: viewModel.program!.id,
                             title: viewModel.program!.title,
@@ -247,7 +253,9 @@ struct ProgramDetailView: View {
                             free: viewModel.program!.free,
                             isPrivate: viewModel.program!.isPrivate
                         ),
-                        programImage: viewModel.program!.imageUrl != nil ? viewModel.programImage : nil))
+                        programImage: viewModel.program!.imageUrl != nil ? viewModel.programImage : nil)) { editedProgram in
+                            self.viewModel.program = editedProgram
+                        }
                 })
                 .sheet(isPresented: $presentPurchaseModal) {
                     PurchaseModalView()
@@ -267,5 +275,5 @@ struct ProgramDetailView: View {
 }
 
 #Preview {
-    ProgramDetailView(viewModel: ProgramDetailViewModel(programId: "1941fa73-8ebd-43c4-8398-388908b99e07"), path: .constant([RootNavigationTypes]()))
+    ProgramDetailView(viewModel: ProgramDetailViewModel(programId: "1941fa73-8ebd-43c4-8398-388908b99e07"), path: .constant([RootNavigationTypes]()), deleteProgram: { index in })
 }

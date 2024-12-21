@@ -15,6 +15,8 @@ struct ExerciseDetailForWorkoutView: View {
     
     @StateObject var viewModel: ExerciseDetailForWorkoutViewModel
     
+//    var addProgram: ((Program) -> Void)
+    
     var body: some View {
         List {
             if let videoUrl = viewModel.exercise.videoUrl {

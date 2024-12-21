@@ -48,14 +48,14 @@ final class EditProgramViewModel: ObservableObject {
     
     // MARK: Save program
     @MainActor
-    public func saveProgram() async {
+    public func saveProgram() async -> Program? {
         self.isLoading = true
         
         // Check fields
         if self.title == "" {
             didReturnError = true
             returnedErrorMessage = "Please fill in all fields"
-            return
+            return nil
         }
         
         do {
@@ -67,7 +67,7 @@ final class EditProgramViewModel: ObservableObject {
             if imageSelection != nil {
                 guard let imageData = programImage!.pngData() else {
                     print("Couldn't get data from image.")
-                    return
+                    return nil
                 }
                 
                 // Check if image needs to be replaced or added
@@ -76,14 +76,14 @@ final class EditProgramViewModel: ObservableObject {
                 } else {
                     guard let currentUser = UserService.currentUser else {
                         print("Couldn't get current user.")
-                        return
+                        return nil
                     }
                     
                     let imagePath = "\(currentUser.id.description)/\(Date().hashValue).jpg"
                     
                     guard let imageData = programImage!.jpegData(compressionQuality: 1) else {
                         print("Couldn't get data from image.")
-                        return
+                        return nil
                     }
                     
                     let imageUrl = try await StorageService.shared.saveImage(file: imageData, bucketName: "program_images", fileName: imagePath, fileType: self.imageExtension)
@@ -116,7 +116,9 @@ final class EditProgramViewModel: ObservableObject {
             }
             
             // Update program
-            try await ProgramService.shared.editProgram(programId: self.programId, editProgramRequest: newProgram)
+            let editedProgram = try await ProgramService.shared.editProgram(programId: self.programId, editProgramRequest: newProgram)
+            
+            return editedProgram
             
             // Update program on UI
             
@@ -124,6 +126,7 @@ final class EditProgramViewModel: ObservableObject {
             self.isLoading = false
             self.didReturnError = true
             self.returnedErrorMessage = error.localizedDescription
+            return nil
         }
     }
     

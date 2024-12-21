@@ -323,6 +323,7 @@
 				89D5A7D42BA654CA0001CFB3 /* ViewModels */,
 				89D5A7D52BA654EA0001CFB3 /* Models */,
 				89D5A7D62BA655120001CFB3 /* Services */,
+				89E18CFC2D16688800C0B4F4 /* Navigation */,
 				89D5A7D82BA6552E0001CFB3 /* Cells */,
 				89D5A7D72BA655210001CFB3 /* Supporting */,
 				89D5A7A42BA64D110001CFB3 /* Assets.xcassets */,
@@ -489,6 +490,13 @@
 			path = Workout;
 			sourceTree = "<group>";
 		};
+		89E18CFC2D16688800C0B4F4 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
 		89E3A8572D03D32400624C72 /* Creator */ = {
 			isa = PBXGroup;
 			children = (
@@ -503,12 +511,12 @@
 			isa = PBXGroup;
 			children = (
 				89E3A84E2D03823E00624C72 /* CreatorWorkoutsView.swift */,
-				89E3A8662D06412D00624C72 /* NewProgramWorkoutView.swift */,
-				89E3A8682D0646B300624C72 /* LibraryWorkoutsForProgramView.swift */,
-				89EA53462D0F834300BB22D4 /* LibraryWorkoutDetailForProgramView.swift */,
 				89E3A86E2D065B0600624C72 /* NewLibraryWorkoutView.swift */,
 				89EA53222D0B8B3F00BB22D4 /* LibraryWorkoutDetailView.swift */,
 				89EA53262D0CA56D00BB22D4 /* EditWorkoutView.swift */,
+				89E3A8662D06412D00624C72 /* NewProgramWorkoutView.swift */,
+				89E3A8682D0646B300624C72 /* LibraryWorkoutsForProgramView.swift */,
+				89EA53462D0F834300BB22D4 /* LibraryWorkoutDetailForProgramView.swift */,
 			);
 			path = Creator;
 			sourceTree = "<group>";
@@ -541,8 +549,8 @@
 			isa = PBXGroup;
 			children = (
 				89EA532E2D0CE90200BB22D4 /* CreatorExercisesView.swift */,
-				89D5A8A32BBA443C0001CFB3 /* LibraryExerciseDetailView.swift */,
 				89EA53322D0E0CCD00BB22D4 /* NewLibraryExerciseView.swift */,
+				89D5A8A32BBA443C0001CFB3 /* LibraryExerciseDetailView.swift */,
 				89EA53362D0E145400BB22D4 /* AddVideoView.swift */,
 				89EA534A2D0FCD4000BB22D4 /* AddExerciseToWorkoutView.swift */,
 				89EA534E2D0FD06C00BB22D4 /* ExerciseDetailForWorkoutView.swift */,

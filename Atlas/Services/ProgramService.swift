@@ -25,13 +25,33 @@ final class ProgramService {
     }
     
     // MARK: Edit program
-    public func editProgram(programId: String, editProgramRequest: EditProgramRequest) async throws {
+    public func editProgram(programId: String, editProgramRequest: EditProgramRequest) async throws -> Program {
         do {
-            try await SupabaseService.shared.supabase
+            let editedProgram: Program = try await SupabaseService.shared.supabase
                 .from("programs")
                 .update(editProgramRequest)
                 .eq("id", value: programId)
+                .select(
+                    """
+                        id,
+                        title,
+                        description,
+                        image_url,
+                        price,
+                        weeks,
+                        free,
+                        private,
+                        created_by:users!programs_created_by_fkey(
+                            id,
+                            full_name
+                        )
+                    """
+                )
+                .single()
                 .execute()
+                .value
+            
+            return editedProgram
         } catch {
             throw error
         }
