@@ -21,19 +21,8 @@ final class CreatorProgramsViewModel: ObservableObject {
     var userId: String
     
     // MARK: Initializaer
-    init() {
-        guard let currentUserId = UserService.currentUser?.id.description else {
-            userId = ""
-            self.didReturnError = true
-            self.returnedErrorMessage = "Couldn't get current user."
-            return
-        }
-        
-        self.userId = currentUserId
-        
-        Task {
-            await getCreatorsPrograms()
-        }
+    init(userId: String) {
+        self.userId = userId
     }
     
     // MARK: Refresh
@@ -44,7 +33,13 @@ final class CreatorProgramsViewModel: ObservableObject {
         await getCreatorsPrograms()
     }
     
-    // MARK: Get my saved programs
+    // MARK: Remove program
+    @MainActor
+    public func removeProgram(index: Int) {
+        self.programs.remove(at: index)
+    }
+    
+    // MARK: Get creator's programs
     @MainActor
     public func getCreatorsPrograms() async {
         do {

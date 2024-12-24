@@ -11,6 +11,40 @@ final class ExerciseService {
     
     public static let shared = ExerciseService()
     
+    // MARK: Edit workout exercise
+    public func editWorkoutExercise(editExerciseRequest: EditWorkoutExerciseRequest) async throws -> FetchedWorkoutExercise {
+        do {
+            let newExercise: FetchedWorkoutExercise = try await SupabaseService.shared.supabase
+                .from("workout_exercises")
+                .update(editExerciseRequest)
+                .eq("id", value: editExerciseRequest.id)
+                .select(
+                    """
+                        id,
+                        exercise_id,
+                        exercise_number,
+                        sets,
+                        reps,
+                        time,
+                        other,
+                        exercises(
+                            id,
+                            title,
+                            instructions,
+                            video_url
+                        )
+                    """
+                )
+                .single()
+                .execute()
+                .value
+            
+            return newExercise
+        } catch {
+            throw error
+        }
+    }
+    
     // MARK: Edit library exercise
     public func editLibraryExercise(editExerciseRequest: EditLibraryExerciseRequest) async throws -> FetchedExercise {
         do {
@@ -55,7 +89,6 @@ final class ExerciseService {
                 .insert(exercises)
                 .execute()
         } catch {
-            print(error)
             throw error
         }
     }
@@ -71,6 +104,19 @@ final class ExerciseService {
                 .value
             
             return exercises
+        } catch {
+            throw error
+        }
+    }
+    
+    // MARK: Delete workout exercise
+    public func deleteWorkoutExercise(exerciseId: String) async throws {
+        do {
+            try await SupabaseService.shared.supabase
+                .from("workout_exercises")
+                .delete()
+                .eq("id", value: exerciseId)
+                .execute()
         } catch {
             throw error
         }

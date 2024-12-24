@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CreatorProgramsView: View {
     // MARK: Data
-    @StateObject private var viewModel = CreatorProgramsViewModel()
+    @StateObject private var viewModel = CreatorProgramsViewModel(userId: UserService.currentUser!.id)
     
     @Binding var path: [RootNavigationTypes]
     
@@ -33,12 +33,12 @@ struct CreatorProgramsView: View {
                     .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                     .listRowSeparator(.hidden)
                 
-                if !viewModel.isLoading && !viewModel.endReached && viewModel.returnedErrorMessage == "" {
+                if !viewModel.endReached && viewModel.returnedErrorMessage == "" {
                     ProgressView()
                         .frame(maxWidth: .infinity)
                         .frame(height: 48)
                         .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
-                        .foregroundStyle(Color.ColorSystem.primaryText)
+                        .listRowSeparator(.hidden)
                         .onAppear(perform: {
                             // Get more programs
                             Task {
@@ -59,8 +59,10 @@ struct CreatorProgramsView: View {
         })
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("", systemImage: "plus") {
+                Button {
                     presentNewProgram.toggle()
+                } label: {
+                    Image(systemName: "plus")
                 }
             }
         })

@@ -1,16 +1,18 @@
 //
-//  EditWorkoutView.swift
+//  EditProgramWorkoutView.swift
 //  Atlas
 //
-//  Created by Michael Bautista on 12/13/24.
+//  Created by Michael Bautista on 12/23/24.
 //
 
 import SwiftUI
 
-struct EditWorkoutView: View {
+struct EditProgramWorkoutView: View {
     @Environment(\.dismiss) var dismiss
     
-    @StateObject var viewModel: EditWorkoutViewModel
+    @StateObject var viewModel: EditProgramWorkoutViewModel
+    
+    var editProgramWorout: ((ProgramWorkout) -> Void)
     
     var body: some View {
         NavigationStack {
@@ -57,10 +59,10 @@ struct EditWorkoutView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         Task {
-                            let newWorkout = await viewModel.saveWorkout()
+                            let newWorkout = await viewModel.saveProgramWorkout()
                             
                             if !viewModel.didReturnError && newWorkout != nil {
-//                                addWorkout(newWorkout!)
+                                self.editProgramWorout(newWorkout!)
                                 dismiss()
                             }
                         }
@@ -84,5 +86,5 @@ struct EditWorkoutView: View {
 }
 
 #Preview {
-    EditWorkoutView(viewModel: EditWorkoutViewModel(isProgramWorkout: false, workout: EditWorkoutRequest(id: "", title: "Test", description: "Test description")))
+    EditProgramWorkoutView(viewModel: EditProgramWorkoutViewModel(workout: EditWorkoutRequest(id: "", title: "Test", description: "Test description")), editProgramWorout: {_ in})
 }

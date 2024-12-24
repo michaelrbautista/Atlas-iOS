@@ -90,3 +90,15 @@ struct EditLibraryExerciseRequest: Codable {
         case videoPath = "video_path"
     }
 }
+
+struct EditWorkoutExerciseRequest: Codable {
+    var id: String
+    var sets: Int
+    var reps: Int
+    var time: String?
+    var other: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id, sets, reps, time, other
+    }
+}

@@ -129,8 +129,8 @@ struct RootNavigationViews: ViewModifier {
                     let vm = LibraryExerciseDetailViewModel(exercise: destination.getLibraryExercise())
                     LibraryExerciseDetailView(viewModel: vm, path: $path)
                 case .ProgramExerciseDetailView:
-                    let vm = ProgramExerciseDetailViewModel(exercise: destination.getWorkoutExercise())
-                    ProgramExerciseDetailView(viewModel: vm)
+                    let vm = WorkoutExerciseDetailViewModel(exercise: destination.getWorkoutExercise())
+                    WorkoutExerciseDetailView(viewModel: vm)
                     
                 // Library
                 case .CreatorProgramsView:
@@ -143,10 +143,10 @@ struct RootNavigationViews: ViewModifier {
                 // User
                 case .UserDetailView:
                     let vm = UserDetailViewModel(userId: destination.getId())
-                    UserDetailView(viewModel: vm)
+                    UserDetailView(viewModel: vm, path: $path)
                 case .UserProgramsView:
                     let vm = UserProgramsViewModel(userId: destination.getId())
-                    UserProgramsView(viewModel: vm)
+                    UserProgramsView(viewModel: vm, path: $path)
                 }
             })
     }

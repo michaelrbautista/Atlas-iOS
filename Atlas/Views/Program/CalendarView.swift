@@ -154,7 +154,7 @@ struct CalendarView: View {
                 programId: programId,
                 week: selectedDay.0,
                 day: selectedDay.1
-            ))
+            ), presentNewWorkout: $presentNewWorkout)
         }
     }
 }

@@ -23,10 +23,6 @@ final class UserProgramsViewModel: ObservableObject {
     
     init(userId: String) {
         self.userId = userId
-        
-        Task {
-            await getCreatorsPrograms()
-        }
     }
     
     @MainActor

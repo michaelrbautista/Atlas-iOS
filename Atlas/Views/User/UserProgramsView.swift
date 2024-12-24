@@ -8,12 +8,10 @@
 import SwiftUI
 
 struct UserProgramsView: View {
-    // MARK: UI state
-    @Environment(\.dismiss) private var dismiss
-    @FocusState var keyboardIsFocused: Bool
-    
     // MARK: Data
     @StateObject var viewModel: UserProgramsViewModel
+    
+    @Binding var path: [RootNavigationTypes]
     
     var body: some View {
         List {
@@ -26,12 +24,11 @@ struct UserProgramsView: View {
                     }
                 }
                 
-                if !viewModel.isLoading && !viewModel.endReached && viewModel.returnedErrorMessage == "" {
+                if !viewModel.endReached && viewModel.returnedErrorMessage == "" {
                     ProgressView()
                         .frame(maxWidth: .infinity)
                         .frame(height: 48)
                         .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
-                        .foregroundStyle(Color.ColorSystem.primaryText)
                         .onAppear(perform: {
                             // Get more programs
                             Task {
@@ -57,5 +54,5 @@ struct UserProgramsView: View {
 }
 
 #Preview {
-    UserProgramsView(viewModel: UserProgramsViewModel(userId: ""))
+    UserProgramsView(viewModel: UserProgramsViewModel(userId: ""), path: .constant([]))
 }

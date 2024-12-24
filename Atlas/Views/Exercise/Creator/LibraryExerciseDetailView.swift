@@ -45,15 +45,6 @@ struct LibraryExerciseDetailView: View {
                 }
             }
             
-//            if let videoUrl = viewModel.exercise.videoUrl {
-//                Section {
-//                    VideoCell(videoUrl: URL(string: videoUrl)!) {
-//                        presentVideoPlayer.toggle()
-//                    }
-//                    .listRowBackground(Color.ColorSystem.systemBackground)
-//                }
-//            }
-            
             // MARK: Name
             Section {
                 Text(viewModel.exercise.title)
@@ -69,6 +60,8 @@ struct LibraryExerciseDetailView: View {
                         .font(Font.FontStyles.body)
                         .foregroundStyle(Color.ColorSystem.primaryText)
                         .listRowBackground(Color.ColorSystem.systemGray6)
+                } header: {
+                    Text("Instructions")
                 }
             }
         }

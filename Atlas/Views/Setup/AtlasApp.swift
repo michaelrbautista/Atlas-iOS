@@ -77,7 +77,6 @@ struct CheckAuthentication: View {
 class UserViewModel: ObservableObject {
     @Published var isLoggedIn = false
     @Published var isBusy = false
-//    @Published var creatorView = false
     
     @Published var event: AuthChangeEvent? = nil
     @Published var session: Session? = nil

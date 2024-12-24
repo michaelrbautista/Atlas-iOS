@@ -11,7 +11,7 @@ import Supabase
 class UserService {
     
     public static let shared = UserService()
-    static var currentUser: User? = nil
+    public static var currentUser: User? = nil
     
     // MARK: Search users
     public func searchUsers(searchText: String) async throws -> [User] {

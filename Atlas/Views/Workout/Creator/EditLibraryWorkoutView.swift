@@ -1,40 +1,29 @@
 //
-//  NewProgramWorkoutView.swift
+//  EditLibraryWorkoutView.swift
 //  Atlas
 //
-//  Created by Michael Bautista on 12/8/24.
+//  Created by Michael Bautista on 12/13/24.
 //
 
 import SwiftUI
 
-struct NewProgramWorkoutView: View {
+struct EditLibraryWorkoutView: View {
     @Environment(\.dismiss) var dismiss
     
-    @StateObject var viewModel: NewProgramWorkoutViewModel
+    @StateObject var viewModel: EditLibraryWorkoutViewModel
     
-    @State var path = [SheetNavigationTypes]()
-    
-    @Binding var presentNewWorkout: Bool
+    var editLibraryWorout: ((FetchedWorkout) -> Void)
     
     var body: some View {
         NavigationStack {
             List {
-                // MARK: Library workouts link
-                Section {
-                    NavigationLink(value: SheetNavigationTypes.LibraryWorkoutsForProgramView(programId: viewModel.programId, week: viewModel.week, day: viewModel.day)) {
-                        Text("Library Workouts")
-                    }
-                    .listRowBackground(Color.ColorSystem.systemGray6)
-                    .listRowSeparator(.hidden)
-                }
-                
                 // MARK: Title
                 Section {
                     TextField("", text: $viewModel.title, axis: .vertical)
                         .textInputAutocapitalization(.sentences)
                         .foregroundStyle(Color.ColorSystem.primaryText)
                         .listRowBackground(Color.ColorSystem.systemGray6)
-                        .disabled(viewModel.isSaving)
+                        .disabled(viewModel.isLoading)
                 } header: {
                     Text("Title")
                 }
@@ -45,7 +34,6 @@ struct NewProgramWorkoutView: View {
                         .frame(height: 120)
                         .listRowBackground(Color.ColorSystem.systemGray6)
                         .listRowInsets(EdgeInsets(top: 5, leading: 15, bottom: 5, trailing: 15))
-                        .disabled(viewModel.isSaving)
                 } header: {
                     Text("Description")
                 }
@@ -54,9 +42,9 @@ struct NewProgramWorkoutView: View {
             .scrollContentBackground(.hidden)
             .scrollDismissesKeyboard(.interactively)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Add Workout")
+            .navigationTitle("New Workout")
             .background(Color.ColorSystem.systemBackground)
-            .interactiveDismissDisabled(viewModel.isSaving)
+            .interactiveDismissDisabled(viewModel.isLoading)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
@@ -65,38 +53,38 @@ struct NewProgramWorkoutView: View {
                         Text("Cancel")
                             .foregroundStyle(Color.ColorSystem.primaryText)
                     }
-                    .disabled(viewModel.isSaving)
+                    .disabled(viewModel.isLoading)
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         Task {
-                            let newWorkout = await viewModel.addNewWorkout()
+                            let newWorkout = await viewModel.saveLibraryWorkout()
                             
                             if !viewModel.didReturnError && newWorkout != nil {
-                                self.presentNewWorkout.toggle()
+                                self.editLibraryWorout(newWorkout!)
+                                dismiss()
                             }
                         }
                     } label: {
-                        if !viewModel.isSaving {
+                        if !viewModel.isLoading {
                             Text("Save")
-                                .foregroundStyle(viewModel.title != "" ? Color.ColorSystem.systemBlue : Color.ColorSystem.systemGray3)
+                                .foregroundStyle(Color.ColorSystem.systemBlue)
                         } else {
                             ProgressView()
                                 .foregroundStyle(Color.ColorSystem.primaryText)
                         }
                     }
-                    .disabled(viewModel.isSaving || viewModel.title == "")
+                    .disabled(viewModel.isLoading)
                 }
             }
             .alert(isPresented: $viewModel.didReturnError, content: {
                 Alert(title: Text(viewModel.returnedErrorMessage))
             })
-            .sheetNavigationDestination(path: $path)
         }
     }
 }
 
 #Preview {
-    NewProgramWorkoutView(viewModel: NewProgramWorkoutViewModel(programId: "", week: 9, day: "monday"), presentNewWorkout: .constant(false))
+    EditLibraryWorkoutView(viewModel: EditLibraryWorkoutViewModel(workout: EditWorkoutRequest(id: "", title: "Test", description: "Test description")), editLibraryWorout: {_ in})
 }

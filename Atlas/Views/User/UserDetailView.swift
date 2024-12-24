@@ -8,24 +8,17 @@
 import SwiftUI
 
 struct UserDetailView: View {
-    // MARK: UI state
-    @Environment(\.dismiss) private var dismiss
-    @FocusState var keyboardIsFocused: Bool
-    
     // MARK: Data
     @StateObject var viewModel: UserDetailViewModel
     
+    @Binding var path: [RootNavigationTypes]
+    
     var body: some View {
-        if viewModel.user == nil || viewModel.isLoading {
-            VStack(alignment: .center) {
-                Spacer()
-                ProgressView()
-                    .frame(maxWidth: UIScreen.main.bounds.size.width)
-                    .tint(Color.ColorSystem.primaryText)
-                Spacer()
+        if viewModel.isLoading {
+            LoadingView()
+            .task {
+                await viewModel.getUser(userId: viewModel.userId)
             }
-            .background(Color.ColorSystem.systemBackground)
-            .navigationBarTitleDisplayMode(.inline)
             .alert(isPresented: $viewModel.didReturnError, content: {
                 Alert(title: Text(viewModel.errorMessage ?? "Couldn't get team."))
             })
@@ -121,5 +114,5 @@ struct UserDetailView: View {
 }
 
 #Preview {
-    UserDetailView(viewModel: UserDetailViewModel(userId: "e4d6f88c-d8c3-4a01-98d6-b5d56a366491"))
+    UserDetailView(viewModel: UserDetailViewModel(userId: "e4d6f88c-d8c3-4a01-98d6-b5d56a366491"), path: .constant([]))
 }

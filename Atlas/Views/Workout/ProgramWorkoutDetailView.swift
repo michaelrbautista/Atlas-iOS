@@ -61,6 +61,14 @@ struct ProgramWorkoutDetailView: View {
                                 }
                             }
                         }
+                        .onDelete { indexSet in
+                            // Delete and remove workout
+                            let exerciseIndex = indexSet[indexSet.startIndex]
+                            
+                            Task {
+                                await viewModel.deleteExercise(exerciseId: viewModel.programWorkout!.workoutExercises![exerciseIndex].id, indexSet: indexSet)
+                            }
+                        }
                     } header: {
                         HStack {
                             Text("Exercises")
@@ -128,7 +136,9 @@ struct ProgramWorkoutDetailView: View {
                 AddExerciseToWorkoutView(viewModel: AddExerciseToWorkoutViewModel(workoutId: nil, programWorkoutId: viewModel.programWorkout!.id, exerciseNumber: (viewModel.programWorkout!.workoutExercises?.count ?? 0) + 1))
             }
             .sheet(isPresented: $presentEditWorkout) {
-                EditWorkoutView(viewModel: EditWorkoutViewModel(isProgramWorkout: true, workout: EditWorkoutRequest(id: viewModel.programWorkout!.id, title: viewModel.programWorkout!.title, description: viewModel.programWorkout!.description)))
+                EditProgramWorkoutView(viewModel: EditProgramWorkoutViewModel(workout: EditWorkoutRequest(id: viewModel.programWorkout!.id, title: viewModel.programWorkout!.title, description: viewModel.programWorkout!.description))) { workout in
+                    viewModel.programWorkout = workout
+                }
             }
         }
     }

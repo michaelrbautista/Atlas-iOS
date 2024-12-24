@@ -11,11 +11,11 @@ final class WorkoutService {
     
     public static let shared = WorkoutService()
     
-    // MARK: Edit workout
-    public func editWorkout(isProgramWorkout: Bool, editWorkoutRequest: EditWorkoutRequest) async throws -> FetchedWorkout {
+    // MARK: Edit program workout
+    public func editProgramWorkout(editWorkoutRequest: EditWorkoutRequest) async throws -> ProgramWorkout {
         do {
-            let workout: FetchedWorkout = try await SupabaseService.shared.supabase
-                .from(isProgramWorkout ? "program_workouts" : "workouts")
+            let workout: ProgramWorkout = try await SupabaseService.shared.supabase
+                .from("program_workouts")
                 .update(editWorkoutRequest)
                 .eq("id", value: editWorkoutRequest.id)
                 .select()
@@ -30,7 +30,26 @@ final class WorkoutService {
         }
     }
     
-    // MARK: Save new workout to program
+    // MARK: Edit library workout
+    public func editLibraryWorkout(editWorkoutRequest: EditWorkoutRequest) async throws -> FetchedWorkout {
+        do {
+            let workout: FetchedWorkout = try await SupabaseService.shared.supabase
+                .from("workouts")
+                .update(editWorkoutRequest)
+                .eq("id", value: editWorkoutRequest.id)
+                .select()
+                .single()
+                .execute()
+                .value
+            
+            return workout
+        } catch {
+            print(error)
+            throw error
+        }
+    }
+    
+    // MARK: Add new workout to program
     public func saveNewWorkoutToProgram(workout: addWorkoutToProgramRequest) async throws -> ProgramWorkout {
         do {
             let workout: ProgramWorkout = try await SupabaseService.shared.supabase

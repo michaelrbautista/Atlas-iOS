@@ -21,6 +21,7 @@ final class LibraryWorkoutDetailForProgramViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
     
+    @MainActor
     init(workoutId: String, programId: String, week: Int, day: String) {
         self.programId = programId
         self.week = week
@@ -33,19 +34,15 @@ final class LibraryWorkoutDetailForProgramViewModel: ObservableObject {
                 // Get workout
                 let workout = try await WorkoutService.shared.getLibraryWorkout(libraryWorkoutId: workoutId)
                 
-                DispatchQueue.main.async {
-                    self.workout = workout
-                    if workout.workoutExercises == nil {
-                        self.workout?.workoutExercises = [FetchedWorkoutExercise]()
-                    }
-                    self.isLoading = false
+                self.workout = workout
+                if workout.workoutExercises == nil {
+                    self.workout?.workoutExercises = [FetchedWorkoutExercise]()
                 }
+                self.isLoading = false
             } catch {
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.didReturnError = true
-                    self.returnedErrorMessage = error.localizedDescription
-                }
+                self.isLoading = false
+                self.didReturnError = true
+                self.returnedErrorMessage = error.localizedDescription
             }
         }
     }
@@ -86,7 +83,9 @@ final class LibraryWorkoutDetailForProgramViewModel: ObservableObject {
             }
             
             // Save exercises to workout_exercises table
-            try await ExerciseService.shared.copyExercisesToProgramWorkout(exercises: newExercises)
+            if newExercises.count > 0 {
+                try await ExerciseService.shared.copyExercisesToProgramWorkout(exercises: newExercises)
+            }
             
             return newWorkout
         } catch {

@@ -14,7 +14,9 @@ final class UserDetailViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var errorMessage: String? = nil
     
-    @Published var user: User?
+    var userId: String
+    
+    @Published var user: User? = nil
     
     @Published var userImage: UIImage? = nil
     @Published var userProfilePictureIsLoading = false
@@ -22,9 +24,7 @@ final class UserDetailViewModel: ObservableObject {
     @Published var pickerValue = "posts"
     
     init(userId: String) {
-        Task {
-            await getUser(userId: userId)
-        }
+        self.userId = userId
     }
     
     @MainActor

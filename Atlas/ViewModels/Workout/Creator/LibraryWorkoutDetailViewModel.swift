@@ -39,6 +39,21 @@ final class LibraryWorkoutDetailViewModel: ObservableObject {
         }
     }
     
+    // MARK: Delete exercise
+    @MainActor
+    public func deleteExercise(exerciseId: String, indexSet: IndexSet) async {
+        do {
+            // Delete exercise
+            try await ExerciseService.shared.deleteWorkoutExercise(exerciseId: exerciseId)
+            
+            self.libraryWorkout!.workoutExercises!.remove(atOffsets: indexSet)
+        } catch {
+            self.isLoading = false
+            self.didReturnError = true
+            self.returnedErrorMessage = error.localizedDescription
+        }
+    }
+    
     @MainActor
     public func deleteWorkout() async {
         self.isDeleting = true
