@@ -9,8 +9,7 @@ import SwiftUI
 import PhotosUI
 
 struct NewProgramView: View {
-    @Environment(\.dismiss) var dismiss
-    
+    @EnvironmentObject var navigationController: NavigationController
     @StateObject var viewModel = NewProgramViewModel()
     
     // Program: newly created program
@@ -122,7 +121,7 @@ struct NewProgramView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        dismiss()
+                        navigationController.dismissSheet()
                     } label: {
                         Text("Cancel")
                             .foregroundStyle(Color.ColorSystem.primaryText)
@@ -137,7 +136,7 @@ struct NewProgramView: View {
                             
                             if !viewModel.didReturnError && newProgram != nil {
                                 addProgram(newProgram!)
-                                dismiss()
+                                navigationController.dismissSheet()
                             }
                         }
                     } label: {

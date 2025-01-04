@@ -21,30 +21,35 @@ final class ProgramWorkoutDetailViewModel: ObservableObject {
     @Published var returnedErrorMessage = ""
     
     // MARK: Initializer
-    @MainActor
     init(programWorkoutId: String) {
         Task {
-            do {
-                // Get workout
-                let workout = try await WorkoutService.shared.getProgramWorkout(programWorkoutId: programWorkoutId)
-                
-                self.programWorkout = workout
-                self.isCreator = workout.createdBy == UserService.currentUser?.id
-                self.isLoading = false
-            } catch {
-                self.isLoading = false
-                self.didReturnError = true
-                self.returnedErrorMessage = error.localizedDescription
-            }
+            await getProgramWorkout(programWorkoutId: programWorkoutId)
+        }
+    }
+    
+    // MARK: Get workout
+    @MainActor
+    public func getProgramWorkout(programWorkoutId: String) async {
+        do {
+            // Get workout
+            let workout = try await WorkoutService.shared.getProgramWorkout(programWorkoutId: programWorkoutId)
+            self.isCreator = workout.createdBy == UserService.currentUser?.id
+            
+            self.programWorkout = workout
+            self.isLoading = false
+        } catch {
+            self.isLoading = false
+            self.didReturnError = true
+            self.returnedErrorMessage = error.localizedDescription
         }
     }
     
     // MARK: Delete exercise
     @MainActor
-    public func deleteExercise(exerciseId: String, indexSet: IndexSet) async {
+    public func deleteExercise(exerciseId: String, exerciseNumber: Int, indexSet: IndexSet) async {
         do {
             // Delete exercise
-            try await ExerciseService.shared.deleteWorkoutExercise(exerciseId: exerciseId)
+            try await ExerciseService.shared.deleteWorkoutExercise(exerciseId: exerciseId, deletedExerciseNumber: exerciseNumber, workoutId: nil, programWorkoutId: programWorkout!.id)
             
             self.programWorkout!.workoutExercises!.remove(atOffsets: indexSet)
         } catch {

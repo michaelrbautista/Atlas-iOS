@@ -10,16 +10,17 @@ import PhotosUI
 import AVKit
 
 struct WorkoutExerciseDetailView: View {
-    // Video data
-    @State var presentVideoPlayer = false
-    
+    @EnvironmentObject var navigationController: NavigationController
     @StateObject var viewModel: WorkoutExerciseDetailViewModel
     
+    @State var presentVideoPlayer = false
     @State var presentEditExercise = false
+    
+    var deleteWorkoutExercise: (() -> Void)?
     
     var body: some View {
         List {
-            if let programExercise = viewModel.exercise.exercises {
+            if let programExercise = viewModel.workoutExercise.exercises {
                 if let videoUrl = programExercise.videoUrl {
                     Section {
                         VideoCell(videoUrl: URL(string: videoUrl)!) {
@@ -51,7 +52,7 @@ struct WorkoutExerciseDetailView: View {
                 
                 // MARK: Sets
                 Section {
-                    Text(String(viewModel.exercise.sets ?? 1))
+                    Text(String(viewModel.workoutExercise.sets ?? 1))
                         .font(Font.FontStyles.body)
                         .foregroundStyle(Color.ColorSystem.primaryText)
                         .listRowBackground(Color.ColorSystem.systemGray6)
@@ -61,7 +62,7 @@ struct WorkoutExerciseDetailView: View {
                 
                 // MARK: Reps
                 Section {
-                    Text(String(viewModel.exercise.reps ?? 1))
+                    Text(String(viewModel.workoutExercise.reps ?? 1))
                         .font(Font.FontStyles.body)
                         .foregroundStyle(Color.ColorSystem.primaryText)
                         .listRowBackground(Color.ColorSystem.systemGray6)
@@ -70,9 +71,9 @@ struct WorkoutExerciseDetailView: View {
                 }
                 
                 // MARK: Time
-                if viewModel.exercise.time != nil && viewModel.exercise.time != "" {
+                if viewModel.workoutExercise.time != nil && viewModel.workoutExercise.time != "" {
                     Section {
-                        Text(viewModel.exercise.time!)
+                        Text(viewModel.workoutExercise.time!)
                             .font(Font.FontStyles.body)
                             .foregroundStyle(Color.ColorSystem.primaryText)
                             .listRowBackground(Color.ColorSystem.systemGray6)
@@ -82,9 +83,9 @@ struct WorkoutExerciseDetailView: View {
                 }
                 
                 // MARK: Other notes
-                if viewModel.exercise.other != nil && viewModel.exercise.other != "" {
+                if viewModel.workoutExercise.other != nil && viewModel.workoutExercise.other != "" {
                     Section {
-                        Text(viewModel.exercise.other!)
+                        Text(viewModel.workoutExercise.other!)
                             .font(Font.FontStyles.body)
                             .foregroundStyle(Color.ColorSystem.primaryText)
                             .listRowBackground(Color.ColorSystem.systemGray6)
@@ -99,31 +100,33 @@ struct WorkoutExerciseDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .background(Color.ColorSystem.systemBackground)
         .toolbar(content: {
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Button {
-                        presentEditExercise.toggle()
+            if viewModel.isCreator {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button {
+                            presentEditExercise.toggle()
+                        } label: {
+                            Text("Edit exercise")
+                        }
                     } label: {
-                        Text("Edit exercise")
+                        Image(systemName: "ellipsis")
                     }
-                } label: {
-                    Image(systemName: "ellipsis")
                 }
             }
         })
         .fullScreenCover(isPresented: $presentVideoPlayer, content: {
-            if let url = viewModel.exercise.exercises?.videoUrl {
+            if let url = viewModel.workoutExercise.exercises?.videoUrl {
                 WatchVideoView(videoUrl: url)
             }
         })
         .sheet(isPresented: $presentEditExercise) {
-            EditWorkoutExerciseView(viewModel: EditWorkoutExerciseViewModel(exercise: viewModel.exercise)) { newExercise in
-                viewModel.exercise = newExercise
+            EditWorkoutExerciseView(viewModel: EditWorkoutExerciseViewModel(exercise: viewModel.workoutExercise)) { newExercise in
+                viewModel.workoutExercise = newExercise
             }
         }
     }
 }
 
 #Preview {
-    WorkoutExerciseDetailView(viewModel: WorkoutExerciseDetailViewModel(exercise: FetchedWorkoutExercise(id: "", exerciseId: "", exerciseNumber: 3)))
+    WorkoutExerciseDetailView(viewModel: WorkoutExerciseDetailViewModel(workoutExercise: FetchedWorkoutExercise(id: "", createdBy: "", exerciseId: "", exerciseNumber: 3)))
 }

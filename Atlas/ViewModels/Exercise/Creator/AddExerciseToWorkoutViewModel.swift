@@ -25,7 +25,6 @@ final class AddExerciseToWorkoutViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
     
-    @MainActor
     init(workoutId: String?, programWorkoutId: String?, exerciseNumber: Int) {
         guard let currentUserId = UserService.currentUser?.id.description else {
             userId = ""

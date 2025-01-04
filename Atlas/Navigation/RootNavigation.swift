@@ -9,6 +9,11 @@ import Foundation
 import SwiftUI
 
 enum RootNavigationTypes: Hashable {
+    // Home
+    case TrainingView
+    case ExploreView
+    case LibraryView
+    
     // Program
     case ProgramsView(userId: String)
     case ProgramDetailView(programId: String)
@@ -78,7 +83,7 @@ enum RootNavigationTypes: Hashable {
         case .ProgramExerciseDetailView(let workoutExercise):
             return workoutExercise
         default:
-            return FetchedWorkoutExercise(id: "", exerciseId: "", exerciseNumber: 1)
+            return FetchedWorkoutExercise(id: "", createdBy: "", exerciseId: "", exerciseNumber: 1)
         }
     }
     
@@ -87,7 +92,7 @@ enum RootNavigationTypes: Hashable {
         case .LibraryExerciseDetailView(let libraryExercise):
             return libraryExercise
         default:
-            return FetchedExercise(id: "", title: "")
+            return FetchedExercise(id: "", createdBy: "", title: "")
         }
     }
 }
@@ -102,10 +107,10 @@ struct RootNavigationViews: ViewModifier {
                 switch destination {
                 // Program
                 case .ProgramsView:
-                    ProgramsView(path: $path)
+                    ProgramsView()
                 case .ProgramDetailView:
                     let vm = ProgramDetailViewModel(programId: destination.getId())
-                    ProgramDetailView(viewModel: vm, path: $path)
+                    ProgramDetailView(viewModel: vm)
                 case .CalendarView:
                     let program = destination.getProgram()
                     CalendarView(
@@ -119,34 +124,37 @@ struct RootNavigationViews: ViewModifier {
                 // Workout
                 case .ProgramWorkoutDetailView:
                     let vm = ProgramWorkoutDetailViewModel(programWorkoutId: destination.getId())
-                    ProgramWorkoutDetailView(viewModel: vm, path: $path)
+                    ProgramWorkoutDetailView(viewModel: vm)
                 case .LibraryWorkoutDetailView:
                     let vm = LibraryWorkoutDetailViewModel(libraryWorkoutId: destination.getId())
-                    LibraryWorkoutDetailView(viewModel: vm, path: $path)
+                    LibraryWorkoutDetailView(viewModel: vm)
                     
                 // Exercise
                 case .LibraryExerciseDetailView:
                     let vm = LibraryExerciseDetailViewModel(exercise: destination.getLibraryExercise())
-                    LibraryExerciseDetailView(viewModel: vm, path: $path)
+                    LibraryExerciseDetailView(viewModel: vm)
                 case .ProgramExerciseDetailView:
-                    let vm = WorkoutExerciseDetailViewModel(exercise: destination.getWorkoutExercise())
+                    let vm = WorkoutExerciseDetailViewModel(workoutExercise: destination.getWorkoutExercise())
                     WorkoutExerciseDetailView(viewModel: vm)
                     
                 // Library
                 case .CreatorProgramsView:
-                    CreatorProgramsView(path: $path)
+                    CreatorProgramsView()
                 case .CreatorWorkoutsView:
-                    CreatorWorkoutsView(path: $path)
+                    CreatorWorkoutsView()
                 case .CreatorExercisesView:
-                    CreatorExercisesView(path: $path)
+                    CreatorExercisesView()
                     
                 // User
                 case .UserDetailView:
                     let vm = UserDetailViewModel(userId: destination.getId())
-                    UserDetailView(viewModel: vm, path: $path)
+                    UserDetailView(viewModel: vm)
                 case .UserProgramsView:
                     let vm = UserProgramsViewModel(userId: destination.getId())
-                    UserProgramsView(viewModel: vm, path: $path)
+                    UserProgramsView(viewModel: vm)
+                    
+                default:
+                    EmptyView()
                 }
             })
     }

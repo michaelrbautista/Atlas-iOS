@@ -21,8 +21,15 @@ final class CreatorProgramsViewModel: ObservableObject {
     var userId: String
     
     // MARK: Initializaer
-    init(userId: String) {
-        self.userId = userId
+    init() {
+        guard let currentUserId = UserService.currentUser?.id.description else {
+            userId = ""
+            self.didReturnError = true
+            self.returnedErrorMessage = "Couldn't get current user."
+            return
+        }
+        
+        self.userId = currentUserId
     }
     
     // MARK: Refresh

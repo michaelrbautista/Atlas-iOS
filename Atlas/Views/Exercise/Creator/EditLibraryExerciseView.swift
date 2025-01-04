@@ -15,6 +15,8 @@ struct EditLibraryExerciseView: View {
     
     @State var presentVideoPlayer = false
     
+    var editLibraryExercise: ((FetchedExercise) -> Void)
+    
     var body: some View {
         NavigationStack {
             List {
@@ -107,7 +109,7 @@ struct EditLibraryExerciseView: View {
                             let newExercise = await viewModel.saveExercise()
                             
                             if !viewModel.didReturnError && newExercise != nil {
-//                                addExercise(newExercise!)
+                                self.editLibraryExercise(newExercise!)
                                 dismiss()
                             }
                         }
@@ -136,5 +138,5 @@ struct EditLibraryExerciseView: View {
 }
 
 #Preview {
-    EditLibraryExerciseView(viewModel: EditLibraryExerciseViewModel(exercise: FetchedExercise(id: "", title: ""), exerciseVideo: nil))
+    EditLibraryExerciseView(viewModel: EditLibraryExerciseViewModel(exercise: FetchedExercise(id: "", createdBy: "", title: ""), exerciseVideo: nil), editLibraryExercise: {_ in})
 }

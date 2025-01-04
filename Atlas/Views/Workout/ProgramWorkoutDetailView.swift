@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct ProgramWorkoutDetailView: View {
+    @EnvironmentObject var navigationController: NavigationController
     @StateObject var viewModel: ProgramWorkoutDetailViewModel
     
     @State private var presentNewExercise = false
     @State private var presentEditWorkout = false
     @State private var presentDeleteWorkout = false
     
-    @Binding var path: [RootNavigationTypes]
+    var deleteProgramWorkout: (() -> Void)?
     
     var body: some View {
         if viewModel.isLoading == true || viewModel.programWorkout == nil {
@@ -54,11 +55,15 @@ struct ProgramWorkoutDetailView: View {
                 // MARK: Exercises
                 if let exercises = viewModel.programWorkout?.workoutExercises {
                     Section {
-                        ForEach(exercises) { exercise in
-                            NavigationLink(value: RootNavigationTypes.ProgramExerciseDetailView(workoutExercise: exercise)) {
+                        ForEach(Array(exercises.enumerated()), id: \.offset) { index, exercise in
+                            CoordinatorLink {
                                 if let libraryExercise = exercise.exercises {
-                                    ExerciseCell(exerciseNumber: exercise.exerciseNumber, name: libraryExercise.title, sets: exercise.sets ?? 1, reps: exercise.reps ?? 1)
+                                    ExerciseCell(exerciseNumber: index + 1, name: libraryExercise.title, sets: exercise.sets ?? 1, reps: exercise.reps ?? 1)
                                 }
+                            } action: {
+                                navigationController.push(.WorkoutExerciseDetailView(workoutExercise: exercise, deleteWorkoutExercise: {
+                                    viewModel.programWorkout?.workoutExercises?.remove(exercise)
+                                }))
                             }
                         }
                         .onDelete { indexSet in
@@ -66,7 +71,7 @@ struct ProgramWorkoutDetailView: View {
                             let exerciseIndex = indexSet[indexSet.startIndex]
                             
                             Task {
-                                await viewModel.deleteExercise(exerciseId: viewModel.programWorkout!.workoutExercises![exerciseIndex].id, indexSet: indexSet)
+                                await viewModel.deleteExercise(exerciseId: viewModel.programWorkout!.workoutExercises![exerciseIndex].id, exerciseNumber: viewModel.programWorkout!.workoutExercises![exerciseIndex].exerciseNumber, indexSet: indexSet)
                             }
                         }
                     } header: {
@@ -79,7 +84,9 @@ struct ProgramWorkoutDetailView: View {
                             
                             if viewModel.isCreator {
                                 Button {
-                                    presentNewExercise.toggle()
+                                    navigationController.presentSheet(.AddExerciseToWorkoutCoordinatorView(workoutId: nil, programWorkoutId: viewModel.programWorkout!.id, exerciseNumber: (viewModel.programWorkout!.workoutExercises?.count ?? 0) + 1, addExerciseToWorkout: { newWorkoutExercise in
+                                        viewModel.programWorkout?.workoutExercises?.append(newWorkoutExercise)
+                                    }))
                                 } label: {
                                     Image(systemName: "plus")
                                 }
@@ -100,7 +107,9 @@ struct ProgramWorkoutDetailView: View {
                         if !viewModel.isDeleting {
                             Menu {
                                 Button {
-                                    presentEditWorkout.toggle()
+                                    navigationController.presentSheet(.EditProgramWorkoutView(programWorkout: viewModel.programWorkout!, editProgramWorkout: { newWorkout in
+                                        viewModel.programWorkout = newWorkout
+                                    }))
                                 } label: {
                                     Text("Edit workout")
                                 }
@@ -127,23 +136,18 @@ struct ProgramWorkoutDetailView: View {
                         await viewModel.deleteWorkout()
                     }
                     
-                    path.removeLast(1)
+                    navigationController.pop()
                 } label: {
                     Text("Yes")
                 }
             }
-            .sheet(isPresented: $presentNewExercise) {
-                AddExerciseToWorkoutView(viewModel: AddExerciseToWorkoutViewModel(workoutId: nil, programWorkoutId: viewModel.programWorkout!.id, exerciseNumber: (viewModel.programWorkout!.workoutExercises?.count ?? 0) + 1))
-            }
-            .sheet(isPresented: $presentEditWorkout) {
-                EditProgramWorkoutView(viewModel: EditProgramWorkoutViewModel(workout: EditWorkoutRequest(id: viewModel.programWorkout!.id, title: viewModel.programWorkout!.title, description: viewModel.programWorkout!.description))) { workout in
-                    viewModel.programWorkout = workout
-                }
-            }
+//            .sheet(isPresented: $presentNewExercise) {
+//                AddExerciseToWorkoutView(viewModel: AddExerciseToWorkoutViewModel(workoutId: nil, programWorkoutId: viewModel.programWorkout!.id, exerciseNumber: (viewModel.programWorkout!.workoutExercises?.count ?? 0) + 1))
+//            }
         }
     }
 }
 
 #Preview {
-    ProgramWorkoutDetailView(viewModel: ProgramWorkoutDetailViewModel(programWorkoutId: "e1de3869-8dec-42af-9c71-e5d2071c539c"), path: .constant([]))
+    ProgramWorkoutDetailView(viewModel: ProgramWorkoutDetailViewModel(programWorkoutId: "e1de3869-8dec-42af-9c71-e5d2071c539c"))
 }

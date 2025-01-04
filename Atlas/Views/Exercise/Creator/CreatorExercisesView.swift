@@ -9,9 +9,8 @@ import SwiftUI
 
 struct CreatorExercisesView: View {
     // MARK: Data
+    @EnvironmentObject var navigationController: NavigationController
     @StateObject private var viewModel = CreatorExercisesViewModel()
-    
-    @Binding var path: [RootNavigationTypes]
     
     @State var presentNewExercise = false
     
@@ -19,7 +18,7 @@ struct CreatorExercisesView: View {
         List {
             Section {
                 ForEach(viewModel.exercises) { exercise in
-                    NavigationLink(value: RootNavigationTypes.LibraryExerciseDetailView(exercise: exercise)) {
+                    CoordinatorLink {
                         VStack(spacing: 5) {
                             Text(exercise.title)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -34,6 +33,10 @@ struct CreatorExercisesView: View {
                                     .lineLimit(2)
                             }
                         }
+                    } action: {
+                        navigationController.push(.LibraryExerciseDetailView(libraryExercise: exercise, deleteLibraryExercise: {
+                            viewModel.exercises.remove(exercise)
+                        }))
                     }
                 }
                 
@@ -71,13 +74,10 @@ struct CreatorExercisesView: View {
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("", systemImage: "plus") {
-                    presentNewExercise.toggle()
+                    navigationController.presentSheet(.NewLibraryExerciseView(addLibraryExercise: { newExercise in
+                        viewModel.exercises.insert(newExercise, at: 0)
+                    }))
                 }
-            }
-        })
-        .sheet(isPresented: $presentNewExercise, content: {
-            NewLibraryExerciseView { exercise in
-                viewModel.exercises.insert(exercise, at: 0)
             }
         })
         .alert(isPresented: $viewModel.didReturnError, content: {
@@ -87,5 +87,5 @@ struct CreatorExercisesView: View {
 }
 
 #Preview {
-    CreatorExercisesView(path: .constant([]))
+    CreatorExercisesView()
 }

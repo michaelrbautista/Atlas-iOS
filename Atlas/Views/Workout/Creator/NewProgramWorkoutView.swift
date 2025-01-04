@@ -8,24 +8,25 @@
 import SwiftUI
 
 struct NewProgramWorkoutView: View {
-    @Environment(\.dismiss) var dismiss
-    
+    @EnvironmentObject var navigationController: NavigationController
+    @EnvironmentObject var sheetNavigationController: SheetNavigationController
     @StateObject var viewModel: NewProgramWorkoutViewModel
     
-    @State var path = [SheetNavigationTypes]()
-    
-    @Binding var presentNewWorkout: Bool
+    var addWorkoutToProgram: ((ProgramWorkout) -> Void)
     
     var body: some View {
         NavigationStack {
             List {
                 // MARK: Library workouts link
                 Section {
-                    NavigationLink(value: SheetNavigationTypes.LibraryWorkoutsForProgramView(programId: viewModel.programId, week: viewModel.week, day: viewModel.day)) {
+                    CoordinatorLink {
                         Text("Library Workouts")
+                            .font(Font.FontStyles.body)
+                            .foregroundStyle(Color.ColorSystem.primaryText)
+                    } action: {
+                        sheetNavigationController.push(.LibraryWorkoutsForProgramView(programId: viewModel.programId, week: viewModel.week, day: viewModel.day, addWorkoutToProgram: addWorkoutToProgram))
                     }
                     .listRowBackground(Color.ColorSystem.systemGray6)
-                    .listRowSeparator(.hidden)
                 }
                 
                 // MARK: Title
@@ -60,7 +61,7 @@ struct NewProgramWorkoutView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        dismiss()
+                        navigationController.dismissSheet()
                     } label: {
                         Text("Cancel")
                             .foregroundStyle(Color.ColorSystem.primaryText)
@@ -74,7 +75,8 @@ struct NewProgramWorkoutView: View {
                             let newWorkout = await viewModel.addNewWorkout()
                             
                             if !viewModel.didReturnError && newWorkout != nil {
-                                self.presentNewWorkout.toggle()
+                                
+                                navigationController.dismissSheet()
                             }
                         }
                     } label: {
@@ -92,11 +94,10 @@ struct NewProgramWorkoutView: View {
             .alert(isPresented: $viewModel.didReturnError, content: {
                 Alert(title: Text(viewModel.returnedErrorMessage))
             })
-            .sheetNavigationDestination(path: $path)
         }
     }
 }
 
 #Preview {
-    NewProgramWorkoutView(viewModel: NewProgramWorkoutViewModel(programId: "", week: 9, day: "monday"), presentNewWorkout: .constant(false))
+    NewProgramWorkoutView(viewModel: NewProgramWorkoutViewModel(programId: "", week: 9, day: "monday"), addWorkoutToProgram: {_ in})
 }

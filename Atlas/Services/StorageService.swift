@@ -14,7 +14,6 @@ final class StorageService {
     
     // MARK: Delete file
     public func deleteFile(bucketName: String, filePath: String) async throws {
-        print("filePath: \(filePath)")
         do {
             let _ = try await SupabaseService.shared.supabase.storage
                 .from(bucketName)

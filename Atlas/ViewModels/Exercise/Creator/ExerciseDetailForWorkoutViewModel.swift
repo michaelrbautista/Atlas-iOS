@@ -60,7 +60,7 @@ final class ExerciseDetailForWorkoutViewModel: ObservableObject {
         
         // Save to workout_exercises table
         do {
-            let exercise: FetchedWorkoutExercise = try await ExerciseService.shared.addExerciseToWorkout(newExercise: newExercise)
+            let exercise = try await ExerciseService.shared.addExerciseToWorkout(newExercise: newExercise)
             
             return exercise
         } catch {

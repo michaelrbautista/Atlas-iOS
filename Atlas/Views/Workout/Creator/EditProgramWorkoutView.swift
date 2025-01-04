@@ -86,5 +86,5 @@ struct EditProgramWorkoutView: View {
 }
 
 #Preview {
-    EditProgramWorkoutView(viewModel: EditProgramWorkoutViewModel(workout: EditWorkoutRequest(id: "", title: "Test", description: "Test description")), editProgramWorout: {_ in})
+    EditProgramWorkoutView(viewModel: EditProgramWorkoutViewModel(workout: ProgramWorkout(id: "", createdBy: "", title: "")), editProgramWorout: {_ in})
 }

@@ -55,7 +55,7 @@ enum SheetNavigationTypes: Hashable {
         case .ExerciseDetailForWorkoutView(_ , _, let exercise, _):
             return exercise
         default:
-            return FetchedExercise(id: "", title: "")
+            return FetchedExercise(id: "", createdBy: "", title: "")
         }
     }
     
@@ -101,14 +101,14 @@ struct SheetNavigationViews: ViewModifier {
                 switch destination {
                 case .LibraryWorkoutsForProgramView:
                     let vm = LibraryWorkoutsForProgramViewModel(programId: destination.getProgramId(), week: destination.getWeek(), day: destination.getDay())
-                    LibraryWorkoutsForProgramView(viewModel: vm, path: $path)
+                    LibraryWorkoutsForProgramView(viewModel: vm, addWorkoutToProgram: {_ in})
                         .toolbarRole(.editor)
                 case .LibraryWorkoutDetailForProgramView:
                     let vm = LibraryWorkoutDetailForProgramViewModel(workoutId: destination.getWorkoutId(), programId: destination.getProgramId(), week: destination.getWeek(), day: destination.getDay())
-                    LibraryWorkoutDetailForProgramView(viewModel: vm, path: $path)
+                    LibraryWorkoutDetailForProgramView(viewModel: vm, addWorkoutToProgram: {_ in})
                 case .ExerciseDetailForWorkoutView:
                     let vm = ExerciseDetailForWorkoutViewModel(workoutId: destination.getWorkoutIdForExercise(), programWorkoutId: destination.getProgramWorkoutId(), exercise: destination.getExercise(), exerciseNumber: destination.getExerciseNumber())
-                    ExerciseDetailForWorkoutView(viewModel: vm)
+                    ExerciseDetailForWorkoutView(viewModel: vm, addExerciseToWorkout: {_ in})
                 }
             })
     }

@@ -15,7 +15,7 @@ struct EditWorkoutExerciseView: View {
     
     @State var presentVideoPlayer = false
     
-    var editExercise: ((FetchedWorkoutExercise) -> Void)?
+    var editWorkoutExercise: ((FetchedWorkoutExercise) -> Void)
     
     var body: some View {
         NavigationStack {
@@ -115,7 +115,7 @@ struct EditWorkoutExerciseView: View {
                             let newExercise = await viewModel.saveExercise()
                             
                             if !viewModel.didReturnError && newExercise != nil {
-                                self.editExercise?(newExercise!)
+                                self.editWorkoutExercise(newExercise!)
                                 dismiss()
                             }
                         }
@@ -144,5 +144,5 @@ struct EditWorkoutExerciseView: View {
 }
 
 #Preview {
-    EditWorkoutExerciseView(viewModel: EditWorkoutExerciseViewModel(exercise: FetchedWorkoutExercise(id: "", exerciseId: "", exerciseNumber: 3)))
+    EditWorkoutExerciseView(viewModel: EditWorkoutExerciseViewModel(exercise: FetchedWorkoutExercise(id: "", createdBy: "", exerciseId: "", exerciseNumber: 3))) {_ in}
 }

@@ -14,7 +14,8 @@ final class DayViewModel: ObservableObject {
     var week: Int
     var day: String
     
-    @Published var workouts: [ProgramWorkout]? = nil
+    @Published var workouts = [ProgramWorkout]()
+    var isCreator = false
     
     @Published var isLoading = true
     
@@ -22,8 +23,9 @@ final class DayViewModel: ObservableObject {
     @Published var returnedErrorMessage = ""
     
     // MARK: Initializer
-    init(programId: String, week: Int, day: String) {
+    init(programId: String, isCreator: Bool, week: Int, day: String) {
         self.programId = programId
+        self.isCreator = isCreator
         self.week = week
         self.day = day
         

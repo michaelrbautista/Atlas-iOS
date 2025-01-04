@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct LibraryWorkoutDetailForProgramView: View {
-    @Environment(\.dismiss) var dismiss
-    
+    @EnvironmentObject var navigationController: NavigationController
+    @EnvironmentObject var sheetNavigationController: SheetNavigationController
     @StateObject var viewModel: LibraryWorkoutDetailForProgramViewModel
     
-    @Binding var path: [SheetNavigationTypes]
+    var addWorkoutToProgram: ((ProgramWorkout) -> Void)
     
     var body: some View {
         if viewModel.isLoading == true || viewModel.workout == nil {
@@ -80,7 +80,8 @@ struct LibraryWorkoutDetailForProgramView: View {
                                 let newWorkout = await viewModel.addWorkoutToProgram()
                                 
                                 if !viewModel.didReturnError && newWorkout != nil {
-                                    dismiss()
+                                    self.addWorkoutToProgram(newWorkout!)
+                                    navigationController.dismissSheet()
                                 }
                             }
                         } label: {
@@ -101,5 +102,5 @@ struct LibraryWorkoutDetailForProgramView: View {
 }
 
 #Preview {
-    LibraryWorkoutDetailForProgramView(viewModel: LibraryWorkoutDetailForProgramViewModel(workoutId: "", programId: "", week: 9, day: ""), path: .constant([]))
+    LibraryWorkoutDetailForProgramView(viewModel: LibraryWorkoutDetailForProgramViewModel(workoutId: "", programId: "", week: 9, day: ""), addWorkoutToProgram: {_ in})
 }

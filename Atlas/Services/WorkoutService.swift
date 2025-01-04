@@ -182,6 +182,7 @@ final class WorkoutService {
                         description,
                         workout_exercises(
                             id,
+                            created_by,
                             exercise_id,
                             exercise_number,
                             sets,
@@ -190,6 +191,7 @@ final class WorkoutService {
                             other,
                             exercises(
                                 id,
+                                created_by,
                                 title,
                                 instructions,
                                 video_url
@@ -223,6 +225,7 @@ final class WorkoutService {
                         description,
                         workout_exercises(
                             id,
+                            created_by,
                             exercise_id,
                             exercise_number,
                             sets,
@@ -231,6 +234,7 @@ final class WorkoutService {
                             other,
                             exercises(
                                 id,
+                                created_by,
                                 title,
                                 instructions,
                                 video_url

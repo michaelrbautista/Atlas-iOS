@@ -39,14 +39,14 @@ final class EditLibraryExerciseViewModel: ObservableObject {
     
     // MARK: Save exercise
     @MainActor
-    public func saveExercise() async {
+    public func saveExercise() async -> FetchedExercise? {
         self.isSaving = true
         
         // Check fields
         if title == "" {
             didReturnError = true
             returnedErrorMessage = "Please fill in all fields"
-            return
+            return nil
         }
         
         do {
@@ -58,7 +58,7 @@ final class EditLibraryExerciseViewModel: ObservableObject {
             if videoSelection != nil {
                 guard let exerciseVideoData = self.exerciseVideo else {
                     print("Couldn't get data from video.")
-                    return
+                    return nil
                 }
                 
                 // Check if image needs to be replaced or added
@@ -67,14 +67,14 @@ final class EditLibraryExerciseViewModel: ObservableObject {
                 } else {
                     guard let currentUser = UserService.currentUser else {
                         print("Couldn't get current user.")
-                        return
+                        return nil
                     }
                     
                     let videoPath = "\(currentUser.id.description)/\(Date().hashValue).jpg"
                     
                     guard let exerciseVideoData = self.exerciseVideo else {
                         print("Couldn't get data from video.")
-                        return
+                        return nil
                     }
                     
                     let videoUrl = try await StorageService.shared.saveVideo(file: exerciseVideoData, bucketName: "exercise_videos", fileName: videoPath)
@@ -102,12 +102,12 @@ final class EditLibraryExerciseViewModel: ObservableObject {
             let editedExercise = try await ExerciseService.shared.editLibraryExercise(editExerciseRequest: newExercise)
             
             // Update program on UI
-            
+            return editedExercise
         } catch {
             self.isSaving = false
             self.didReturnError = true
             self.returnedErrorMessage = error.localizedDescription
-            return
+            return nil
         }
     }
     

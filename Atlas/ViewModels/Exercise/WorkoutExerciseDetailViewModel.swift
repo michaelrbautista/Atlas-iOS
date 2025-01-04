@@ -11,7 +11,8 @@ import AVKit
 final class WorkoutExerciseDetailViewModel: ObservableObject {
     
     // MARK: Variables
-    @Published var exercise: FetchedWorkoutExercise
+    @Published var workoutExercise: FetchedWorkoutExercise
+    var isCreator = false
     
     @Published var player: AVPlayer? = nil
     
@@ -24,7 +25,8 @@ final class WorkoutExerciseDetailViewModel: ObservableObject {
     @Published var returnedErrorMessage = ""
     
     // MARK: Initializer
-    init(exercise: FetchedWorkoutExercise) {
-        self.exercise = exercise
+    init(workoutExercise: FetchedWorkoutExercise) {
+        self.workoutExercise = workoutExercise
+        self.isCreator = workoutExercise.createdBy == UserService.currentUser?.id
     }
 }

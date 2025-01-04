@@ -25,7 +25,7 @@ struct UserView: View {
                 }
                 .environmentObject(userViewModel)
             
-            LibraryView()
+            LibraryCoordinatorView()
                 .tabItem {
                     Image(systemName: "text.book.closed.fill")
                 }

@@ -9,17 +9,24 @@ import SwiftUI
 
 struct ProgramsView: View {
     // MARK: Data
+    @EnvironmentObject var navigationController: NavigationController
     @StateObject private var viewModel = ProgramsViewModel()
-    
-    @Binding var path: [RootNavigationTypes]
     
     var body: some View {
         List {
             Section {
                 ForEach(viewModel.programs) { program in
-                    if let createdBy = program.createdBy, let program = program.programs {
-                        NavigationLink(value: RootNavigationTypes.ProgramDetailView(programId: program.id)) {
-                            ProgramCell(title: program.title, imageUrl: program.imageUrl, userFullName: createdBy.fullName)
+                    if let createdBy = program.createdBy, let checkProgram = program.programs {
+                        CoordinatorLink {
+                            ProgramCell(
+                                title: checkProgram.title,
+                                imageUrl: checkProgram.imageUrl,
+                                userFullName: createdBy.fullName
+                            )
+                        } action: {
+                            navigationController.push(.ProgramDetailView(programId: checkProgram.id, deleteProgram: {
+                                viewModel.programs.remove(program)
+                            }))
                         }
                     }
                 }
@@ -62,6 +69,5 @@ struct ProgramsView: View {
 }
 
 #Preview {
-    ProgramsView(path: .constant([]))
-        .environmentObject(UserViewModel())
+    ProgramsView()
 }

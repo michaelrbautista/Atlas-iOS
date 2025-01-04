@@ -8,10 +8,8 @@
 import SwiftUI
 
 struct UserProgramsView: View {
-    // MARK: Data
+    @EnvironmentObject var navigationController: NavigationController
     @StateObject var viewModel: UserProgramsViewModel
-    
-    @Binding var path: [RootNavigationTypes]
     
     var body: some View {
         List {
@@ -54,5 +52,5 @@ struct UserProgramsView: View {
 }
 
 #Preview {
-    UserProgramsView(viewModel: UserProgramsViewModel(userId: ""), path: .constant([]))
+    UserProgramsView(viewModel: UserProgramsViewModel(userId: ""))
 }

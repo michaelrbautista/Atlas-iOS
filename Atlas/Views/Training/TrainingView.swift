@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct TrainingView: View {
+    // MARK: Data
+    @StateObject private var viewModel = TrainingViewModel()
+    @EnvironmentObject var coordinatorController: NavigationController
+    
     // MARK: UI State
     @State var presentSettings = false
     @State var presentCreateNutritionPlan = false
     @State var presentAddWorkout = false
-    
-    // MARK: Data
-    @StateObject private var viewModel = TrainingViewModel()
     
     @State var path = [RootNavigationTypes]()
     

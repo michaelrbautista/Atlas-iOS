@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct LibraryWorkoutDetailView: View {
+    @EnvironmentObject var navigationController: NavigationController
     @StateObject var viewModel: LibraryWorkoutDetailViewModel
     
     @State private var presentNewExercise = false
-    @State private var presentEditWorkout = false
     @State private var presentDeleteWorkout = false
     
-    @Binding var path: [RootNavigationTypes]
+    var deleteLibraryWorkout: (() -> Void)?
     
     var body: some View {
         if viewModel.isLoading == true || viewModel.libraryWorkout == nil {
@@ -55,11 +55,15 @@ struct LibraryWorkoutDetailView: View {
                 // MARK: Exercises
                 if let exercises = viewModel.libraryWorkout?.workoutExercises {
                     Section {
-                        ForEach(exercises) { exercise in
-                            NavigationLink(value: RootNavigationTypes.ProgramExerciseDetailView(workoutExercise: exercise)) {
+                        ForEach(Array(exercises.enumerated()), id: \.offset) { index, exercise in
+                            CoordinatorLink {
                                 if let libraryExercise = exercise.exercises {
-                                    ExerciseCell(exerciseNumber: exercise.exerciseNumber, name: libraryExercise.title, sets: exercise.sets ?? 1, reps: exercise.reps ?? 1)
+                                    ExerciseCell(exerciseNumber: index + 1, name: libraryExercise.title, sets: exercise.sets ?? 1, reps: exercise.reps ?? 1)
                                 }
+                            } action: {
+                                navigationController.push(.WorkoutExerciseDetailView(workoutExercise: exercise, deleteWorkoutExercise: {
+                                    viewModel.libraryWorkout?.workoutExercises?.remove(exercise)
+                                }))
                             }
                         }
                         .onDelete { indexSet in
@@ -67,7 +71,7 @@ struct LibraryWorkoutDetailView: View {
                             let exerciseIndex = indexSet[indexSet.startIndex]
                             
                             Task {
-                                await viewModel.deleteExercise(exerciseId: viewModel.libraryWorkout!.workoutExercises![exerciseIndex].id, indexSet: indexSet)
+                                await viewModel.deleteExercise(exerciseId: viewModel.libraryWorkout!.workoutExercises![exerciseIndex].id, exerciseNumber: viewModel.libraryWorkout!.workoutExercises![exerciseIndex].exerciseNumber, indexSet: indexSet)
                             }
                         }
                     } header: {
@@ -78,9 +82,12 @@ struct LibraryWorkoutDetailView: View {
                             
                             Spacer()
                             
+                            // MARK: Add exercise
                             if viewModel.isCreator {
                                 Button {
-                                    presentNewExercise.toggle()
+                                    navigationController.presentSheet(.AddExerciseToWorkoutCoordinatorView(workoutId: viewModel.libraryWorkout!.id, programWorkoutId: nil, exerciseNumber: (viewModel.libraryWorkout!.workoutExercises?.count ?? 0) + 1, addExerciseToWorkout: { newWorkoutExercise in
+                                        viewModel.libraryWorkout?.workoutExercises?.append(newWorkoutExercise)
+                                    }))
                                 } label: {
                                     Image(systemName: "plus")
                                 }
@@ -100,7 +107,9 @@ struct LibraryWorkoutDetailView: View {
                     if !viewModel.isDeleting {
                         Menu {
                             Button {
-                                presentEditWorkout.toggle()
+                                navigationController.presentSheet(.EditLibraryWorkoutView(libraryWorkout: self.viewModel.libraryWorkout!, editLibraryWorkout: { newWorkout in
+                                    self.viewModel.libraryWorkout = newWorkout
+                                }))
                             } label: {
                                 Text("Edit workout")
                             }
@@ -124,19 +133,13 @@ struct LibraryWorkoutDetailView: View {
                 Button(role: .destructive) {
                     Task {
                         await viewModel.deleteWorkout()
+                        
+                        self.deleteLibraryWorkout?()
                     }
                     
-                    path.removeLast(1)
+                    navigationController.pop()
                 } label: {
                     Text("Yes")
-                }
-            }
-            .sheet(isPresented: $presentNewExercise) {
-                AddExerciseToWorkoutView(viewModel: AddExerciseToWorkoutViewModel(workoutId: viewModel.libraryWorkout!.id, programWorkoutId: nil, exerciseNumber: (viewModel.libraryWorkout!.workoutExercises?.count ?? 0) + 1))
-            }
-            .sheet(isPresented: $presentEditWorkout) {
-                EditLibraryWorkoutView(viewModel: EditLibraryWorkoutViewModel(workout: EditWorkoutRequest(id: viewModel.libraryWorkout!.id, title: viewModel.libraryWorkout!.title, description: viewModel.libraryWorkout!.description))) { workout in
-                    viewModel.libraryWorkout = workout
                 }
             }
         }
@@ -144,5 +147,5 @@ struct LibraryWorkoutDetailView: View {
 }
 
 #Preview {
-    LibraryWorkoutDetailView(viewModel: LibraryWorkoutDetailViewModel(libraryWorkoutId: "Test"), path: .constant([]))
+    LibraryWorkoutDetailView(viewModel: LibraryWorkoutDetailViewModel(libraryWorkoutId: "Test"))
 }

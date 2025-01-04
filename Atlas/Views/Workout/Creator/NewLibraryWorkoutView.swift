@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct NewLibraryWorkoutView: View {
-    @Environment(\.dismiss) var dismiss
-    
+    @EnvironmentObject var navigationController: NavigationController
     @StateObject var viewModel = NewLibraryWorkoutViewModel()
     
     // FetchedWorkout: newly created workout
@@ -49,7 +48,7 @@ struct NewLibraryWorkoutView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        dismiss()
+                        navigationController.dismissSheet()
                     } label: {
                         Text("Cancel")
                             .foregroundStyle(Color.ColorSystem.primaryText)
@@ -63,8 +62,8 @@ struct NewLibraryWorkoutView: View {
                             let newWorkout = await viewModel.saveWorkout()
                             
                             if !viewModel.didReturnError && newWorkout != nil {
-                                addWorkout(newWorkout!)
-                                dismiss()
+                                self.addWorkout(newWorkout!)
+                                navigationController.dismissSheet()
                             }
                         }
                     } label: {

@@ -58,6 +58,7 @@ struct FetchedWorkout: Codable, Hashable, Identifiable {
 
 struct FetchedWorkoutExercise: Codable, Hashable, Identifiable {
     var id: String
+    var createdBy: String
     var exerciseId: String
     var exerciseNumber: Int
     var sets: Int?
@@ -69,6 +70,7 @@ struct FetchedWorkoutExercise: Codable, Hashable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case id, sets, reps, time, other, exercises
+        case createdBy = "created_by"
         case exerciseId = "exercise_id"
         case exerciseNumber = "exercise_number"
     }

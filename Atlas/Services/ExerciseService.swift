@@ -21,6 +21,7 @@ final class ExerciseService {
                 .select(
                     """
                         id,
+                        created_by,
                         exercise_id,
                         exercise_number,
                         sets,
@@ -29,6 +30,7 @@ final class ExerciseService {
                         other,
                         exercises(
                             id,
+                            created_by,
                             title,
                             instructions,
                             video_url
@@ -69,7 +71,25 @@ final class ExerciseService {
             let exercise: FetchedWorkoutExercise = try await SupabaseService.shared.supabase
                 .from("workout_exercises")
                 .insert(newExercise)
-                .select()
+                .select(
+                    """
+                        id,
+                        created_by,
+                        exercise_id,
+                        exercise_number,
+                        sets,
+                        reps,
+                        time,
+                        other,
+                        exercises(
+                            id,
+                            created_by,
+                            title,
+                            instructions,
+                            video_url
+                        )
+                    """
+                )
                 .single()
                 .execute()
                 .value
@@ -109,14 +129,39 @@ final class ExerciseService {
         }
     }
     
+    // MARK: Decrement workout's exercises
+    public func decrementWorkoutExercises(deletedExerciseNumber: Int, workoutId: String?, programWorkoutId: String?) async throws {
+        do {
+            if workoutId != nil {
+                try await SupabaseService.shared.supabase
+                    .rpc("decrement_library_workout_exercises", params: [
+                        "workout_id_input": workoutId!,
+                        "deleted_exercise_number": String(deletedExerciseNumber)
+                    ])
+                    .execute()
+            } else if programWorkoutId != nil {
+                try await SupabaseService.shared.supabase
+                    .rpc("decrement_program_workout_exercises", params: [
+                        "program_workout_id_input": programWorkoutId!,
+                        "deleted_exercise_number": String(deletedExerciseNumber)
+                    ])
+                    .execute()
+            }
+        } catch {
+            throw error
+        }
+    }
+    
     // MARK: Delete workout exercise
-    public func deleteWorkoutExercise(exerciseId: String) async throws {
+    public func deleteWorkoutExercise(exerciseId: String, deletedExerciseNumber: Int, workoutId: String?, programWorkoutId: String?) async throws {
         do {
             try await SupabaseService.shared.supabase
                 .from("workout_exercises")
                 .delete()
                 .eq("id", value: exerciseId)
                 .execute()
+            
+            try await decrementWorkoutExercises(deletedExerciseNumber: deletedExerciseNumber, workoutId: workoutId, programWorkoutId: programWorkoutId)
         } catch {
             throw error
         }

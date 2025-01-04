@@ -33,6 +33,7 @@ struct Exercise: Codable, Identifiable, Hashable {
 
 struct FetchedExercise: Codable, Hashable, Identifiable {
     var id: String
+    var createdBy: String
     var title: String
     var instructions: String?
     var videoUrl: String?
@@ -40,6 +41,7 @@ struct FetchedExercise: Codable, Hashable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case id, title, instructions
+        case createdBy = "created_by"
         case videoUrl = "video_url"
         case videoPath = "video_path"
     }

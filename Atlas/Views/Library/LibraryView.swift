@@ -8,51 +8,60 @@
 import SwiftUI
 
 struct LibraryView: View {
-    // MARK: Data
+    @EnvironmentObject var navigationController: NavigationController
     @EnvironmentObject var userViewModel: UserViewModel
     
-    @State var path = [RootNavigationTypes]()
-    
     var body: some View {
-        NavigationStack(path: $path) {
-            List {
-                if let currentUser = UserService.currentUser {
-                    // MARK: User
+        List {
+            if let currentUser = UserService.currentUser {
+                // MARK: User
+                Section {
+                    CoordinatorLink {
+                        Text("Programs")
+                            .font(Font.FontStyles.body)
+                            .foregroundStyle(Color.ColorSystem.primaryText)
+                    } action: {
+                        navigationController.push(.ProgramsView)
+                    }
+                } header: {
+                    Text("User")
+                }
+                
+                if currentUser.paymentsEnabled {
+                    // MARK: Creator
                     Section {
-                        NavigationLink(value: RootNavigationTypes.ProgramsView(userId: currentUser.id)) {
-                            Text("Programs")
+                        CoordinatorLink {
+                            Text("My Programs")
+                                .font(Font.FontStyles.body)
+                                .foregroundStyle(Color.ColorSystem.primaryText)
+                        } action: {
+                            navigationController.push(.CreatorProgramsView)
+                        }
+                        
+                        CoordinatorLink {
+                            Text("My Workouts")
+                                .font(Font.FontStyles.body)
+                                .foregroundStyle(Color.ColorSystem.primaryText)
+                        } action: {
+                            navigationController.push(.CreatorWorkoutsView)
+                        }
+                        
+                        CoordinatorLink {
+                            Text("My Exercises")
+                                .font(Font.FontStyles.body)
+                                .foregroundStyle(Color.ColorSystem.primaryText)
+                        } action: {
+                            navigationController.push(.CreatorExercisesView)
                         }
                     } header: {
-                        Text("User")
+                        Text("Creator")
                     }
-                    
-                    #if DEBUG
-                    if currentUser.paymentsEnabled {
-                        // MARK: Creator
-                        Section {
-                            NavigationLink(value: RootNavigationTypes.CreatorProgramsView(userId: currentUser.id)) {
-                                Text("My Programs")
-                            }
-                            
-                            NavigationLink(value: RootNavigationTypes.CreatorWorkoutsView(userId: currentUser.id)) {
-                                Text("My Workouts")
-                            }
-                            
-                            NavigationLink(value: RootNavigationTypes.CreatorExercisesView(userId: currentUser.id)) {
-                                Text("My Exercises")
-                            }
-                        } header: {
-                            Text("Creator")
-                        }
-                    }
-                    #endif
                 }
             }
-            .listStyle(.insetGrouped)
-            .navigationBarTitleDisplayMode(.large)
-            .navigationTitle("Library")
-            .rootNavigationDestination(path: $path)
         }
+        .listStyle(.insetGrouped)
+        .navigationBarTitleDisplayMode(.large)
+        .navigationTitle("Library")
     }
 }
 

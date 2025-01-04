@@ -10,13 +10,14 @@ import PhotosUI
 import AVKit
 
 struct LibraryExerciseDetailView: View {
+    @EnvironmentObject var navigationController: NavigationController
     @StateObject var viewModel: LibraryExerciseDetailViewModel
     
     @State var presentEditExercise = false
     @State var presentDeleteExercise = false
     @State var presentVideoPlayer = false
     
-    @Binding var path: [RootNavigationTypes]
+    var deleteLibraryExercise: (() -> Void)?
     
     var body: some View {
         List {
@@ -74,7 +75,9 @@ struct LibraryExerciseDetailView: View {
                 if !viewModel.isDeleting {
                     Menu {
                         Button {
-                            presentEditExercise.toggle()
+                            navigationController.presentSheet(.EditLibraryExerciseView(libraryExercise: viewModel.exercise, exerciseVideo: viewModel.exerciseVideo, editLibraryExercise: { editedExercise in
+                                viewModel.exercise = editedExercise
+                            }))
                         } label: {
                             Text("Edit exercise")
                         }
@@ -98,9 +101,11 @@ struct LibraryExerciseDetailView: View {
             Button(role: .destructive) {
                 Task {
                     await viewModel.deleteExercise()
+                    
+                    self.deleteLibraryExercise?()
                 }
                 
-                path.removeLast(1)
+                navigationController.pop()
             } label: {
                 Text("Yes")
             }
@@ -110,12 +115,9 @@ struct LibraryExerciseDetailView: View {
                 WatchVideoView(videoUrl: url)
             }
         })
-        .sheet(isPresented: $presentEditExercise) {
-            EditLibraryExerciseView(viewModel: EditLibraryExerciseViewModel(exercise: viewModel.exercise, exerciseVideo: viewModel.exerciseVideo))
-        }
     }
 }
 
 #Preview {
-    LibraryExerciseDetailView(viewModel: LibraryExerciseDetailViewModel(exercise: FetchedExercise(id: "", title: "Test")), path: .constant([]))
+    LibraryExerciseDetailView(viewModel: LibraryExerciseDetailViewModel(exercise: FetchedExercise(id: "", createdBy: "", title: "Test")))
 }

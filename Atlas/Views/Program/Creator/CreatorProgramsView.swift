@@ -9,19 +9,19 @@ import SwiftUI
 
 struct CreatorProgramsView: View {
     // MARK: Data
-    @StateObject private var viewModel = CreatorProgramsViewModel(userId: UserService.currentUser!.id)
-    
-    @Binding var path: [RootNavigationTypes]
-    
-    @State var presentNewProgram = false
+    @EnvironmentObject var navigationController: NavigationController
+    @StateObject private var viewModel = CreatorProgramsViewModel()
     
     var body: some View {
         List {
             Section {
                 ForEach(viewModel.programs) { program in
                     if let createdBy = program.createdBy {
-                        NavigationLink(value: RootNavigationTypes.ProgramDetailView(programId: program.id)) {
+                        CoordinatorLink {
                             ProgramCell(title: program.title, imageUrl: program.imageUrl, userFullName: createdBy.fullName)
+                        } action: {
+                            navigationController.push(.ProgramDetailView(programId: program.id, deleteProgram: { viewModel.programs.remove(program)
+                            }))
                         }
                     }
                 }
@@ -60,18 +60,13 @@ struct CreatorProgramsView: View {
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    presentNewProgram.toggle()
+                    navigationController.presentSheet(.NewProgramView(addProgram: { newProgram in
+                        viewModel.programs.insert(newProgram, at: 0)
+                    }))
                 } label: {
                     Image(systemName: "plus")
                 }
             }
-        })
-        .sheet(isPresented: $presentNewProgram, content: {
-            NewProgramView(
-                addProgram: { newProgram in
-                    viewModel.programs.insert(newProgram, at: 0)
-                }
-            )
         })
         .alert(isPresented: $viewModel.didReturnError, content: {
             Alert(title: Text(viewModel.returnedErrorMessage))
@@ -80,5 +75,5 @@ struct CreatorProgramsView: View {
 }
 
 #Preview {
-    CreatorProgramsView(path: .constant([]))
+    CreatorProgramsView()
 }

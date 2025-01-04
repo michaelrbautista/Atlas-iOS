@@ -9,18 +9,22 @@ import SwiftUI
 
 struct CreatorWorkoutsView: View {
     // MARK: Data
+    @EnvironmentObject var navigationController: NavigationController
     @StateObject private var viewModel = CreatorWorkoutsViewModel()
-    
-    @Binding var path: [RootNavigationTypes]
-    
-    @State var presentNewWorkout = false
     
     var body: some View {
         List {
             Section {
                 ForEach(viewModel.workouts) { workout in
-                    NavigationLink(value: RootNavigationTypes.LibraryWorkoutDetailView(workoutId: workout.id)) {
-                        WorkoutCell(title: workout.title, description: workout.description)
+                    CoordinatorLink {
+                        WorkoutCell(
+                            title: workout.title,
+                            description: workout.description
+                        )
+                    } action: {
+                        navigationController.push(.LibraryWorkoutDetailView(libraryWorkoutId: workout.id, deleteLibraryWorkout: {
+                            viewModel.workouts.remove(workout)
+                        }))
                     }
                 }
                 
@@ -57,17 +61,14 @@ struct CreatorWorkoutsView: View {
         })
         .toolbar(content: {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("", systemImage: "plus") {
-                    presentNewWorkout.toggle()
+                Button {
+                    navigationController.presentSheet(.NewLibraryWorkoutView(addLibraryWorkout: { newWorkout in
+                        viewModel.workouts.insert(newWorkout, at: 0)
+                    }))
+                } label: {
+                    Image(systemName: "plus")
                 }
             }
-        })
-        .sheet(isPresented: $presentNewWorkout, content: {
-            NewLibraryWorkoutView(
-                addWorkout: { newWorkout in
-                    viewModel.workouts.insert(newWorkout, at: 0)
-                }
-            )
         })
         .alert(isPresented: $viewModel.didReturnError, content: {
             Alert(title: Text(viewModel.returnedErrorMessage))
@@ -76,5 +77,5 @@ struct CreatorWorkoutsView: View {
 }
 
 #Preview {
-    CreatorWorkoutsView(path: .constant([]))
+    CreatorWorkoutsView()
 }

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CalendarView: View {
+    @EnvironmentObject var navigationController: NavigationController
     
     @State var currentPage = 1
     @State var isEnd = false
@@ -21,8 +22,6 @@ struct CalendarView: View {
     var days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
     
     @State var selectedDay = (1, "sunday")
-    
-    @State var presentNewWorkout = false
     
     func calculateStartWeek() -> Int {
         return 1 + (4 * (currentPage - 1))
@@ -126,35 +125,7 @@ struct CalendarView: View {
             }
             
             // MARK: Workouts
-            Section {
-                DayView(viewModel: DayViewModel(programId: programId, week: selectedDay.0, day: selectedDay.1))
-            } header: {
-                HStack {
-                    Text("Workouts")
-                        .font(Font.FontStyles.title3)
-                        .foregroundStyle(Color.ColorSystem.primaryText)
-                    
-                    Spacer()
-                    
-                    if isCreator {
-                        Button {
-                            presentNewWorkout.toggle()
-                        } label: {
-                            Image(systemName: "plus")
-                        }
-
-                    }
-                }
-                .padding(EdgeInsets(top: 20, leading: 20, bottom: 0, trailing: 20))
-            }
-            .headerProminence(.increased)
-        }
-        .sheet(isPresented: $presentNewWorkout) {
-            NewProgramWorkoutView(viewModel: NewProgramWorkoutViewModel(
-                programId: programId,
-                week: selectedDay.0,
-                day: selectedDay.1
-            ), presentNewWorkout: $presentNewWorkout)
+            DayView(viewModel: DayViewModel(programId: programId, isCreator: isCreator, week: selectedDay.0, day: selectedDay.1))
         }
     }
 }

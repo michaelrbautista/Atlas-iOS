@@ -12,6 +12,9 @@
 		8902F6D32D1A407C003C64FE /* EditProgramWorkoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8902F6D22D1A4075003C64FE /* EditProgramWorkoutViewModel.swift */; };
 		8902F6D52D1A52B9003C64FE /* EditWorkoutExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8902F6D42D1A52B9003C64FE /* EditWorkoutExerciseView.swift */; };
 		8902F6D72D1A52C5003C64FE /* EditWorkoutExerciseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8902F6D62D1A52BE003C64FE /* EditWorkoutExerciseViewModel.swift */; };
+		8902F6FB2D1BD4A0003C64FE /* Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8902F6FA2D1BD49D003C64FE /* Navigation.swift */; };
+		8902F6FD2D1CBBF7003C64FE /* NavigationViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8902F6FC2D1CBBF5003C64FE /* NavigationViews.swift */; };
+		8902F7002D1CE36E003C64FE /* CoordinatorLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8902F6FF2D1CE36E003C64FE /* CoordinatorLink.swift */; };
 		890715D42CB08AEA0079200F /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890715D32CB08AEA0079200F /* ExploreView.swift */; };
 		890715D92CB08B370079200F /* ExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890715D82CB08B370079200F /* ExploreViewModel.swift */; };
 		8917C6FB2CAB2358005B3D5B /* PurchaseModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917C6FA2CAB2358005B3D5B /* PurchaseModalView.swift */; };
@@ -47,6 +50,7 @@
 		89930A802CB5CCF3004CF2B1 /* SearchUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89930A7F2CB5CCF3004CF2B1 /* SearchUserCell.swift */; };
 		89B400182BF987B800A832AA /* ProgramWorkoutDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89B400172BF987B800A832AA /* ProgramWorkoutDetailViewModel.swift */; };
 		89B4001A2BF9960900A832AA /* ProgramService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89B400192BF9960900A832AA /* ProgramService.swift */; };
+		89BC2FC22D279EC800B4E6C6 /* NavigationTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BC2FC12D279EC600B4E6C6 /* NavigationTypes.swift */; };
 		89D5A7A12BA64D100001CFB3 /* AtlasApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D5A7A02BA64D100001CFB3 /* AtlasApp.swift */; };
 		89D5A7A32BA64D100001CFB3 /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D5A7A22BA64D100001CFB3 /* UserView.swift */; };
 		89D5A7A52BA64D110001CFB3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89D5A7A42BA64D110001CFB3 /* Assets.xcassets */; };
@@ -124,6 +128,9 @@
 		8902F6D22D1A4075003C64FE /* EditProgramWorkoutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProgramWorkoutViewModel.swift; sourceTree = "<group>"; };
 		8902F6D42D1A52B9003C64FE /* EditWorkoutExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditWorkoutExerciseView.swift; sourceTree = "<group>"; };
 		8902F6D62D1A52BE003C64FE /* EditWorkoutExerciseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditWorkoutExerciseViewModel.swift; sourceTree = "<group>"; };
+		8902F6FA2D1BD49D003C64FE /* Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigation.swift; sourceTree = "<group>"; };
+		8902F6FC2D1CBBF5003C64FE /* NavigationViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViews.swift; sourceTree = "<group>"; };
+		8902F6FF2D1CE36E003C64FE /* CoordinatorLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorLink.swift; sourceTree = "<group>"; };
 		890715D32CB08AEA0079200F /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 		890715D82CB08B370079200F /* ExploreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewModel.swift; sourceTree = "<group>"; };
 		8917C6FA2CAB2358005B3D5B /* PurchaseModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseModalView.swift; sourceTree = "<group>"; };
@@ -150,6 +157,7 @@
 		89930A7F2CB5CCF3004CF2B1 /* SearchUserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUserCell.swift; sourceTree = "<group>"; };
 		89B400172BF987B800A832AA /* ProgramWorkoutDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramWorkoutDetailViewModel.swift; sourceTree = "<group>"; };
 		89B400192BF9960900A832AA /* ProgramService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramService.swift; sourceTree = "<group>"; };
+		89BC2FC12D279EC600B4E6C6 /* NavigationTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTypes.swift; sourceTree = "<group>"; };
 		89D5A79D2BA64D100001CFB3 /* Atlas.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Atlas.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89D5A7A02BA64D100001CFB3 /* AtlasApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtlasApp.swift; sourceTree = "<group>"; };
 		89D5A7A22BA64D100001CFB3 /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
@@ -244,6 +252,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8902F6FE2D1CE346003C64FE /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				8902F6FF2D1CE36E003C64FE /* CoordinatorLink.swift */,
+				896F30F42C227A0E0007EBFA /* WatchVideoView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		890715D62CB08B160079200F /* Explore */ = {
 			isa = PBXGroup;
 			children = (
@@ -334,6 +351,7 @@
 				89D5A7D52BA654EA0001CFB3 /* Models */,
 				89D5A7D62BA655120001CFB3 /* Services */,
 				89E18CFC2D16688800C0B4F4 /* Navigation */,
+				8902F6FE2D1CE346003C64FE /* Components */,
 				89D5A7D82BA6552E0001CFB3 /* Cells */,
 				89D5A7D72BA655210001CFB3 /* Supporting */,
 				89D5A7A42BA64D110001CFB3 /* Assets.xcassets */,
@@ -391,8 +409,6 @@
 				89E046E22C1BED74006BCE71 /* Workout.swift */,
 				89E046E42C1BED7B006BCE71 /* Exercise.swift */,
 				89D5A8602BA65AC20001CFB3 /* User.swift */,
-				898D0B112C8F7CCB00898957 /* RootNavigation.swift */,
-				89EA533C2D0E418200BB22D4 /* SheetNavigation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -431,7 +447,6 @@
 				89D5A86C2BA65AEF0001CFB3 /* ExerciseCell.swift */,
 				896F30F62C23BF2C0007EBFA /* VideoCell.swift */,
 				896F31122C27BCC20007EBFA /* VideoCellFromData.swift */,
-				896F30F42C227A0E0007EBFA /* WatchVideoView.swift */,
 				89930A7D2CB5CCEA004CF2B1 /* SearchProgramCell.swift */,
 				89930A7F2CB5CCF3004CF2B1 /* SearchUserCell.swift */,
 			);
@@ -504,6 +519,11 @@
 		89E18CFC2D16688800C0B4F4 /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
+				898D0B112C8F7CCB00898957 /* RootNavigation.swift */,
+				89EA533C2D0E418200BB22D4 /* SheetNavigation.swift */,
+				8902F6FC2D1CBBF5003C64FE /* NavigationViews.swift */,
+				8902F6FA2D1BD49D003C64FE /* Navigation.swift */,
+				89BC2FC12D279EC600B4E6C6 /* NavigationTypes.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -550,10 +570,10 @@
 				89E3A8702D065BF100624C72 /* NewLibraryWorkoutViewModel.swift */,
 				89EA53202D0B8B2400BB22D4 /* LibraryWorkoutDetailViewModel.swift */,
 				89EA53282D0CA58100BB22D4 /* EditLibraryWorkoutViewModel.swift */,
-				8902F6D22D1A4075003C64FE /* EditProgramWorkoutViewModel.swift */,
 				89E3A8642D06410800624C72 /* NewProgramWorkoutViewModel.swift */,
 				89E3A86A2D06511E00624C72 /* LibraryWorkoutsForProgramViewModel.swift */,
 				89EA53482D0F839D00BB22D4 /* LibraryWorkoutDetailForProgramViewModel.swift */,
+				8902F6D22D1A4075003C64FE /* EditProgramWorkoutViewModel.swift */,
 			);
 			path = Creator;
 			sourceTree = "<group>";
@@ -565,9 +585,9 @@
 				89EA53322D0E0CCD00BB22D4 /* NewLibraryExerciseView.swift */,
 				89D5A8A32BBA443C0001CFB3 /* LibraryExerciseDetailView.swift */,
 				89EA53362D0E145400BB22D4 /* AddVideoView.swift */,
+				89E18CF82D14FDFF00C0B4F4 /* EditLibraryExerciseView.swift */,
 				89EA534A2D0FCD4000BB22D4 /* AddExerciseToWorkoutView.swift */,
 				89EA534E2D0FD06C00BB22D4 /* ExerciseDetailForWorkoutView.swift */,
-				89E18CF82D14FDFF00C0B4F4 /* EditLibraryExerciseView.swift */,
 				8902F6D42D1A52B9003C64FE /* EditWorkoutExerciseView.swift */,
 			);
 			path = Creator;
@@ -580,9 +600,9 @@
 				896E01912BFD35E30085968A /* LibraryExerciseDetailViewModel.swift */,
 				89EA53342D0E0D1C00BB22D4 /* NewLibraryExerciseViewModel.swift */,
 				89EA53382D0E146600BB22D4 /* AddVideoViewModel.swift */,
+				89E18CFA2D14FE0900C0B4F4 /* EditLibraryExerciseViewModel.swift */,
 				89EA534C2D0FCD4700BB22D4 /* AddExerciseToWorkoutViewModel.swift */,
 				89EA53502D0FD07C00BB22D4 /* ExerciseDetailForWorkoutViewModel.swift */,
-				89E18CFA2D14FE0900C0B4F4 /* EditLibraryExerciseViewModel.swift */,
 				8902F6D62D1A52BE003C64FE /* EditWorkoutExerciseViewModel.swift */,
 			);
 			path = Creator;
@@ -719,6 +739,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				89E3A85D2D03F5A600624C72 /* EditProgramView.swift in Sources */,
+				8902F7002D1CE36E003C64FE /* CoordinatorLink.swift in Sources */,
 				89D5A8552BA65A450001CFB3 /* WorkoutService.swift in Sources */,
 				89E3A8692D0646B300624C72 /* LibraryWorkoutsForProgramView.swift in Sources */,
 				89D5A8A42BBA443C0001CFB3 /* LibraryExerciseDetailView.swift in Sources */,
@@ -740,10 +761,12 @@
 				89E3A84F2D03823E00624C72 /* CreatorWorkoutsView.swift in Sources */,
 				89D5A82B2BA658D50001CFB3 /* ProgramsViewModel.swift in Sources */,
 				89D5A8002BA657B50001CFB3 /* ProgramsView.swift in Sources */,
+				8902F6FD2D1CBBF7003C64FE /* NavigationViews.swift in Sources */,
 				898D0B1E2C939EA100898957 /* DayViewModel.swift in Sources */,
 				89D5A8492BA659810001CFB3 /* Validators.swift in Sources */,
 				89E3A85B2D03D5D900624C72 /* SaveButton.swift in Sources */,
 				89D5A80C2BA657FA0001CFB3 /* ProfileView.swift in Sources */,
+				8902F6FB2D1BD4A0003C64FE /* Navigation.swift in Sources */,
 				89E046E52C1BED7B006BCE71 /* Exercise.swift in Sources */,
 				89EA53272D0CA56D00BB22D4 /* EditLibraryWorkoutView.swift in Sources */,
 				89E3A8712D065BF600624C72 /* NewLibraryWorkoutViewModel.swift in Sources */,
@@ -766,6 +789,7 @@
 				89E18CFB2D14FE0900C0B4F4 /* EditLibraryExerciseViewModel.swift in Sources */,
 				898D0B082C8F531300898957 /* UserDetailView.swift in Sources */,
 				89E3A86B2D06512100624C72 /* LibraryWorkoutsForProgramViewModel.swift in Sources */,
+				89BC2FC22D279EC800B4E6C6 /* NavigationTypes.swift in Sources */,
 				89EA53212D0B8B2400BB22D4 /* LibraryWorkoutDetailViewModel.swift in Sources */,
 				89D5A8392BA659220001CFB3 /* ProfileViewModel.swift in Sources */,
 				89D5A8652BA65AD90001CFB3 /* ProgramCell.swift in Sources */,
@@ -948,7 +972,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Atlas/Atlas.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Atlas/Preview Content\"";
 				DEVELOPMENT_TEAM = T2V9U83CKZ;
 				ENABLE_PREVIEWS = YES;
@@ -966,7 +990,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.9;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Michael-Bautista.Atlas";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -986,7 +1010,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Atlas/Atlas.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Atlas/Preview Content\"";
 				DEVELOPMENT_TEAM = T2V9U83CKZ;
 				ENABLE_PREVIEWS = YES;
@@ -1004,7 +1028,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.9;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Michael-Bautista.Atlas";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

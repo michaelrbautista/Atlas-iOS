@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct ExerciseDetailForWorkoutView: View {
-    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var navigationController: NavigationController
+    @EnvironmentObject var sheetNavigationController: SheetNavigationController
+    @StateObject var viewModel: ExerciseDetailForWorkoutViewModel
     
     // Video data
     @State var presentVideoPlayer = false
     
-    @StateObject var viewModel: ExerciseDetailForWorkoutViewModel
-    
-//    var addProgram: ((Program) -> Void)
+    var addExerciseToWorkout: ((FetchedWorkoutExercise) -> Void)
     
     var body: some View {
         List {
@@ -102,7 +102,8 @@ struct ExerciseDetailForWorkoutView: View {
                             let newExercise = await viewModel.addExerciseToWorkout()
                             
                             if !viewModel.didReturnError && newExercise != nil {
-                                dismiss()
+                                self.addExerciseToWorkout(newExercise!)
+                                navigationController.dismissSheet()
                             }
                         }
                     } label: {
@@ -124,5 +125,5 @@ struct ExerciseDetailForWorkoutView: View {
 }
 
 #Preview {
-    ExerciseDetailForWorkoutView(viewModel: ExerciseDetailForWorkoutViewModel(workoutId: "", programWorkoutId: "", exercise: FetchedExercise(id: "", title: ""), exerciseNumber: 1))
+    ExerciseDetailForWorkoutView(viewModel: ExerciseDetailForWorkoutViewModel(workoutId: "", programWorkoutId: "", exercise: FetchedExercise(id: "", createdBy: "", title: ""), exerciseNumber: 1), addExerciseToWorkout: {_ in})
 }

@@ -33,7 +33,7 @@ final class EditProgramViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
     
-    init(program: EditProgramRequest, programImage: UIImage?) {
+    init(program: Program, programImage: UIImage?) {
         self.programId = program.id
         self.imagePath = program.imagePath
         self.title = program.title
@@ -41,7 +41,7 @@ final class EditProgramViewModel: ObservableObject {
         self.description = program.description ?? ""
         self.isPrivate = program.isPrivate
         self.free = program.free
-        self.price = String(format: "%.2f", program.price ?? 1.00)
+        self.price = String(format: "%.2f", program.price)
         
         self.programImage = programImage
     }

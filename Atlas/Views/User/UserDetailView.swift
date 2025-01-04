@@ -8,10 +8,8 @@
 import SwiftUI
 
 struct UserDetailView: View {
-    // MARK: Data
+    @EnvironmentObject var navigationController: NavigationController
     @StateObject var viewModel: UserDetailViewModel
-    
-    @Binding var path: [RootNavigationTypes]
     
     var body: some View {
         if viewModel.isLoading {
@@ -114,5 +112,5 @@ struct UserDetailView: View {
 }
 
 #Preview {
-    UserDetailView(viewModel: UserDetailViewModel(userId: "e4d6f88c-d8c3-4a01-98d6-b5d56a366491"), path: .constant([]))
+    UserDetailView(viewModel: UserDetailViewModel(userId: "e4d6f88c-d8c3-4a01-98d6-b5d56a366491"))
 }

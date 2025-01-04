@@ -8,22 +8,21 @@
 import SwiftUI
 
 struct AddExerciseToWorkoutView: View {
-    
-    @Environment(\.dismiss) var dismiss
-    
+    @EnvironmentObject var navigationController: NavigationController
+    @EnvironmentObject var sheetNavigationController: SheetNavigationController
     @StateObject var viewModel: AddExerciseToWorkoutViewModel
     
-    @State var path = [SheetNavigationTypes]()
-    
     // FetchedProgram: newly created program
-//    var addProgram: ((Program) -> Void)
+    var addExerciseToWorkout: ((FetchedWorkoutExercise) -> Void)
     
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack {
             List {
                 ForEach(viewModel.exercises) { exercise in
-                    NavigationLink(value: SheetNavigationTypes.ExerciseDetailForWorkoutView(workoutId: viewModel.workoutId, programWorkoutId: viewModel.programWorkoutId, exercise: exercise, exerciseNumber: viewModel.exerciseNumber)) {
+                    CoordinatorLink {
                         WorkoutCell(title: exercise.title, description: exercise.instructions)
+                    } action: {
+                        sheetNavigationController.push(.ExerciseDetailForWorkoutView(workoutId: viewModel.workoutId, programWorkoutId: viewModel.programWorkoutId, exercise: exercise, exerciseNumber: viewModel.exerciseNumber, addExerciseToWorkout: addExerciseToWorkout))
                     }
                     .listRowBackground(Color.ColorSystem.systemBackground)
                 }
@@ -39,7 +38,7 @@ struct AddExerciseToWorkoutView: View {
             .toolbar(content: {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        dismiss()
+                        navigationController.dismissSheet()
                     } label: {
                         Text("Cancel")
                             .foregroundStyle(Color.ColorSystem.primaryText)
@@ -50,11 +49,10 @@ struct AddExerciseToWorkoutView: View {
             .alert(isPresented: $viewModel.didReturnError, content: {
                 Alert(title: Text(viewModel.returnedErrorMessage))
             })
-            .sheetNavigationDestination(path: $path)
         }
     }
 }
 
 #Preview {
-    AddExerciseToWorkoutView(viewModel: AddExerciseToWorkoutViewModel(workoutId: "", programWorkoutId: "", exerciseNumber: 1))
+    AddExerciseToWorkoutView(viewModel: AddExerciseToWorkoutViewModel(workoutId: "", programWorkoutId: "", exerciseNumber: 1), addExerciseToWorkout: {_ in})
 }

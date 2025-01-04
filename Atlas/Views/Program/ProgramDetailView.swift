@@ -8,11 +8,8 @@
 import SwiftUI
 
 struct ProgramDetailView: View {
-    // MARK: Parameters
-    @ObservedObject var viewModel: ProgramDetailViewModel
-    
-    @Environment(\.dismiss) private var dismiss
-    @FocusState var keyboardIsFocused: Bool
+    @EnvironmentObject var navigationController: NavigationController
+    @StateObject var viewModel: ProgramDetailViewModel
     
     // Creator
     @State var presentEditProgram = false
@@ -23,10 +20,7 @@ struct ProgramDetailView: View {
     @State var presentPurchaseModal = false
     @State var presentFinishProgram = false
     
-    @Binding var path: [RootNavigationTypes]
-    
-    // String: id of deleted program
-    var deleteProgram: ((Int) -> Void)?
+    var deleteProgram: (() -> Void)?
     
     var body: some View {
         if viewModel.program == nil || viewModel.isLoading {
@@ -74,7 +68,7 @@ struct ProgramDetailView: View {
                                     Spacer()
                                 }
                                 .frame(width: 100, height: 100)
-                                .background(Color.ColorSystem.systemGray5)
+                                .background(Color.ColorSystem.systemGray6)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                                 .buttonStyle(.plain)
                             }
@@ -139,7 +133,9 @@ struct ProgramDetailView: View {
                     
                     // MARK: Calendar link
                     if viewModel.isCreator || viewModel.isPurchased {
-                        ZStack {
+                        Button {
+                            navigationController.push(.CalendarView(program: viewModel.program!))
+                        } label: {
                             HStack {
                                 HStack {
                                     Text("🗓️")
@@ -152,17 +148,17 @@ struct ProgramDetailView: View {
                                 Spacer()
                                 
                                 Image(systemName: "chevron.right")
-                                    .foregroundStyle(Color.ColorSystem.systemGray)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 12)
+                                    .foregroundStyle(Color.ColorSystem.systemGray2)
+                                    .fontWeight(.bold)
                             }
                             .padding(10)
                             .background(Color.ColorSystem.systemGray6)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
-
-                            NavigationLink(value: RootNavigationTypes.CalendarView(program: program)) {
-                                
-                            }
-                            .opacity(0)
                         }
+                        .buttonStyle(.plain)
                         .listRowInsets(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.ColorSystem.systemBackground)
@@ -178,7 +174,9 @@ struct ProgramDetailView: View {
                             if !viewModel.isDeleting {
                                 Menu {
                                     Button {
-                                        presentEditProgram.toggle()
+                                        navigationController.presentSheet(.EditProgramView(program: viewModel.program!, programImage: viewModel.programImage, editProgram: { editedProgram in
+                                            viewModel.program = editedProgram
+                                        }))
                                     } label: {
                                         Text("Edit program")
                                     }
@@ -221,9 +219,11 @@ struct ProgramDetailView: View {
                     Button(role: .destructive) {
                         Task {
                             await viewModel.deleteProgram()
+                            
+                            self.deleteProgram?()
+                            
+                            self.navigationController.pop()
                         }
-                        
-                        path.removeLast(1)
                     } label: {
                         Text("Yes")
                     }
@@ -238,24 +238,6 @@ struct ProgramDetailView: View {
                         Text("Yes")
                     }
                 }
-                .sheet(isPresented: $presentEditProgram, content: {
-                    EditProgramView(
-                        viewModel: EditProgramViewModel(
-                        program: EditProgramRequest(
-                            id: viewModel.program!.id,
-                            title: viewModel.program!.title,
-                            description: viewModel.program!.description,
-                            imageUrl: viewModel.program!.imageUrl,
-                            imagePath: viewModel.program!.imagePath,
-                            price: viewModel.program!.price,
-                            weeks: viewModel.program!.weeks,
-                            free: viewModel.program!.free,
-                            isPrivate: viewModel.program!.isPrivate
-                        ),
-                        programImage: viewModel.program!.imageUrl != nil ? viewModel.programImage : nil)) { editedProgram in
-                            self.viewModel.program = editedProgram
-                        }
-                })
                 .sheet(isPresented: $presentPurchaseModal) {
                     PurchaseModalView()
                         .presentationDetents([.height(200)])
@@ -274,5 +256,5 @@ struct ProgramDetailView: View {
 }
 
 #Preview {
-    ProgramDetailView(viewModel: ProgramDetailViewModel(programId: "1941fa73-8ebd-43c4-8398-388908b99e07"), path: .constant([]))
+    ProgramDetailView(viewModel: ProgramDetailViewModel(programId: "1941fa73-8ebd-43c4-8398-388908b99e07"))
 }

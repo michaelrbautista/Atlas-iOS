@@ -11,7 +11,7 @@ import AVKit
 final class LibraryExerciseDetailViewModel: ObservableObject {
     
     // MARK: Variables
-    var exercise: FetchedExercise
+    @Published var exercise: FetchedExercise
     
     @Published var player: AVPlayer? = nil
     

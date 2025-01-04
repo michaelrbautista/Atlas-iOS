@@ -17,7 +17,7 @@ final class EditProgramWorkoutViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
     
-    init(workout: EditWorkoutRequest) {
+    init(workout: ProgramWorkout) {
         self.workoutId = workout.id
         self.title = workout.title
         self.description = String(workout.description ?? "")

@@ -86,5 +86,5 @@ struct EditLibraryWorkoutView: View {
 }
 
 #Preview {
-    EditLibraryWorkoutView(viewModel: EditLibraryWorkoutViewModel(workout: EditWorkoutRequest(id: "", title: "Test", description: "Test description")), editLibraryWorout: {_ in})
+    EditLibraryWorkoutView(viewModel: EditLibraryWorkoutViewModel(workout: FetchedWorkout(id: "", createdBy: "", title: "")), editLibraryWorout: {_ in})
 }

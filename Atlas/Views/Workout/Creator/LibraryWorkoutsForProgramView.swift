@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct LibraryWorkoutsForProgramView: View {
-    
+    @EnvironmentObject var navigationController: NavigationController
+    @EnvironmentObject var sheetNavigationController: SheetNavigationController
     @StateObject var viewModel: LibraryWorkoutsForProgramViewModel
     
-    @Binding var path: [SheetNavigationTypes]
+    var addWorkoutToProgram: ((ProgramWorkout) -> Void)
     
     var body: some View {
         if viewModel.isLoading {
@@ -30,15 +31,18 @@ struct LibraryWorkoutsForProgramView: View {
         } else {
             List {
                 ForEach(viewModel.workouts) { workout in
-                    NavigationLink(value: SheetNavigationTypes.LibraryWorkoutDetailForProgramView(workoutId: workout.id, programId: viewModel.programId, week: viewModel.week, day: viewModel.day)) {
+                    CoordinatorLink {
                         WorkoutCell(title: workout.title, description: workout.description)
+                    } action: {
+                        sheetNavigationController.push(.LibraryWorkoutDetailForProgramView(workoutId: workout.id, programId: viewModel.programId, week: viewModel.week, day: viewModel.day, addWorkoutToProgram: { newWorkout in
+                            
+                        }))
                     }
                     .listRowBackground(Color.ColorSystem.systemBackground)
                 }
             }
             .listStyle(.plain)
             .navigationTitle("Library Workouts")
-            .scrollContentBackground(.hidden)
             .background(Color.ColorSystem.systemBackground)
             .refreshable(action: {
                 await viewModel.pulledRefresh()
@@ -48,5 +52,5 @@ struct LibraryWorkoutsForProgramView: View {
 }
 
 #Preview {
-    LibraryWorkoutsForProgramView(viewModel: LibraryWorkoutsForProgramViewModel(programId: "", week: 9, day: ""), path: .constant([]))
+    LibraryWorkoutsForProgramView(viewModel: LibraryWorkoutsForProgramViewModel(programId: "", week: 9, day: ""), addWorkoutToProgram: {_ in})
 }

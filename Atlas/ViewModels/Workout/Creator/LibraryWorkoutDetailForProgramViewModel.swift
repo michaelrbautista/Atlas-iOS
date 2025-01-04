@@ -11,6 +11,7 @@ final class LibraryWorkoutDetailForProgramViewModel: ObservableObject {
     
     @Published var workout: FetchedWorkout?
     
+    var libraryWorkoutId: String
     var programId: String
     var week: Int
     var day: String
@@ -21,8 +22,8 @@ final class LibraryWorkoutDetailForProgramViewModel: ObservableObject {
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
     
-    @MainActor
     init(workoutId: String, programId: String, week: Int, day: String) {
+        self.libraryWorkoutId = workoutId
         self.programId = programId
         self.week = week
         self.day = day
@@ -30,20 +31,25 @@ final class LibraryWorkoutDetailForProgramViewModel: ObservableObject {
         isLoading = true
         
         Task {
-            do {
-                // Get workout
-                let workout = try await WorkoutService.shared.getLibraryWorkout(libraryWorkoutId: workoutId)
-                
-                self.workout = workout
-                if workout.workoutExercises == nil {
-                    self.workout?.workoutExercises = [FetchedWorkoutExercise]()
-                }
-                self.isLoading = false
-            } catch {
-                self.isLoading = false
-                self.didReturnError = true
-                self.returnedErrorMessage = error.localizedDescription
+            await getWorkout()
+        }
+    }
+    
+    @MainActor
+    public func getWorkout() async {
+        do {
+            // Get workout
+            let workout = try await WorkoutService.shared.getLibraryWorkout(libraryWorkoutId: libraryWorkoutId)
+            
+            self.workout = workout
+            if workout.workoutExercises == nil {
+                self.workout?.workoutExercises = [FetchedWorkoutExercise]()
             }
+            self.isLoading = false
+        } catch {
+            self.isLoading = false
+            self.didReturnError = true
+            self.returnedErrorMessage = error.localizedDescription
         }
     }
     
