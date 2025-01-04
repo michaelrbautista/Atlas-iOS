@@ -20,6 +20,7 @@ struct ProgramDetailView: View {
     @State var presentPurchaseModal = false
     @State var presentFinishProgram = false
     
+    var editProgram: ((Program) -> Void)?
     var deleteProgram: (() -> Void)?
     
     var body: some View {
@@ -36,6 +37,11 @@ struct ProgramDetailView: View {
             .alert(isPresented: $viewModel.didReturnError, content: {
                 Alert(title: Text(viewModel.returnedErrorMessage))
             })
+            .onAppear {
+                Task {
+                    await viewModel.getProgram()
+                }
+            }
         } else {
             if let program = viewModel.program {
                 List {
@@ -256,5 +262,5 @@ struct ProgramDetailView: View {
 }
 
 #Preview {
-    ProgramDetailView(viewModel: ProgramDetailViewModel(programId: "1941fa73-8ebd-43c4-8398-388908b99e07"))
+    ProgramDetailView(viewModel: ProgramDetailViewModel(programId: "1941fa73-8ebd-43c4-8398-388908b99e07"), editProgram: {_ in}, deleteProgram: {})
 }

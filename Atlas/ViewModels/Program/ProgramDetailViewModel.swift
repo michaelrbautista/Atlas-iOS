@@ -30,10 +30,6 @@ final class ProgramDetailViewModel: ObservableObject {
     // MARK: Initializer
     init(programId: String) {
         self.programId = programId
-        
-        Task {
-            await getProgram()
-        }
     }
     
     // MARK: Get program

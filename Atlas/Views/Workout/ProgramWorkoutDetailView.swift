@@ -31,6 +31,11 @@ struct ProgramWorkoutDetailView: View {
             .alert(isPresented: $viewModel.didReturnError, content: {
                 Alert(title: Text(viewModel.returnedErrorMessage))
             })
+            .onAppear {
+                Task {
+                    await viewModel.getProgramWorkout()
+                }
+            }
         } else {
             List {
                 VStack(spacing: 20) {

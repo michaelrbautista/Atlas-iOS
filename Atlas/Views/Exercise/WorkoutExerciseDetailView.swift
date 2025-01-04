@@ -104,7 +104,9 @@ struct WorkoutExerciseDetailView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         Button {
-                            presentEditExercise.toggle()
+                            navigationController.presentSheet(.EditWorkoutExerciseView(workoutExercise: viewModel.workoutExercise, editWorkoutExercise: { newWorkoutExercise in
+                                viewModel.workoutExercise = newWorkoutExercise
+                            }))
                         } label: {
                             Text("Edit exercise")
                         }
@@ -119,11 +121,6 @@ struct WorkoutExerciseDetailView: View {
                 WatchVideoView(videoUrl: url)
             }
         })
-        .sheet(isPresented: $presentEditExercise) {
-            EditWorkoutExerciseView(viewModel: EditWorkoutExerciseViewModel(exercise: viewModel.workoutExercise)) { newExercise in
-                viewModel.workoutExercise = newExercise
-            }
-        }
     }
 }
 

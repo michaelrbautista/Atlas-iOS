@@ -92,6 +92,16 @@ struct CreateProgramRequest: Codable {
     }
 }
 
+struct PurchaseProgramRequest: Codable {
+    var programId: String
+    var createdBy: String
+    
+    enum CodingKeys: String, CodingKey {
+        case programId = "program_id"
+        case createdBy = "created_by"
+    }
+}
+
 struct EditProgramRequest: Codable {
     var id: String
     var title: String

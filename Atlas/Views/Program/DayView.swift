@@ -14,7 +14,25 @@ struct DayView: View {
     var body: some View {
         Section {
             List {
-                if !viewModel.isLoading && viewModel.workouts.count == 0 {
+                if viewModel.isLoading {
+                    VStack(alignment: .center) {
+                        Spacer()
+                        ProgressView()
+                            .frame(maxWidth: UIScreen.main.bounds.size.width)
+                            .tint(Color.ColorSystem.primaryText)
+                        Spacer()
+                    }
+                    .background(Color.ColorSystem.systemBackground)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .alert(isPresented: $viewModel.didReturnError, content: {
+                        Alert(title: Text(viewModel.returnedErrorMessage))
+                    })
+                    .onAppear {
+                        Task {
+                            await viewModel.getWorkouts()
+                        }
+                    }
+                } else if viewModel.workouts.count == 0 {
                     Text("No workouts.")
                         .font(Font.FontStyles.body)
                         .foregroundStyle(Color.ColorSystem.systemGray)
@@ -47,7 +65,7 @@ struct DayView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
-
+                    
                 }
             }
             .padding(EdgeInsets(top: 20, leading: 20, bottom: 0, trailing: 20))

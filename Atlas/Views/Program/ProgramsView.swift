@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ProgramsView: View {
-    // MARK: Data
     @EnvironmentObject var navigationController: NavigationController
     @StateObject private var viewModel = ProgramsViewModel()
     

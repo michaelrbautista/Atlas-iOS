@@ -16,8 +16,10 @@ struct UserProgramsView: View {
             Section {
                 ForEach(viewModel.programs) { program in
                     if let createdBy = program.createdBy {
-                        NavigationLink(value: RootNavigationTypes.ProgramDetailView(programId: program.id)) {
+                        CoordinatorLink {
                             ProgramCell(title: program.title, imageUrl: program.imageUrl, userFullName: createdBy.fullName)
+                        } action: {
+                            navigationController.push(.ProgramDetailView(programId: program.id, deleteProgram: nil))
                         }
                     }
                 }

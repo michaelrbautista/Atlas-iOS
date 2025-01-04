@@ -10,6 +10,7 @@ import SwiftUI
 final class LibraryWorkoutDetailViewModel: ObservableObject {
     
     // MARK: Variables
+    var libraryWorkoutId: String
     @Published var libraryWorkout: FetchedWorkout?
     
     var isCreator = false
@@ -22,17 +23,15 @@ final class LibraryWorkoutDetailViewModel: ObservableObject {
     
     // MARK: Initializer
     init(libraryWorkoutId: String) {
-        Task {
-            await getLibraryWorkout(libraryWorkoutId: libraryWorkoutId)
-        }
+        self.libraryWorkoutId = libraryWorkoutId
     }
     
     // MARK: Get workout
     @MainActor
-    public func getLibraryWorkout(libraryWorkoutId: String) async {
+    public func getLibraryWorkout() async {
         do {
             // Get workout
-            let workout = try await WorkoutService.shared.getLibraryWorkout(libraryWorkoutId: libraryWorkoutId)
+            let workout = try await WorkoutService.shared.getLibraryWorkout(libraryWorkoutId: self.libraryWorkoutId)
             
             self.libraryWorkout = workout
             self.isCreator = workout.createdBy == UserService.currentUser?.id

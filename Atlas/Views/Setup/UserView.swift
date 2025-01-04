@@ -13,13 +13,13 @@ struct UserView: View {
     
     var body: some View {
         TabView {
-            TrainingView()
+            TrainingCoordinatorView()
                 .tabItem {
                     Image(systemName: "figure.run")
                 }
                 .environmentObject(userViewModel)
             
-            ExploreView()
+            ExploreCoordinatorView()
                 .tabItem {
                     Image(systemName: "magnifyingglass")
                 }

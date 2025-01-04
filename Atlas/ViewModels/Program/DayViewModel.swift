@@ -28,10 +28,6 @@ final class DayViewModel: ObservableObject {
         self.isCreator = isCreator
         self.week = week
         self.day = day
-        
-        Task {
-            await getWorkouts()
-        }
     }
     
     // MARK: Get program

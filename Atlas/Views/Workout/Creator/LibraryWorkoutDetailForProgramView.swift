@@ -53,12 +53,13 @@ struct LibraryWorkoutDetailForProgramView: View {
                 if viewModel.workout!.workoutExercises!.count > 0 {
                     Section {
                         ForEach(viewModel.workout!.workoutExercises ?? [FetchedWorkoutExercise]()) { exercise in
-                            NavigationLink(value: RootNavigationTypes.ProgramExerciseDetailView(workoutExercise: exercise)) {
+                            CoordinatorLink {
                                 if let libraryExercise = exercise.exercises {
                                     ExerciseCell(exerciseNumber: exercise.exerciseNumber, name: libraryExercise.title, sets: exercise.sets ?? 1, reps: exercise.reps ?? 1)
                                 }
+                            } action: {
+                                navigationController.push(.WorkoutExerciseDetailView(workoutExercise: exercise, deleteWorkoutExercise: nil))
                             }
-                            .listRowBackground(Color.ColorSystem.systemGray6)
                         }
                     } header: {
                         Text("Exercises")

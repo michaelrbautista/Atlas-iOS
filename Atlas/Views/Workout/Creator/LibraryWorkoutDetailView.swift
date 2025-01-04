@@ -30,6 +30,11 @@ struct LibraryWorkoutDetailView: View {
             .alert(isPresented: $viewModel.didReturnError, content: {
                 Alert(title: Text(viewModel.returnedErrorMessage))
             })
+            .onAppear {
+                Task {
+                    await viewModel.getLibraryWorkout()
+                }
+            }
         } else {
             List {
                 VStack(spacing: 10) {

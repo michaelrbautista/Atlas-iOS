@@ -161,12 +161,14 @@ class NavigationController: CoordinatorProtocol {
         case .EditProgramView(let program, let programImage, let editProgram):
             let vm = EditProgramViewModel(program: program, programImage: programImage)
             EditProgramView(viewModel: vm, editProgram: editProgram)
+            
         case .EditLibraryWorkoutView(let libraryWorkout, let editLibraryWorkout):
             let vm = EditLibraryWorkoutViewModel(workout: libraryWorkout)
             EditLibraryWorkoutView(viewModel: vm, editLibraryWorout: editLibraryWorkout)
         case .EditProgramWorkoutView(let programWorkout, let editProgramWorkout):
             let vm = EditProgramWorkoutViewModel(workout: programWorkout)
             EditProgramWorkoutView(viewModel: vm, editProgramWorout: editProgramWorkout)
+            
         case .EditLibraryExerciseView(let libraryExercise, let exerciseVideo, let editLibraryExercise):
             let vm = EditLibraryExerciseViewModel(exercise: libraryExercise, exerciseVideo: exerciseVideo)
             EditLibraryExerciseView(viewModel: vm, editLibraryExercise: editLibraryExercise)

@@ -83,6 +83,14 @@ final class ProgramService {
                 .execute()
                 .value
             
+            try await SupabaseService.shared.supabase
+                .from("purchased_programs")
+                .insert(PurchaseProgramRequest(
+                    programId: newProgram.id,
+                    createdBy: newProgram.createdBy?.id ?? ""
+                ))
+                .execute()
+            
             return newProgram
         } catch {
             throw error
@@ -90,11 +98,11 @@ final class ProgramService {
     }
     
     // MARK: Save program
-    public func saveProgram(purchasedProgram: PurchasedProgram) async throws {
+    public func saveProgram(purchaseProgramRequest: PurchaseProgramRequest) async throws {
         do {
             try await SupabaseService.shared.supabase
                 .from("purchased_programs")
-                .insert(purchasedProgram)
+                .insert(purchaseProgramRequest)
                 .execute()
         } catch {
             throw error

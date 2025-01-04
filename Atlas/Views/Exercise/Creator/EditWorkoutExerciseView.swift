@@ -9,8 +9,7 @@ import SwiftUI
 import PhotosUI
 
 struct EditWorkoutExerciseView: View {
-    @Environment(\.dismiss) var dismiss
-    
+    @EnvironmentObject var navigationController: NavigationController
     @StateObject var viewModel: EditWorkoutExerciseViewModel
     
     @State var presentVideoPlayer = false
@@ -101,7 +100,7 @@ struct EditWorkoutExerciseView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        dismiss()
+                        navigationController.dismissSheet()
                     } label: {
                         Text("Cancel")
                             .foregroundStyle(Color.ColorSystem.primaryText)
@@ -116,7 +115,7 @@ struct EditWorkoutExerciseView: View {
                             
                             if !viewModel.didReturnError && newExercise != nil {
                                 self.editWorkoutExercise(newExercise!)
-                                dismiss()
+                                navigationController.dismissSheet()
                             }
                         }
                     } label: {

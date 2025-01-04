@@ -82,7 +82,7 @@ struct UserDetailView: View {
                 
                 // MARK: Content
                 Section {
-                    NavigationLink(value: RootNavigationTypes.UserProgramsView(userId: viewModel.user!.id)) {
+                    CoordinatorLink {
                         HStack(spacing: 16) {
                             Image(systemName: "figure.run")
                                 .frame(width: 20)
@@ -95,9 +95,9 @@ struct UserDetailView: View {
                             Spacer()
                         }
                         .frame(maxWidth: .infinity)
+                    } action: {
+                        navigationController.push(.UserProgramsView(userId: viewModel.user!.id))
                     }
-                    .listRowBackground(Color.ColorSystem.systemGray6)
-                    .listRowSeparator(.hidden)
                 }
             }
             .listStyle(.insetGrouped)
