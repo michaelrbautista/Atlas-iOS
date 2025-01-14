@@ -87,16 +87,17 @@ struct SaveButton: View {
                 .listRowSeparator(.hidden)
             } else {
                 Button {
-                    presentPurchaseModal.toggle()
+                    
                 } label: {
                     HStack {
                         Spacer()
-                        Text("Purchase - \(viewModel.program!.price.formatted(.currency(code: "usd")))")
+                        Text("Subscribers only")
                             .font(Font.FontStyles.headline)
+                            .foregroundStyle(Color.ColorSystem.systemGray)
                         Spacer()
                     }
                     .padding(10)
-                    .background(Color.ColorSystem.systemBlue)
+                    .background(Color.ColorSystem.systemGray6)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
                 .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))

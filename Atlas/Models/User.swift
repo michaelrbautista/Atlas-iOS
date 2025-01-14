@@ -22,6 +22,7 @@ struct User: Codable, Identifiable, Hashable {
     
     var stripeAccountId: String?
     var paymentsEnabled: Bool
+    var stripePriceId: String?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -38,15 +39,17 @@ struct User: Codable, Identifiable, Hashable {
         
         case stripeAccountId = "stripe_account_id"
         case paymentsEnabled = "payments_enabled"
+        case stripePriceId = "stripe_price_id"
     }
 }
 
 struct FetchedUser: Codable, Hashable {
     var id: String
     var fullName: String
+    var username: String
     
     enum CodingKeys: String, CodingKey {
-        case id
+        case id, username
         case fullName = "full_name"
     }
 }

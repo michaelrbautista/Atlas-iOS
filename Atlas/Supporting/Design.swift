@@ -33,9 +33,9 @@ extension Font {
         static var headline: Font { return Font.system(size: 17, weight: .semibold, design: .default) }
         static var body: Font { return Font.system(size: 17, weight: .regular, design: .default) }
         static var callout: Font { return Font.system(size: 16, weight: .regular, design: .default) }
-        static var subhead: Font { return Font.system(size: 15, weight: .bold, design: .default) }
-        static var footnote: Font { return Font.system(size: 13, weight: .bold, design: .default) }
-        static var caption1: Font { return Font.system(size: 12, weight: .bold, design: .default) }
-        static var caption2: Font { return Font.system(size: 11, weight: .bold, design: .default) }
+        static var subhead: Font { return Font.system(size: 15, weight: .regular, design: .default) }
+        static var footnote: Font { return Font.system(size: 13, weight: .regular, design: .default) }
+        static var caption1: Font { return Font.system(size: 12, weight: .regular, design: .default) }
+        static var caption2: Font { return Font.system(size: 11, weight: .regular, design: .default) }
     }
 }

@@ -17,7 +17,12 @@ struct UserProgramsView: View {
                 ForEach(viewModel.programs) { program in
                     if let createdBy = program.createdBy {
                         CoordinatorLink {
-                            ProgramCell(title: program.title, imageUrl: program.imageUrl, userFullName: createdBy.fullName)
+                            ProgramCell(
+                                title: program.title,
+                                imageUrl: program.imageUrl,
+                                userFullName: createdBy.fullName,
+                                description: program.description
+                            )
                         } action: {
                             navigationController.push(.ProgramDetailView(programId: program.id, deleteProgram: nil))
                         }
@@ -30,7 +35,6 @@ struct UserProgramsView: View {
                         .frame(height: 48)
                         .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
                         .onAppear(perform: {
-                            // Get more programs
                             Task {
                                 await viewModel.getCreatorsPrograms()
                             }
@@ -48,7 +52,7 @@ struct UserProgramsView: View {
             await viewModel.pulledRefresh()
         })
         .alert(isPresented: $viewModel.didReturnError, content: {
-            Alert(title: Text(viewModel.returnedErrorMessage ?? "Couldn't get programs."))
+            Alert(title: Text(viewModel.returnedErrorMessage))
         })
     }
 }

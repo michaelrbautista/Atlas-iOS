@@ -57,11 +57,11 @@ struct PurchasedProgram: Identifiable, Codable, Hashable {
 struct PurchasedProgramForeignKey: Identifiable, Codable, Hashable {
     var id: String
     var title: String
-    var price: Double
     var imageUrl: String?
+    var description: String?
     
     enum CodingKeys: String, CodingKey {
-        case id, title, price
+        case id, title, description
         case imageUrl = "image_url"
     }
 }

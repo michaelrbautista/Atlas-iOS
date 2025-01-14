@@ -17,6 +17,14 @@ struct LibraryView: View {
                 // MARK: User
                 Section {
                     CoordinatorLink {
+                        Text("Subscriptions")
+                            .font(Font.FontStyles.body)
+                            .foregroundStyle(Color.ColorSystem.primaryText)
+                    } action: {
+                        navigationController.push(.SubscriptionsView)
+                    }
+                    
+                    CoordinatorLink {
                         Text("Programs")
                             .font(Font.FontStyles.body)
                             .foregroundStyle(Color.ColorSystem.primaryText)
@@ -27,7 +35,7 @@ struct LibraryView: View {
                     Text("User")
                 }
                 
-                if currentUser.paymentsEnabled {
+                if currentUser.stripePriceId != nil {
                     // MARK: Creator
                     Section {
                         CoordinatorLink {

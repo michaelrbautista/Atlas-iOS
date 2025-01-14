@@ -43,7 +43,8 @@ final class ProgramService {
                         private,
                         created_by:users!programs_created_by_fkey(
                             id,
-                            full_name
+                            full_name,
+                            username
                         )
                     """
                 )
@@ -75,7 +76,8 @@ final class ProgramService {
                         private,
                         created_by:users!programs_created_by_fkey(
                             id,
-                            full_name
+                            full_name,
+                            username
                         )
                     """
                 )
@@ -182,7 +184,8 @@ final class ProgramService {
                         private,
                         created_by:users!programs_created_by_fkey(
                             id,
-                            full_name
+                            full_name,
+                            username
                         )
                     """
                 )
@@ -198,6 +201,42 @@ final class ProgramService {
         }
     }
     
+    // MARK: Get creator's public programs
+    public func getCreatorsPublicPrograms(userId: String, offset: Int) async throws -> [Program] {
+        do {
+            let programs: [Program] = try await SupabaseService.shared.supabase
+                .from("programs")
+                .select(
+                    """
+                        id,
+                        title,
+                        description,
+                        image_url,
+                        price,
+                        weeks,
+                        free,
+                        private,
+                        created_by:users!programs_created_by_fkey(
+                            id,
+                            full_name,
+                            username
+                        )
+                    """
+                )
+                .eq("created_by", value: userId)
+                .eq("private", value: false)
+                .order("created_at", ascending: false)
+                .range(from: offset, to: offset + 9)
+                .execute()
+                .value
+            
+            return programs
+        } catch {
+            print(error)
+            throw error
+        }
+    }
+    
     // MARK: Get user's purchased programs
     public func getPurchasedPrograms(userId: String, offset: Int) async throws -> [PurchasedProgram] {
         do {
@@ -208,13 +247,14 @@ final class ProgramService {
                         id,
                         created_by:users!saved_workouts_created_by_fkey(
                             id,
-                            full_name
+                            full_name,
+                            username
                         ),
                         programs(
                             id,
                             title,
-                            price,
-                            image_url
+                            image_url,
+                            description
                         )
                     """
                 )
@@ -283,7 +323,8 @@ final class ProgramService {
                         private,
                         created_by:users!programs_created_by_fkey(
                             id,
-                            full_name
+                            full_name,
+                            username
                         )
                     """
                 )

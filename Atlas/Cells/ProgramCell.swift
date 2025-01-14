@@ -12,6 +12,7 @@ struct ProgramCell: View {
     var title: String
     var imageUrl: String?
     var userFullName: String
+    var description: String?
     
     var body: some View {
         HStack(spacing: 10) {
@@ -57,6 +58,13 @@ struct ProgramCell: View {
                     .foregroundStyle(Color.ColorSystem.systemGray)
                     .font(Font.FontStyles.subhead)
                 
+                if let description = description {
+                    Text(description)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundStyle(Color.ColorSystem.systemGray)
+                        .font(Font.FontStyles.subhead)
+                }
+                
                 Spacer()
             }
         }
@@ -66,5 +74,5 @@ struct ProgramCell: View {
 }
 
 #Preview {
-    ProgramCell(title: "Test", userFullName: "Test User")
+    ProgramCell(title: "Test", userFullName: "Test User", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla quam ligula. Suspendisse egestas ultrices orci, ac fermentum dolor bibendum sit amet.")
 }

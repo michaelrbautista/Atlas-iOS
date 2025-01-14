@@ -75,6 +75,10 @@ class NavigationController: CoordinatorProtocol {
         case .CreatorExercisesView:
             CreatorExercisesView()
             
+        // Subscriptions
+        case .SubscriptionsView:
+            SubscriptionsView()
+            
         // Programs
         case .ProgramsView:
             ProgramsView()

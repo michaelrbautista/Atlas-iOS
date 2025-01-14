@@ -9,20 +9,23 @@ import SwiftUI
 
 struct UserCell: View {
     
-    var user: User
+    var profilePictureUrl: String?
+    var fullName: String
+    var username: String
+    var bio: String?
     
     var body: some View {
         HStack(alignment: .center, spacing: 16) {
-            if user.profilePictureUrl != nil {
-                AsyncImage(url: URL(string: user.profilePictureUrl!)) { image in
+            if profilePictureUrl != nil {
+                AsyncImage(url: URL(string: profilePictureUrl!)) { image in
                     image
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 80, height: 80)
+                        .frame(width: 50, height: 50)
                         .clipShape(Circle())
                 } placeholder: {
                     ProgressView()
-                        .frame(width: 80, height: 80)
+                        .frame(width: 50, height: 50)
                         .clipShape(Circle())
                         .tint(Color.ColorSystem.primaryText)
                 }
@@ -31,30 +34,36 @@ struct UserCell: View {
                     Image(systemName: "person.circle.fill")
                         .foregroundStyle(Color.ColorSystem.systemGray)
                 }
-                .frame(width: 80, height: 80)
+                .frame(width: 50, height: 50)
                 .background(Color.ColorSystem.systemGray4)
                 .clipShape(Circle())
             }
             
-            VStack(alignment: .leading) {
-                Text(user.fullName)
-                    .font(Font.FontStyles.title3)
-                    .foregroundStyle(Color.ColorSystem.primaryText)
-                    .lineLimit(1)
+            VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading) {
+                    Text(fullName)
+                        .font(Font.FontStyles.headline)
+                        .foregroundStyle(Color.ColorSystem.primaryText)
+                        .lineLimit(1)
+                    
+                    Text("@\(username)")
+                        .font(Font.FontStyles.body)
+                        .foregroundStyle(Color.ColorSystem.systemGray)
+                        .lineLimit(1)
+                }
                 
-                Text("@\(user.username)")
-                    .font(Font.FontStyles.headline)
-                    .foregroundStyle(Color.ColorSystem.systemGray)
-                    .lineLimit(1)
+                if let bio = bio {
+                    Text(bio)
+                        .font(Font.FontStyles.subhead)
+                        .foregroundStyle(Color.ColorSystem.systemGray)
+                        .lineLimit(2)
+                }
             }
-            
-            Spacer()
         }
-        .background(Color.ColorSystem.systemGray5)
         .padding(0)
     }
 }
 
 #Preview {
-    UserCell(user: User(id: "", createdAt: "", email: "testuser@email.com", fullName: "Test", username: "testuser", bio: "Test", paymentsEnabled: false))
+    UserCell(fullName: "Test user", username: "testuser", bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla quam ligula. Suspendisse egestas ultrices orci, ac fermentum dolor bibendum sit amet.")
 }

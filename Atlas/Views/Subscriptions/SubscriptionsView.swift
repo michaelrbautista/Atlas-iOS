@@ -1,32 +1,31 @@
 //
-//  ProgramsView.swift
-//  stayhard
+//  SubscriptionsView.swift
+//  Atlas
 //
-//  Created by Michael Bautista on 3/16/24.
+//  Created by Michael Bautista on 1/13/25.
 //
 
 import SwiftUI
 
-struct ProgramsView: View {
+struct SubscriptionsView: View {
     @EnvironmentObject var navigationController: NavigationController
-    @StateObject private var viewModel = ProgramsViewModel()
+    @StateObject private var viewModel = SubscriptionsViewModel()
     
     var body: some View {
         List {
             Section {
-                ForEach(viewModel.programs) { program in
-                    if let createdBy = program.createdBy, let checkProgram = program.programs {
+                ForEach(viewModel.subscriptions) { subscription in
+                    if let subscribedTo = subscription.subscribedTo
+                    {
                         CoordinatorLink {
-                            ProgramCell(
-                                title: checkProgram.title,
-                                imageUrl: checkProgram.imageUrl,
-                                userFullName: createdBy.fullName,
-                                description: checkProgram.description
+                            UserCell(
+                                profilePictureUrl: subscribedTo.profilePictureUrl,
+                                fullName: subscribedTo.fullName,
+                                username: subscribedTo.username,
+                                bio: subscribedTo.bio
                             )
                         } action: {
-                            navigationController.push(.ProgramDetailView(programId: checkProgram.id, deleteProgram: {
-                                viewModel.programs.remove(program)
-                            }))
+                            navigationController.push(.UserDetailView(userId: subscribedTo.id))
                         }
                     }
                 }
@@ -45,9 +44,9 @@ struct ProgramsView: View {
                         .padding(EdgeInsets(top: 0, leading: 0, bottom: 16, trailing: 0))
                         .foregroundStyle(Color.ColorSystem.primaryText)
                         .onAppear(perform: {
-                            // Get more programs
+                            // Get more subscriptions
                             Task {
-                                await viewModel.getPurchasedPrograms()
+                                await viewModel.getSubscriptions()
                             }
                         })
                 }
@@ -57,7 +56,7 @@ struct ProgramsView: View {
         .listRowSeparator(.hidden)
         .scrollContentBackground(.hidden)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Programs")
+        .navigationTitle("Subscriptions")
         .background(Color.ColorSystem.systemBackground)
         .refreshable(action: {
             await viewModel.pulledRefresh()
@@ -69,5 +68,5 @@ struct ProgramsView: View {
 }
 
 #Preview {
-    ProgramsView()
+    SubscriptionsView()
 }

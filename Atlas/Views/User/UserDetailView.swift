@@ -22,8 +22,7 @@ struct UserDetailView: View {
             })
         } else {
             List {
-                // MARK: Image
-                Section {
+                VStack(alignment: .center) {
                     if viewModel.userProfilePictureIsLoading {
                         HStack {
                             ProgressView()
@@ -34,73 +33,84 @@ struct UserDetailView: View {
                         .listRowBackground(Color.ColorSystem.systemBackground)
                     } else {
                         if viewModel.user?.profilePictureUrl != nil {
-                            HStack {
-                                Image(uiImage: viewModel.userImage!)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: UIScreen.main.bounds.size.width / 3, height: UIScreen.main.bounds.size.width / 3)
-                                    .clipShape(Circle())
-                            }
-                            .frame(maxWidth: .infinity)
-                            .listRowBackground(Color.ColorSystem.systemBackground)
-                        } else {
-                            HStack {
-                                VStack {
-                                    Image(systemName: "person.circle.fill")
-                                        .foregroundStyle(Color.ColorSystem.systemGray)
-                                }
-                                .frame(width: UIScreen.main.bounds.size.width / 2, height: UIScreen.main.bounds.size.width / 2)
-                                .background(Color.ColorSystem.systemGray6)
+                            Image(uiImage: viewModel.userImage!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 100, height: 100)
                                 .clipShape(Circle())
-                            }
-                            .frame(maxWidth: .infinity)
-                            .listRowBackground(Color.ColorSystem.systemBackground)
-                        }
-                    }
-                } footer: {
-                    VStack {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text(viewModel.user!.fullName)
-                                .font(Font.FontStyles.title2)
-                                .foregroundStyle(Color.ColorSystem.primaryText)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            
-                            if viewModel.user?.bio != nil {
-                                Text(viewModel.user!.bio ?? "")
-                                    .font(Font.FontStyles.body)
+                        } else {
+                            VStack {
+                                Image(systemName: "person.circle.fill")
                                     .foregroundStyle(Color.ColorSystem.systemGray)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
                             }
+                            .frame(width: 100, height: 100)
+                            .background(Color.ColorSystem.systemGray6)
+                            .clipShape(Circle())
                         }
-                        .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
                     }
-                    .frame(maxWidth: .infinity)
-                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 16, trailing: 0))
-                    .background(Color.ColorSystem.systemGray6)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    
+                    VStack {
+                        Text(viewModel.user!.fullName)
+                            .font(Font.FontStyles.title3)
+                            .foregroundStyle(Color.ColorSystem.primaryText)
+                            .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+                        
+                        Text("@\(viewModel.user!.username)")
+                            .font(Font.FontStyles.body)
+                            .foregroundStyle(Color.ColorSystem.systemGray)
+                        
+                        if viewModel.user?.bio != nil {
+                            Text(viewModel.user!.bio ?? "")
+                                .font(Font.FontStyles.body)
+                                .foregroundStyle(Color.ColorSystem.systemGray)
+                                .frame(maxWidth: .infinity)
+                                .multilineTextAlignment(.center)
+                                .listRowSeparator(.hidden)
+                                .padding(EdgeInsets(top: 5, leading: 0, bottom: 0, trailing: 0))
+                        }
+                    }
+                    
+                    Spacer()
                 }
+                .frame(maxWidth: .infinity)
+                .listRowSeparator(.hidden)
                 
                 // MARK: Content
                 Section {
-                    CoordinatorLink {
-                        HStack(spacing: 16) {
-                            Image(systemName: "figure.run")
-                                .frame(width: 20)
-                                .foregroundStyle(Color.ColorSystem.primaryText)
-                            
-                            Text("Programs")
-                                .font(Font.FontStyles.body)
-                                .foregroundStyle(Color.ColorSystem.primaryText)
-                            
-                            Spacer()
+                    Button {
+                        navigationController.push(.UserProgramsView(userId: viewModel.user!.id))
+                    } label: {
+                        VStack {
+                            HStack(spacing: 16) {
+                                Image(systemName: "figure.run")
+                                    .frame(width: 20)
+                                    .foregroundStyle(Color.ColorSystem.primaryText)
+                                
+                                Text("Programs")
+                                    .font(Font.FontStyles.body)
+                                    .foregroundStyle(Color.ColorSystem.primaryText)
+                                
+                                Spacer()
+                                
+                                Image(systemName: "chevron.right")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 12)
+                                    .foregroundStyle(Color.ColorSystem.systemGray2)
+                                    .fontWeight(.bold)
+                            }
+                            .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
                         }
                         .frame(maxWidth: .infinity)
-                    } action: {
-                        navigationController.push(.UserProgramsView(userId: viewModel.user!.id))
+                        .background(Color.ColorSystem.systemGray6)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
+                    .buttonStyle(.plain)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
                 }
             }
-            .listStyle(.insetGrouped)
+            .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .navigationBarTitleDisplayMode(.inline)
             .background(Color.ColorSystem.systemBackground)

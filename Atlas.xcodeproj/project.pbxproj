@@ -47,6 +47,10 @@
 		898D0B1E2C939EA100898957 /* DayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898D0B1D2C939EA100898957 /* DayViewModel.swift */; };
 		89930A7E2CB5CCEA004CF2B1 /* SearchProgramCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89930A7D2CB5CCEA004CF2B1 /* SearchProgramCell.swift */; };
 		89930A802CB5CCF3004CF2B1 /* SearchUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89930A7F2CB5CCF3004CF2B1 /* SearchUserCell.swift */; };
+		89967B582D3602B500369D97 /* SubscriptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89967B572D3602B500369D97 /* SubscriptionsView.swift */; };
+		89967B5B2D3602D600369D97 /* SubscriptionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89967B5A2D3602D300369D97 /* SubscriptionsViewModel.swift */; };
+		89967B5D2D36030C00369D97 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89967B5C2D36030A00369D97 /* Subscription.swift */; };
+		89967B5F2D3603CB00369D97 /* SubscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89967B5E2D3603C900369D97 /* SubscriptionService.swift */; };
 		89B400182BF987B800A832AA /* ProgramWorkoutDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89B400172BF987B800A832AA /* ProgramWorkoutDetailViewModel.swift */; };
 		89B4001A2BF9960900A832AA /* ProgramService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89B400192BF9960900A832AA /* ProgramService.swift */; };
 		89BC2FC22D279EC800B4E6C6 /* NavigationTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BC2FC12D279EC600B4E6C6 /* NavigationTypes.swift */; };
@@ -152,6 +156,10 @@
 		898D0B1D2C939EA100898957 /* DayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayViewModel.swift; sourceTree = "<group>"; };
 		89930A7D2CB5CCEA004CF2B1 /* SearchProgramCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchProgramCell.swift; sourceTree = "<group>"; };
 		89930A7F2CB5CCF3004CF2B1 /* SearchUserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUserCell.swift; sourceTree = "<group>"; };
+		89967B572D3602B500369D97 /* SubscriptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionsView.swift; sourceTree = "<group>"; };
+		89967B5A2D3602D300369D97 /* SubscriptionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionsViewModel.swift; sourceTree = "<group>"; };
+		89967B5C2D36030A00369D97 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
+		89967B5E2D3603C900369D97 /* SubscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionService.swift; sourceTree = "<group>"; };
 		89B400172BF987B800A832AA /* ProgramWorkoutDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramWorkoutDetailViewModel.swift; sourceTree = "<group>"; };
 		89B400192BF9960900A832AA /* ProgramService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramService.swift; sourceTree = "<group>"; };
 		89BC2FC12D279EC600B4E6C6 /* NavigationTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTypes.swift; sourceTree = "<group>"; };
@@ -322,6 +330,22 @@
 			path = User;
 			sourceTree = "<group>";
 		};
+		89967B562D3602A300369D97 /* Subscriptions */ = {
+			isa = PBXGroup;
+			children = (
+				89967B572D3602B500369D97 /* SubscriptionsView.swift */,
+			);
+			path = Subscriptions;
+			sourceTree = "<group>";
+		};
+		89967B592D3602C900369D97 /* Subscriptions */ = {
+			isa = PBXGroup;
+			children = (
+				89967B5A2D3602D300369D97 /* SubscriptionsViewModel.swift */,
+			);
+			path = Subscriptions;
+			sourceTree = "<group>";
+		};
 		89D5A7942BA64D100001CFB3 = {
 			isa = PBXGroup;
 			children = (
@@ -371,6 +395,7 @@
 			children = (
 				89766E762CDC20ED0022C4F5 /* Training */,
 				890715D62CB08B160079200F /* Explore */,
+				89967B562D3602A300369D97 /* Subscriptions */,
 				89F6980E2BEE74EE00DFB3AD /* Program */,
 				89D5A7DD2BA656BD0001CFB3 /* Workout */,
 				89F6980F2BEE74F800DFB3AD /* Exercise */,
@@ -388,6 +413,7 @@
 			children = (
 				89766E792CDC70C20022C4F5 /* Training */,
 				890715D72CB08B290079200F /* Explore */,
+				89967B592D3602C900369D97 /* Subscriptions */,
 				89F698102BEE755000DFB3AD /* Program */,
 				89D5A8182BA6584D0001CFB3 /* Workout */,
 				89F698112BEE755B00DFB3AD /* Exercise */,
@@ -401,6 +427,7 @@
 		89D5A7D52BA654EA0001CFB3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				89967B5C2D36030A00369D97 /* Subscription.swift */,
 				89D5A85E2BA65ABF0001CFB3 /* Program.swift */,
 				89E046E22C1BED74006BCE71 /* Workout.swift */,
 				89E046E42C1BED7B006BCE71 /* Exercise.swift */,
@@ -415,6 +442,7 @@
 				89B400192BF9960900A832AA /* ProgramService.swift */,
 				89D5A8542BA65A450001CFB3 /* WorkoutService.swift */,
 				896E018D2BFC39E90085968A /* ExerciseService.swift */,
+				89967B5E2D3603C900369D97 /* SubscriptionService.swift */,
 				89D5A8502BA6599A0001CFB3 /* UserService.swift */,
 				89D5A84E2BA659940001CFB3 /* AuthService.swift */,
 				89D5A8582BA65AA30001CFB3 /* StorageService.swift */,
@@ -742,6 +770,7 @@
 				896F30F72C23BF2C0007EBFA /* VideoCell.swift in Sources */,
 				896E018E2BFC39E90085968A /* ExerciseService.swift in Sources */,
 				89EA53412D0E490200BB22D4 /* WorkoutExerciseDetailView.swift in Sources */,
+				89967B5F2D3603CB00369D97 /* SubscriptionService.swift in Sources */,
 				89D5A8142BA6581A0001CFB3 /* LoginView.swift in Sources */,
 				89B400182BF987B800A832AA /* ProgramWorkoutDetailViewModel.swift in Sources */,
 				89E3A84D2D029E8D00624C72 /* NewProgramViewModel.swift in Sources */,
@@ -753,6 +782,7 @@
 				89E3A8512D03826C00624C72 /* CreatorWorkoutsViewModel.swift in Sources */,
 				89E18CF92D14FDFF00C0B4F4 /* EditLibraryExerciseView.swift in Sources */,
 				89E3A84F2D03823E00624C72 /* CreatorWorkoutsView.swift in Sources */,
+				89967B5B2D3602D600369D97 /* SubscriptionsViewModel.swift in Sources */,
 				89D5A82B2BA658D50001CFB3 /* ProgramsViewModel.swift in Sources */,
 				89D5A8002BA657B50001CFB3 /* ProgramsView.swift in Sources */,
 				8902F6FD2D1CBBF7003C64FE /* NavigationViews.swift in Sources */,
@@ -783,6 +813,7 @@
 				89E18CFB2D14FE0900C0B4F4 /* EditLibraryExerciseViewModel.swift in Sources */,
 				898D0B082C8F531300898957 /* UserDetailView.swift in Sources */,
 				89E3A86B2D06512100624C72 /* LibraryWorkoutsForProgramViewModel.swift in Sources */,
+				89967B582D3602B500369D97 /* SubscriptionsView.swift in Sources */,
 				89BC2FC22D279EC800B4E6C6 /* NavigationTypes.swift in Sources */,
 				89EA53212D0B8B2400BB22D4 /* LibraryWorkoutDetailViewModel.swift in Sources */,
 				89D5A8392BA659220001CFB3 /* ProfileViewModel.swift in Sources */,
@@ -823,6 +854,7 @@
 				896E01922BFD35E30085968A /* LibraryExerciseDetailViewModel.swift in Sources */,
 				89E3A8652D06410800624C72 /* NewProgramWorkoutViewModel.swift in Sources */,
 				8974FC6E2CAB43A50054281D /* StartProgramViewModel.swift in Sources */,
+				89967B5D2D36030C00369D97 /* Subscription.swift in Sources */,
 				89D5A85F2BA65ABF0001CFB3 /* Program.swift in Sources */,
 				89D5A80E2BA657FE0001CFB3 /* SettingsView.swift in Sources */,
 				89EA53372D0E145400BB22D4 /* AddVideoView.swift in Sources */,
@@ -982,7 +1014,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0;
+				MARKETING_VERSION = 3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "Michael-Bautista.Atlas";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1020,7 +1052,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0;
+				MARKETING_VERSION = 3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "Michael-Bautista.Atlas";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

@@ -15,7 +15,7 @@ final class UserProgramsViewModel: ObservableObject {
     @Published var endReached = false
     
     @Published var didReturnError = false
-    @Published var returnedErrorMessage: String? = nil
+    @Published var returnedErrorMessage = ""
     
     @Published var programs = [Program]()
     
@@ -35,7 +35,7 @@ final class UserProgramsViewModel: ObservableObject {
     @MainActor
     public func getCreatorsPrograms() async {
         do {
-            let programs = try await ProgramService.shared.getCreatorsPrograms(userId: self.userId, offset: self.offset)
+            let programs = try await ProgramService.shared.getCreatorsPublicPrograms(userId: self.userId, offset: self.offset)
             
             self.programs.append(contentsOf: programs)
             

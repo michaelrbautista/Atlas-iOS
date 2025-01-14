@@ -32,6 +32,8 @@ final class ProgramDetailViewModel: ObservableObject {
         self.programId = programId
     }
     
+    #warning("Check if user is subscribed")
+    
     // MARK: Get program
     @MainActor
     public func getProgram() async {
@@ -135,32 +137,29 @@ final class ProgramDetailViewModel: ObservableObject {
         }
     }
     
+    // MARK: Save program
     @MainActor
     public func saveProgram() async throws {
-//        self.isSaving = true
-//        
-//        guard let currentUserId = UserService.currentUser?.id else {
-//            self.isLoading = false
-//            self.didReturnError = true
-//            self.returnedErrorMessage = "Couldn't get current user."
-//            return
-//        }
-//        
-//        let purchasedProgram = PurchasedProgram(
-//            programId: self.programId,
-//            purchasedBy: currentUserId,
-//            createdBy: self.team!.createdBy
-//        )
-//        
-//        do {
-//            try await ProgramService.shared.saveProgram(purchasedProgram: purchasedProgram)
-//            
-//            self.isPurchased = true
-//            self.isSaving = false
-//        } catch {
-//            self.isSaving = false
-//            self.didReturnError = true
-//            self.returnedErrorMessage = error.localizedDescription
-//        }
+        self.isSaving = true
+        
+        guard let creatorId = self.program?.createdBy?.id else {
+            self.isLoading = false
+            self.didReturnError = true
+            self.returnedErrorMessage = "Couldn't save program."
+            return
+        }
+        
+        let purchasedProgram = PurchaseProgramRequest(programId: self.programId, createdBy: creatorId)
+        
+        do {
+            try await ProgramService.shared.saveProgram(purchaseProgramRequest: purchasedProgram)
+            
+            self.isPurchased = true
+            self.isSaving = false
+        } catch {
+            self.isSaving = false
+            self.didReturnError = true
+            self.returnedErrorMessage = error.localizedDescription
+        }
     }
 }

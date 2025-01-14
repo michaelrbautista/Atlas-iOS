@@ -19,6 +19,9 @@ enum Screen: Identifiable, Hashable {
     case CreatorWorkoutsView
     case CreatorExercisesView
     
+    // Subscriptions
+    case SubscriptionsView
+    
     // Programs
     case ProgramsView
     case ProgramDetailView(programId: String, deleteProgram: (() -> Void)?)
