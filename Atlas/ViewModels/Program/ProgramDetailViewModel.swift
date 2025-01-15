@@ -108,18 +108,6 @@ final class ProgramDetailViewModel: ObservableObject {
         }
     }
     
-    @MainActor
-    public func unsaveProgram() async throws {
-        do {
-            try await ProgramService.shared.unsaveProgram(programId: program!.id)
-            
-            self.isPurchased = false
-        } catch {
-            self.didReturnError = true
-            self.returnedErrorMessage = error.localizedDescription
-        }
-    }
-    
     // MARK: Delete program
     @MainActor
     public func deleteProgram() async {
@@ -145,6 +133,15 @@ final class ProgramDetailViewModel: ObservableObject {
         }
     }
     
+    // MARK: Finish program
+    @MainActor
+    public func finishProgram() {
+        UserDefaults.standard.removeObject(forKey: "startedProgram")
+        UserDefaults.standard.removeObject(forKey: "startDayAsNumber")
+        UserDefaults.standard.removeObject(forKey: "startDate")
+        self.isStarted = false
+    }
+    
     // MARK: Save program
     @MainActor
     public func saveProgram() async throws {
@@ -163,6 +160,27 @@ final class ProgramDetailViewModel: ObservableObject {
             try await ProgramService.shared.saveProgram(purchaseProgramRequest: purchasedProgram)
             
             self.isPurchased = true
+            self.isSaving = false
+        } catch {
+            self.isSaving = false
+            self.didReturnError = true
+            self.returnedErrorMessage = error.localizedDescription
+        }
+    }
+    
+    // MARK: Unsave program
+    @MainActor
+    public func unsaveProgram() async throws {
+        self.isSaving = true
+        
+        do {
+            try await ProgramService.shared.unsaveProgram(programId: program!.id)
+            
+            if isStarted {
+                finishProgram()
+            }
+            
+            self.isPurchased = false
             self.isSaving = false
         } catch {
             self.isSaving = false

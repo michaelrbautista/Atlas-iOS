@@ -170,6 +170,7 @@ struct ProgramDetailView: View {
                         if !viewModel.isCreator {
                             SaveButton(
                                 viewModel: viewModel,
+                                isSaving: $viewModel.isSaving,
                                 presentFinishProgram: $presentFinishProgram,
                                 presentStartProgram: $presentStartProgram,
                                 presentPurchaseModal: $presentPurchaseModal
@@ -212,11 +213,17 @@ struct ProgramDetailView: View {
                             }
                         }
                     } else {
-                        if viewModel.isPurchased && viewModel.program!.free && !viewModel.program!.isPrivate {
+                        if viewModel.isPurchased {
                             ToolbarItem(placement: .topBarTrailing) {
                                 Menu {
                                     Button {
-                                        
+                                        Task {
+                                            try await viewModel.unsaveProgram()
+                                            
+                                            self.deleteProgram?()
+                                            
+                                            self.navigationController.pop()
+                                        }
                                     } label: {
                                         Text("Unsave program")
                                     }
@@ -246,10 +253,7 @@ struct ProgramDetailView: View {
                 }
                 .alert(Text("Are you sure you want to finish this program?"), isPresented: $presentFinishProgram) {
                     Button(role: .destructive) {
-                        UserDefaults.standard.removeObject(forKey: "startedProgram")
-                        UserDefaults.standard.removeObject(forKey: "startDayAsNumber")
-                        UserDefaults.standard.removeObject(forKey: "startDate")
-                        viewModel.isStarted = false
+                        viewModel.finishProgram()
                     } label: {
                         Text("Yes")
                     }
