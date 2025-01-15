@@ -134,7 +134,7 @@ struct ProgramDetailView: View {
                         }
                         
                         // MARK: Calendar link
-                        if viewModel.isCreator || viewModel.isPurchased || viewModel.program!.free {
+                        if viewModel.isSubscribed || viewModel.isPurchased || viewModel.program!.free || viewModel.isCreator {
                             Button {
                                 navigationController.push(.CalendarView(program: viewModel.program!))
                             } label: {
@@ -167,7 +167,7 @@ struct ProgramDetailView: View {
                         }
                         
                         // MARK: Save button
-                        if UserService.currentUser?.id != program.createdBy?.id {
+                        if !viewModel.isCreator {
                             SaveButton(
                                 viewModel: viewModel,
                                 presentFinishProgram: $presentFinishProgram,

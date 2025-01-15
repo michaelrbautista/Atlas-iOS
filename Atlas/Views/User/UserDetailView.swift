@@ -76,38 +76,40 @@ struct UserDetailView: View {
                 .listRowSeparator(.hidden)
                 
                 // MARK: Content
-                Section {
-                    Button {
-                        navigationController.push(.UserProgramsView(userId: viewModel.user!.id))
-                    } label: {
-                        VStack {
-                            HStack(spacing: 16) {
-                                Image(systemName: "figure.run")
-                                    .frame(width: 20)
-                                    .foregroundStyle(Color.ColorSystem.primaryText)
-                                
-                                Text("Programs")
-                                    .font(Font.FontStyles.body)
-                                    .foregroundStyle(Color.ColorSystem.primaryText)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: 12)
-                                    .foregroundStyle(Color.ColorSystem.systemGray2)
-                                    .fontWeight(.bold)
+                if viewModel.user?.stripePriceId != nil {
+                    Section {
+                        Button {
+                            navigationController.push(.UserProgramsView(userId: viewModel.user!.id))
+                        } label: {
+                            VStack {
+                                HStack(spacing: 16) {
+                                    Image(systemName: "figure.run")
+                                        .frame(width: 20)
+                                        .foregroundStyle(Color.ColorSystem.primaryText)
+                                    
+                                    Text("Programs")
+                                        .font(Font.FontStyles.body)
+                                        .foregroundStyle(Color.ColorSystem.primaryText)
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(height: 12)
+                                        .foregroundStyle(Color.ColorSystem.systemGray2)
+                                        .fontWeight(.bold)
+                                }
+                                .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
                             }
-                            .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+                            .frame(maxWidth: .infinity)
+                            .background(Color.ColorSystem.systemGray6)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
                         }
-                        .frame(maxWidth: .infinity)
-                        .background(Color.ColorSystem.systemGray6)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .buttonStyle(.plain)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
                     }
-                    .buttonStyle(.plain)
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
                 }
             }
             .listStyle(.plain)

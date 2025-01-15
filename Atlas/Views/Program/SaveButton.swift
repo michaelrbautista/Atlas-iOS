@@ -16,50 +16,76 @@ struct SaveButton: View {
     @Binding var presentPurchaseModal: Bool
     
     var body: some View {
-        if viewModel.isPurchased {
-            if viewModel.isStarted {
-                // MARK: Started program
-                Button {
-                    presentFinishProgram.toggle()
-                } label: {
-                    HStack {
-                        Spacer()
-                        
-                        Text("In Progress")
-                            .font(Font.FontStyles.headline)
-                            .foregroundStyle(Color.ColorSystem.systemGray)
-                        
-                        Spacer()
+        if viewModel.isSubscribed {
+            if viewModel.isPurchased {
+                if viewModel.isStarted {
+                    // MARK: Started program
+                    Button {
+                        presentFinishProgram.toggle()
+                    } label: {
+                        HStack {
+                            Spacer()
+                            
+                            Text("In Progress")
+                                .font(Font.FontStyles.headline)
+                                .foregroundStyle(Color.ColorSystem.systemGray)
+                            
+                            Spacer()
+                        }
+                        .padding(10)
+                        .background(Color.ColorSystem.systemGray5)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
-                    .padding(10)
-                    .background(Color.ColorSystem.systemGray5)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
+                    .listRowSeparator(.hidden)
+                } else {
+                    // MARK: Start program
+                    Button {
+                        presentStartProgram.toggle()
+                    } label: {
+                        HStack {
+                            Spacer()
+                            
+                            Text("Start Program")
+                                .font(Font.FontStyles.headline)
+                                .foregroundStyle(Color.ColorSystem.primaryText)
+                            
+                            Spacer()
+                        }
+                        .padding(10)
+                        .background(Color.ColorSystem.systemBlue)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+                    .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
+                    .listRowSeparator(.hidden)
                 }
-                .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
-                .listRowSeparator(.hidden)
             } else {
-                // MARK: Start program
                 Button {
-                    presentStartProgram.toggle()
+                    Task {
+                        try await viewModel.saveProgram()
+                    }
                 } label: {
                     HStack {
                         Spacer()
-                        
-                        Text("Start Program")
-                            .font(Font.FontStyles.headline)
-                            .foregroundStyle(Color.ColorSystem.primaryText)
-                        
+                        if viewModel.isSaving {
+                            ProgressView()
+                                .frame(maxWidth: UIScreen.main.bounds.size.width)
+                                .tint(Color.ColorSystem.primaryText)
+                        } else {
+                            Text("Save")
+                                .font(Font.FontStyles.headline)
+                                .foregroundStyle(Color.ColorSystem.primaryText)
+                        }
                         Spacer()
                     }
                     .padding(10)
                     .background(Color.ColorSystem.systemBlue)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
+                .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                 .listRowSeparator(.hidden)
             }
         } else {
-            // MARK: Save button
             if viewModel.program!.free {
                 Button {
                     Task {

@@ -18,6 +18,7 @@ final class ProgramDetailViewModel: ObservableObject {
     @Published var isSaving = false
     @Published var isDeleting = false
     
+    @Published var isSubscribed = false
     @Published var isPurchased = false
     @Published var isStarted = false
     
@@ -32,8 +33,6 @@ final class ProgramDetailViewModel: ObservableObject {
         self.programId = programId
     }
     
-    #warning("Check if user is subscribed")
-    
     // MARK: Get program
     @MainActor
     public func getProgram() async {
@@ -42,13 +41,22 @@ final class ProgramDetailViewModel: ObservableObject {
                 // Get program
                 let program = try await ProgramService.shared.getProgram(programId: programId)
                 
-                self.program = program
-                self.isCreator = program.createdBy?.id == UserService.currentUser?.id
+                let currentUserId = UserService.currentUser?.id
                 
-                // Check if user has already purchased the program
-                var checkIsPurchased = false
+                self.program = program
+                
+                guard let currentUserId = UserService.currentUser?.id, let creatorId = program.createdBy?.id else {
+                    return
+                }
+                self.isCreator = creatorId == currentUserId
+                
                 if !self.isCreator {
-                    checkIsPurchased = try await ProgramService.shared.checkIfUserPurchasedProgram(programId: program.id)
+                    // Check if subscribed
+                    let checkIsSubscribed = try await SubscriptionService.shared.checkSubscription(userId: currentUserId, creatorId: creatorId)
+                    self.isSubscribed = checkIsSubscribed
+                    
+                    // Check if user has already purchased the program
+                    let checkIsPurchased = try await ProgramService.shared.checkIfUserPurchasedProgram(programId: program.id)
                     self.isPurchased = checkIsPurchased
                 }
                 
