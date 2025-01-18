@@ -59,47 +59,49 @@ struct ProgramWorkoutDetailView: View {
                 
                 // MARK: Exercises
                 if let exercises = viewModel.programWorkout?.workoutExercises {
-                    Section {
-                        ForEach(Array(exercises.enumerated()), id: \.offset) { index, exercise in
-                            CoordinatorLink {
-                                if let libraryExercise = exercise.exercises {
-                                    ExerciseCell(exerciseNumber: index + 1, name: libraryExercise.title, sets: exercise.sets ?? 1, reps: exercise.reps ?? 1)
-                                }
-                            } action: {
-                                navigationController.push(.WorkoutExerciseDetailView(workoutExercise: exercise, deleteWorkoutExercise: {
-                                    viewModel.programWorkout?.workoutExercises?.remove(exercise)
-                                }))
-                            }
-                        }
-                        .onDelete { indexSet in
-                            // Delete and remove workout
-                            let exerciseIndex = indexSet[indexSet.startIndex]
-                            
-                            Task {
-                                await viewModel.deleteExercise(exerciseId: viewModel.programWorkout!.workoutExercises![exerciseIndex].id, exerciseNumber: viewModel.programWorkout!.workoutExercises![exerciseIndex].exerciseNumber, indexSet: indexSet)
-                            }
-                        }
-                    } header: {
-                        HStack {
-                            Text("Exercises")
-                                .font(Font.FontStyles.title3)
-                                .foregroundStyle(Color.ColorSystem.primaryText)
-                            
-                            Spacer()
-                            
-                            if viewModel.isCreator {
-                                Button {
-                                    navigationController.presentSheet(.AddExerciseToWorkoutCoordinatorView(workoutId: nil, programWorkoutId: viewModel.programWorkout!.id, exerciseNumber: (viewModel.programWorkout!.workoutExercises?.count ?? 0) + 1, addExerciseToWorkout: { newWorkoutExercise in
-                                        viewModel.programWorkout?.workoutExercises?.append(newWorkoutExercise)
+                    if exercises.count > 0 {
+                        Section {
+                            ForEach(Array(exercises.enumerated()), id: \.offset) { index, exercise in
+                                CoordinatorLink {
+                                    if let libraryExercise = exercise.exercises {
+                                        ExerciseCell(exerciseNumber: index + 1, name: libraryExercise.title, sets: exercise.sets ?? 1, reps: exercise.reps ?? 1)
+                                    }
+                                } action: {
+                                    navigationController.push(.WorkoutExerciseDetailView(workoutExercise: exercise, deleteWorkoutExercise: {
+                                        viewModel.programWorkout?.workoutExercises?.remove(exercise)
                                     }))
-                                } label: {
-                                    Image(systemName: "plus")
                                 }
-
+                            }
+                            .onDelete { indexSet in
+                                // Delete and remove workout
+                                let exerciseIndex = indexSet[indexSet.startIndex]
+                                
+                                Task {
+                                    await viewModel.deleteExercise(exerciseId: viewModel.programWorkout!.workoutExercises![exerciseIndex].id, exerciseNumber: viewModel.programWorkout!.workoutExercises![exerciseIndex].exerciseNumber, indexSet: indexSet)
+                                }
+                            }
+                        } header: {
+                            HStack {
+                                Text("Exercises")
+                                    .font(Font.FontStyles.title3)
+                                    .foregroundStyle(Color.ColorSystem.primaryText)
+                                
+                                Spacer()
+                                
+                                if viewModel.isCreator {
+                                    Button {
+                                        navigationController.presentSheet(.AddExerciseToWorkoutCoordinatorView(workoutId: nil, programWorkoutId: viewModel.programWorkout!.id, exerciseNumber: (viewModel.programWorkout!.workoutExercises?.count ?? 0) + 1, addExerciseToWorkout: { newWorkoutExercise in
+                                            viewModel.programWorkout?.workoutExercises?.append(newWorkoutExercise)
+                                        }))
+                                    } label: {
+                                        Image(systemName: "plus")
+                                    }
+                                    
+                                }
                             }
                         }
+                        .headerProminence(.increased)
                     }
-                    .headerProminence(.increased)
                 }
             }
             .listStyle(.plain)
