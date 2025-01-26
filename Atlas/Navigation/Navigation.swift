@@ -133,6 +133,19 @@ class NavigationController: CoordinatorProtocol {
         case .UserProgramsView(let userId):
             let vm = UserProgramsViewModel(userId: userId)
             UserProgramsView(viewModel: vm)
+        case .UserCollectionsView(let userId):
+            let vm = UserCollectionsViewModel(userId: userId)
+            UserCollectionsView(viewModel: vm)
+            
+        // Collection
+        case .CollectionDetailView(let collectionId):
+            let vm = CollectionDetailViewModel(collectionId: collectionId)
+            CollectionDetailView(viewModel: vm)
+            
+        // Article
+        case .ArticleDetailView(let article):
+            let vm = ArticleDetailViewModel(article: article)
+            ArticleDetailView(viewModel: vm)
             
         default:
             Text("Couldn't load page.")
@@ -179,6 +192,12 @@ class NavigationController: CoordinatorProtocol {
         case .EditWorkoutExerciseView(let workoutExercise, let editWorkoutExercise):
             let vm = EditWorkoutExerciseViewModel(exercise: workoutExercise)
             EditWorkoutExerciseView(viewModel: vm, editWorkoutExercise: editWorkoutExercise)
+            
+        case .SubscribeSheet:
+            SubscribeSheet()
+                .presentationDetents(
+                    [.medium]
+                 )
         }
     }
     

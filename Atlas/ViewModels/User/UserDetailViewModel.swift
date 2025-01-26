@@ -15,11 +15,13 @@ final class UserDetailViewModel: ObservableObject {
     @Published var errorMessage: String? = nil
     
     var userId: String
-    
     @Published var user: User? = nil
     
     @Published var userImage: UIImage? = nil
     @Published var userProfilePictureIsLoading = false
+    
+    @Published var isCreator = false
+    @Published var isSubscribed = false
     
     @Published var pickerValue = "posts"
     
@@ -30,6 +32,7 @@ final class UserDetailViewModel: ObservableObject {
     @MainActor
     public func getUser(userId: String) async {
         do {
+            // Get user
             let user = try await UserService.shared.getUser(uid: userId)
             
             self.user = user
@@ -46,6 +49,19 @@ final class UserDetailViewModel: ObservableObject {
                         return
                     }
                 }
+            }
+            
+            // Check if user is creator
+            guard let currentUserId = UserService.currentUser?.id else {
+                return
+            }
+            self.isCreator = userId == currentUserId
+            
+            // Check if user is subscribed
+            if !self.isCreator {
+                // Check if subscribed
+                let checkIsSubscribed = try await SubscriptionService.shared.checkSubscription(userId: currentUserId, creatorId: userId)
+                self.isSubscribed = checkIsSubscribed
             }
             
             self.isLoading = false

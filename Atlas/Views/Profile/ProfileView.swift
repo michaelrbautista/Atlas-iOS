@@ -100,20 +100,6 @@ struct ProfileView: View {
                         }
                         .listRowBackground(Color.ColorSystem.systemGray4)
                     }
-                    
-//                    Section {
-//                        Button(action: {
-//                            
-//                        }, label: {
-//                            HStack {
-//                                Text("Edit profile")
-//                                    .foregroundStyle(Color.ColorSystem.secondaryText)
-//                                Spacer()
-//                            }
-//                        })
-//                        .listRowBackground(Color.ColorSystem.systemGray4)
-//                        .disabled(true)
-//                    }
                 }
                 .listStyle(.insetGrouped)
                 .scrollContentBackground(.hidden)

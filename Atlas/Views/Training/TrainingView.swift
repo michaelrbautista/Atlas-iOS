@@ -55,6 +55,23 @@ struct TrainingView: View {
                     .foregroundStyle(Color.ColorSystem.primaryText)
                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 5, trailing: 0))
             }
+            
+            #if DEBUG
+            CoordinatorLink {
+                Text("Test User")
+            } action: {
+                navigationController.push(.UserDetailView(userId: "e4d6f88c-d8c3-4a01-98d6-b5d56a366491"))
+            }
+            
+            CoordinatorLink {
+                Text("Article")
+            } action: {
+                navigationController.push(.ArticleDetailView(
+                    article: Article(id: "a0b3cbb3-fff2-4ada-85b5-ffb40dfe0477", title: "Test for iOS", content: """
+    {"type":"doc","content":[{"type":"bulletList","content":[{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","marks":[{"type":"bold"}],"text":"Line"},{"type":"text","text":" one"}]}]},{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"Line "},{"type":"text","marks":[{"type":"italic"}],"text":"two"}]},{"type":"bulletList","content":[{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"Line three"}]},{"type":"bulletList","content":[{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"Line four"}]}]}]}]},{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"Line five"}]},{"type":"orderedList","attrs":{"start":1},"content":[{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"Line six"}]}]}]}]}]}]},{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"Line seven"}]}]}]},{"type":"paragraph"},{"type":"orderedList","attrs":{"start":1},"content":[{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"Line one"}]}]},{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","marks":[{"type":"bold"}],"text":"Line"},{"type":"text","text":" two"}]},{"type":"bulletList","content":[{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"Line three"}]}]}]}]}]}]}
+""", free: true, users: ArticleUser(id: "e4d6f88c-d8c3-4a01-98d6-b5d56a366491", fullName: "Test Seller", username: "testseller"))))
+            }
+            #endif
         }
         .listStyle(.plain)
         .listRowSeparator(.hidden)

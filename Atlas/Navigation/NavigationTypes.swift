@@ -47,6 +47,13 @@ enum Screen: Identifiable, Hashable {
     // User
     case UserDetailView(userId: String)
     case UserProgramsView(userId: String)
+    case UserCollectionsView(userId: String)
+    
+    // Collection
+    case CollectionDetailView(collectionId: String)
+    
+    // Article
+    case ArticleDetailView(article: Article)
     
     var id: Self { return self }
 }
@@ -121,6 +128,8 @@ enum Sheet: Identifiable, Hashable {
     case EditLibraryExerciseView(libraryExercise: FetchedExercise, exerciseVideo: Data?, editLibraryExercise: ((FetchedExercise) -> Void))
     case EditWorkoutExerciseView(workoutExercise: FetchedWorkoutExercise, editWorkoutExercise: ((FetchedWorkoutExercise) -> Void))
     
+    case SubscribeSheet
+    
     var id: Self { return self }
 }
 
@@ -153,6 +162,9 @@ extension Sheet {
             hasher.combine("EditLibraryExerciseView")
         case .EditWorkoutExerciseView:
             hasher.combine("EditWorkoutExerciseView")
+            
+        case .SubscribeSheet:
+            hasher.combine("SubscribeSheet")
         }
     }
     

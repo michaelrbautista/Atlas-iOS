@@ -18,7 +18,78 @@ struct SaveButton: View {
     @Binding var presentPurchaseModal: Bool
     
     var body: some View {
-        if (!viewModel.isSubscribed) {
+        if (viewModel.program!.free || viewModel.isSubscribed) {
+            if (viewModel.isPurchased) {
+                if (viewModel.isStarted) {
+                    // MARK: In progress
+                    Button {
+                        presentFinishProgram.toggle()
+                    } label: {
+                        HStack {
+                            Spacer()
+                            
+                            Text("In Progress")
+                                .font(Font.FontStyles.headline)
+                                .foregroundStyle(Color.ColorSystem.systemGray)
+                            
+                            Spacer()
+                        }
+                        .padding(10)
+                        .background(Color.ColorSystem.systemGray5)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+                    .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
+                    .listRowSeparator(.hidden)
+                } else {
+                    // MARK: Start
+                    Button {
+                        presentStartProgram.toggle()
+                    } label: {
+                        HStack {
+                            Spacer()
+                            
+                            Text("Start Program")
+                                .font(Font.FontStyles.headline)
+                                .foregroundStyle(Color.ColorSystem.primaryText)
+                            
+                            Spacer()
+                        }
+                        .padding(10)
+                        .background(Color.ColorSystem.systemBlue)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+                    .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
+                    .listRowSeparator(.hidden)
+                }
+            } else {
+                // MARK: Save
+                Button {
+                    Task {
+                        try await viewModel.saveProgram()
+                    }
+                } label: {
+                    HStack {
+                        Spacer()
+                        if viewModel.isSaving {
+                            ProgressView()
+                                .frame(maxWidth: UIScreen.main.bounds.size.width)
+                                .tint(Color.ColorSystem.primaryText)
+                        } else {
+                            Text("Save")
+                                .font(Font.FontStyles.headline)
+                                .foregroundStyle(Color.ColorSystem.primaryText)
+                        }
+                        Spacer()
+                    }
+                    .padding(10)
+                    .background(Color.ColorSystem.systemBlue)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .disabled(viewModel.isSaving)
+                }
+                .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                .listRowSeparator(.hidden)
+            }
+        } else {
             // MARK: Subscribers only
             Button {
                 
@@ -35,73 +106,6 @@ struct SaveButton: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             }
             .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-            .listRowSeparator(.hidden)
-        } else if (!viewModel.isPurchased) {
-            // MARK: Save
-            Button {
-                Task {
-                    try await viewModel.saveProgram()
-                }
-            } label: {
-                HStack {
-                    Spacer()
-                    if viewModel.isSaving {
-                        ProgressView()
-                            .frame(maxWidth: UIScreen.main.bounds.size.width)
-                            .tint(Color.ColorSystem.primaryText)
-                    } else {
-                        Text("Save")
-                            .font(Font.FontStyles.headline)
-                            .foregroundStyle(Color.ColorSystem.primaryText)
-                    }
-                    Spacer()
-                }
-                .padding(10)
-                .background(Color.ColorSystem.systemBlue)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .disabled(viewModel.isSaving)
-            }
-            .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-            .listRowSeparator(.hidden)
-        } else if (!viewModel.isStarted) {
-            // MARK: Start
-            Button {
-                presentStartProgram.toggle()
-            } label: {
-                HStack {
-                    Spacer()
-                    
-                    Text("Start Program")
-                        .font(Font.FontStyles.headline)
-                        .foregroundStyle(Color.ColorSystem.primaryText)
-                    
-                    Spacer()
-                }
-                .padding(10)
-                .background(Color.ColorSystem.systemBlue)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-            }
-            .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
-            .listRowSeparator(.hidden)
-        } else {
-            // MARK: In progress
-            Button {
-                presentFinishProgram.toggle()
-            } label: {
-                HStack {
-                    Spacer()
-                    
-                    Text("In Progress")
-                        .font(Font.FontStyles.headline)
-                        .foregroundStyle(Color.ColorSystem.systemGray)
-                    
-                    Spacer()
-                }
-                .padding(10)
-                .background(Color.ColorSystem.systemGray5)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-            }
-            .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
             .listRowSeparator(.hidden)
         }
     }

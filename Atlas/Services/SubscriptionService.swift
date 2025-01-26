@@ -16,24 +16,7 @@ final class SubscriptionService {
         do {
             let subscription: [Subscription] = try await SupabaseService.shared.supabase
                 .from("subscriptions")
-                .select(
-                    """
-                        id,
-                        subscriber,
-                        subscribed_to:users!subscriptions_subscribed_to_fkey(
-                            id,
-                            full_name,
-                            username,
-                            profile_picture_url,
-                            bio
-                        ),
-                        tier,
-                        stripe_subscription_id,
-                        stripe_customer_id,
-                        stripe_price_id,
-                        is_active
-                    """
-                )
+                .select("id")
                 .eq("subscriber", value: userId)
                 .eq("subscribed_to", value: creatorId)
                 .execute()

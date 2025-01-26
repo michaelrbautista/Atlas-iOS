@@ -23,6 +23,7 @@ struct UserDetailView: View {
         } else {
             List {
                 VStack(alignment: .center) {
+                    // MARK: Profile picture
                     if viewModel.userProfilePictureIsLoading {
                         HStack {
                             ProgressView()
@@ -50,15 +51,18 @@ struct UserDetailView: View {
                     }
                     
                     VStack {
+                        // MARK: Full name
                         Text(viewModel.user!.fullName)
-                            .font(Font.FontStyles.title3)
+                            .font(Font.FontStyles.title1)
                             .foregroundStyle(Color.ColorSystem.primaryText)
                             .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                         
+                        // MARK: Username
                         Text("@\(viewModel.user!.username)")
                             .font(Font.FontStyles.body)
                             .foregroundStyle(Color.ColorSystem.systemGray)
                         
+                        // MARK: Bio
                         if viewModel.user?.bio != nil {
                             Text(viewModel.user!.bio ?? "")
                                 .font(Font.FontStyles.body)
@@ -73,7 +77,28 @@ struct UserDetailView: View {
                     Spacer()
                 }
                 .frame(maxWidth: .infinity)
-                .listRowSeparator(.hidden)
+                
+                // MARK: Subscribe button
+                if !viewModel.isCreator {
+                    // MARK: Subscribe
+                    Button {
+                        navigationController.presentSheet(.SubscribeSheet)
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Text(viewModel.isSubscribed ? "Unsubscribe" : "Subscribe")
+                                .font(Font.FontStyles.headline)
+                                .foregroundStyle(viewModel.isSubscribed ? Color.ColorSystem.systemGray : Color.ColorSystem.primaryText)
+                            Spacer()
+                        }
+                        .padding(10)
+                        .background(viewModel.isSubscribed ? Color.ColorSystem.systemGray5 : Color.ColorSystem.systemBlue)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+                    .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
+                    .listRowSeparator(.hidden)
+                    .buttonStyle(.plain)
+                }
                 
                 // MARK: Content
                 if viewModel.user?.stripePriceId != nil {
@@ -81,34 +106,48 @@ struct UserDetailView: View {
                         Button {
                             navigationController.push(.UserProgramsView(userId: viewModel.user!.id))
                         } label: {
-                            VStack {
-                                HStack(spacing: 16) {
-                                    Image(systemName: "figure.run")
-                                        .frame(width: 20)
-                                        .foregroundStyle(Color.ColorSystem.primaryText)
-                                    
-                                    Text("Programs")
-                                        .font(Font.FontStyles.body)
-                                        .foregroundStyle(Color.ColorSystem.primaryText)
-                                    
-                                    Spacer()
-                                    
-                                    Image(systemName: "chevron.right")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(height: 12)
-                                        .foregroundStyle(Color.ColorSystem.systemGray2)
-                                        .fontWeight(.bold)
-                                }
-                                .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+                            HStack(spacing: 16) {
+                                Image(systemName: "figure.run")
+                                    .frame(width: 20)
+                                    .foregroundStyle(Color.ColorSystem.primaryText)
+                                
+                                Text("Programs")
+                                    .font(Font.FontStyles.body)
+                                    .foregroundStyle(Color.ColorSystem.primaryText)
+                                
+                                Spacer()
+                                
+                                Image(systemName: "chevron.right")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 12)
+                                    .foregroundStyle(Color.ColorSystem.systemGray2)
+                                    .fontWeight(.bold)
                             }
-                            .frame(maxWidth: .infinity)
-                            .background(Color.ColorSystem.systemGray6)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
                         }
-                        .buttonStyle(.plain)
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
+                        
+                        Button {
+                            navigationController.push(.UserCollectionsView(userId: viewModel.user!.id))
+                        } label: {
+                            HStack(spacing: 16) {
+                                Image(systemName: "list.bullet.rectangle.portrait.fill")
+                                    .frame(width: 20)
+                                    .foregroundStyle(Color.ColorSystem.primaryText)
+                                
+                                Text("Collections")
+                                    .font(Font.FontStyles.body)
+                                    .foregroundStyle(Color.ColorSystem.primaryText)
+                                
+                                Spacer()
+                                
+                                Image(systemName: "chevron.right")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 12)
+                                    .foregroundStyle(Color.ColorSystem.systemGray2)
+                                    .fontWeight(.bold)
+                            }
+                        }
                     }
                 }
             }

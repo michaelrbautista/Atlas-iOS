@@ -40,3 +40,7 @@ struct FetchedSubscriptionUser: Codable, Hashable {
         case profilePictureUrl = "profile_picture_url"
     }
 }
+
+struct CheckSubscription: Codable, Hashable {
+    var id: String
+}
