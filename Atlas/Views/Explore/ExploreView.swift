@@ -27,6 +27,11 @@ struct ExploreView: View {
                 .alert(isPresented: $viewModel.didReturnError, content: {
                     Alert(title: Text(viewModel.returnedErrorMessage))
                 })
+                .onAppear {
+                    Task {
+                        await viewModel.getAllUsers()
+                    }
+                }
             } else {
                 if viewModel.searchText != "" {
                     if viewModel.filter == "Programs" {
@@ -45,6 +50,20 @@ struct ExploreView: View {
                                 navigationController.push(.UserDetailView(userId: user.id))
                             }
                         }
+                    }
+                } else {
+                    Section {
+                        ForEach(viewModel.allUsers) { user in
+                            CoordinatorLink {
+                                SearchUserCell(user: user)
+                            } action: {
+                                navigationController.push(.UserDetailView(userId: user.id))
+                            }
+                        }
+                    } header: {
+                        Text("Users")
+                            .font(Font.FontStyles.title2)
+                            .foregroundStyle(Color.ColorSystem.primaryText)
                     }
                 }
             }

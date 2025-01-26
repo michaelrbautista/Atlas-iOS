@@ -13,6 +13,22 @@ class UserService {
     public static let shared = UserService()
     public static var currentUser: User? = nil
     
+    // MARK: Get all users
+    public func getAllUsers() async throws -> [User] {
+        do {
+            let users: [User] = try await SupabaseService.shared.supabase
+                .from("users")
+                .select()
+                .neq("stripe_price_id", value: "null")
+                .execute()
+                .value
+            
+            return users
+        } catch {
+            throw error
+        }
+    }
+    
     // MARK: Search users
     public func searchUsers(searchText: String) async throws -> [User] {
         do {

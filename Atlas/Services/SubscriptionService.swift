@@ -14,7 +14,7 @@ final class SubscriptionService {
     // MARK: Check if user is subscribed
     public func checkSubscription(userId: String, creatorId: String) async throws -> Bool {
         do {
-            let subscription: [Subscription] = try await SupabaseService.shared.supabase
+            let subscription: [CheckSubscription] = try await SupabaseService.shared.supabase
                 .from("subscriptions")
                 .select("id")
                 .eq("subscriber", value: userId)

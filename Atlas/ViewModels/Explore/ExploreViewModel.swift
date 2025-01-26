@@ -13,16 +13,32 @@ final class ExploreViewModel: ObservableObject {
     @Published var searchText = ""
     var subscriptions = Set<AnyCancellable>()
     
+    @Published var allUsers = [User]()
+    
     @Published var users = [User]()
     @Published var programs = [Program]()
     
     var filters = ["Programs", "Users"]
     @Published var filter = "Users"
     
-    @Published var isLoading = false
+    @Published var isLoading = true
     
     @Published var didReturnError = false
     @Published var returnedErrorMessage = ""
+    
+    @MainActor
+    public func getAllUsers() async {
+        do {
+            let allUsers = try await UserService.shared.getAllUsers()
+            
+            self.allUsers = allUsers
+            self.isLoading = false
+        } catch {
+            self.isLoading = false
+            self.didReturnError = true
+            self.returnedErrorMessage = error.localizedDescription
+        }
+    }
     
     @MainActor
     public func search() async {
