@@ -19,6 +19,8 @@
 		890715D92CB08B370079200F /* ExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890715D82CB08B370079200F /* ExploreViewModel.swift */; };
 		8917C6FB2CAB2358005B3D5B /* PurchaseModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917C6FA2CAB2358005B3D5B /* PurchaseModalView.swift */; };
 		8917C6FD2CAB3F76005B3D5B /* StartProgramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917C6FC2CAB3F76005B3D5B /* StartProgramView.swift */; };
+		89380BFA2D4B292C009C44B1 /* LoadingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89380BF92D4B292C009C44B1 /* LoadingScreen.swift */; };
+		89380BFC2D4B29A2009C44B1 /* ListButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89380BFB2D4B29A2009C44B1 /* ListButton.swift */; };
 		896C34C32D431A7C00EB6209 /* UserCollectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896C34C22D431A7C00EB6209 /* UserCollectionsView.swift */; };
 		896C34C52D431AA700EB6209 /* UserCollectionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896C34C42D431AA300EB6209 /* UserCollectionsViewModel.swift */; };
 		896C34C72D431ACC00EB6209 /* CollectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896C34C62D431AC900EB6209 /* CollectionService.swift */; };
@@ -117,6 +119,7 @@
 		89E3A86B2D06512100624C72 /* LibraryWorkoutsForProgramViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A86A2D06511E00624C72 /* LibraryWorkoutsForProgramViewModel.swift */; };
 		89E3A86F2D065B0600624C72 /* NewLibraryWorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A86E2D065B0600624C72 /* NewLibraryWorkoutView.swift */; };
 		89E3A8712D065BF600624C72 /* NewLibraryWorkoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E3A8702D065BF100624C72 /* NewLibraryWorkoutViewModel.swift */; };
+		89E8E4652D50708B0049F225 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E8E4642D50708B0049F225 /* ErrorView.swift */; };
 		89EA53212D0B8B2400BB22D4 /* LibraryWorkoutDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EA53202D0B8B2400BB22D4 /* LibraryWorkoutDetailViewModel.swift */; };
 		89EA53232D0B8B3F00BB22D4 /* LibraryWorkoutDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EA53222D0B8B3F00BB22D4 /* LibraryWorkoutDetailView.swift */; };
 		89EA53272D0CA56D00BB22D4 /* EditLibraryWorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EA53262D0CA56D00BB22D4 /* EditLibraryWorkoutView.swift */; };
@@ -150,6 +153,8 @@
 		890715D82CB08B370079200F /* ExploreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewModel.swift; sourceTree = "<group>"; };
 		8917C6FA2CAB2358005B3D5B /* PurchaseModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseModalView.swift; sourceTree = "<group>"; };
 		8917C6FC2CAB3F76005B3D5B /* StartProgramView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartProgramView.swift; sourceTree = "<group>"; };
+		89380BF92D4B292C009C44B1 /* LoadingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingScreen.swift; sourceTree = "<group>"; };
+		89380BFB2D4B29A2009C44B1 /* ListButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListButton.swift; sourceTree = "<group>"; };
 		896C34C22D431A7C00EB6209 /* UserCollectionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCollectionsView.swift; sourceTree = "<group>"; };
 		896C34C42D431AA300EB6209 /* UserCollectionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCollectionsViewModel.swift; sourceTree = "<group>"; };
 		896C34C62D431AC900EB6209 /* CollectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionService.swift; sourceTree = "<group>"; };
@@ -242,6 +247,7 @@
 		89E3A86A2D06511E00624C72 /* LibraryWorkoutsForProgramViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryWorkoutsForProgramViewModel.swift; sourceTree = "<group>"; };
 		89E3A86E2D065B0600624C72 /* NewLibraryWorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewLibraryWorkoutView.swift; sourceTree = "<group>"; };
 		89E3A8702D065BF100624C72 /* NewLibraryWorkoutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewLibraryWorkoutViewModel.swift; sourceTree = "<group>"; };
+		89E8E4642D50708B0049F225 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		89EA53202D0B8B2400BB22D4 /* LibraryWorkoutDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryWorkoutDetailViewModel.swift; sourceTree = "<group>"; };
 		89EA53222D0B8B3F00BB22D4 /* LibraryWorkoutDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryWorkoutDetailView.swift; sourceTree = "<group>"; };
 		89EA53262D0CA56D00BB22D4 /* EditLibraryWorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLibraryWorkoutView.swift; sourceTree = "<group>"; };
@@ -287,6 +293,9 @@
 			children = (
 				8902F6FF2D1CE36E003C64FE /* CoordinatorLink.swift */,
 				896F30F42C227A0E0007EBFA /* WatchVideoView.swift */,
+				89380BF92D4B292C009C44B1 /* LoadingScreen.swift */,
+				89380BFB2D4B29A2009C44B1 /* ListButton.swift */,
+				89E8E4642D50708B0049F225 /* ErrorView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -833,6 +842,7 @@
 			files = (
 				89E3A85D2D03F5A600624C72 /* EditProgramView.swift in Sources */,
 				8902F7002D1CE36E003C64FE /* CoordinatorLink.swift in Sources */,
+				89380BFA2D4B292C009C44B1 /* LoadingScreen.swift in Sources */,
 				89D5A8552BA65A450001CFB3 /* WorkoutService.swift in Sources */,
 				89E3A8692D0646B300624C72 /* LibraryWorkoutsForProgramView.swift in Sources */,
 				89D5A8A42BBA443C0001CFB3 /* LibraryExerciseDetailView.swift in Sources */,
@@ -885,9 +895,11 @@
 				89D5A7A32BA64D100001CFB3 /* UserView.swift in Sources */,
 				89D5A8692BA65AE40001CFB3 /* UserCell.swift in Sources */,
 				89D5A87E2BACEDAF0001CFB3 /* TextFieldView.swift in Sources */,
+				89E8E4652D50708B0049F225 /* ErrorView.swift in Sources */,
 				898D0B0A2C8F532000898957 /* UserDetailViewModel.swift in Sources */,
 				89E18CFB2D14FE0900C0B4F4 /* EditLibraryExerciseViewModel.swift in Sources */,
 				896C34D32D43205700EB6209 /* ArticleDetailView.swift in Sources */,
+				89380BFC2D4B29A2009C44B1 /* ListButton.swift in Sources */,
 				898D0B082C8F531300898957 /* UserDetailView.swift in Sources */,
 				89E3A86B2D06512100624C72 /* LibraryWorkoutsForProgramViewModel.swift in Sources */,
 				89967B582D3602B500369D97 /* SubscriptionsView.swift in Sources */,
@@ -1080,7 +1092,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Atlas/Atlas.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Atlas/Preview Content\"";
 				DEVELOPMENT_TEAM = T2V9U83CKZ;
 				ENABLE_PREVIEWS = YES;
@@ -1098,7 +1110,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2;
+				MARKETING_VERSION = 3.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "Michael-Bautista.Atlas";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1118,7 +1130,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Atlas/Atlas.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Atlas/Preview Content\"";
 				DEVELOPMENT_TEAM = T2V9U83CKZ;
 				ENABLE_PREVIEWS = YES;
@@ -1136,7 +1148,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2;
+				MARKETING_VERSION = 3.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "Michael-Bautista.Atlas";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

@@ -18,7 +18,7 @@ final class ArticleDetailViewModel: ObservableObject {
     @Published var articleImageIsLoading = true
     
     @Published var didReturnError = false
-    @Published var returnedErrorMessage = ""
+    @Published var errorMessage = ""
     
     var article: Article
     var jsonContent: NSArray = []
@@ -39,24 +39,33 @@ final class ArticleDetailViewModel: ObservableObject {
         do {
             // Decode JSON into a dictionary
             guard let jsonDict = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] else {
-                print("Couldn't serialize JSON")
+                self.isLoading = false
+                self.didReturnError = true
+                self.errorMessage = "Couldn't serialize JSON"
                 return
             }
             
             guard let docContent = jsonDict["content"] as? NSArray else {
-                print("Couldn't get tiptap content.")
+                self.isLoading = false
+                self.didReturnError = true
+                self.errorMessage = "Couldn't get tiptap content."
                 return
             }
             
             self.jsonContent = docContent
         } catch {
-            print("Error decoding JSON: \(error.localizedDescription)")
+            self.isLoading = false
+            self.didReturnError = true
+            self.errorMessage = "Error decoding JSON: \(error.localizedDescription)"
         }
     }
     
     @MainActor
     public func checkSubscription() async {
         guard let currentUserId = UserService.currentUser?.id, let creatorId = article.users?.id else {
+            self.isLoading = false
+            self.didReturnError = true
+            self.errorMessage = "There was an error checking subscription."
             return
         }
         self.isCreator = creatorId == currentUserId
@@ -80,7 +89,7 @@ final class ArticleDetailViewModel: ObservableObject {
         } catch {
             self.isLoading = false
             self.didReturnError = true
-            self.returnedErrorMessage = error.localizedDescription
+            self.errorMessage = error.localizedDescription
         }
     }
     

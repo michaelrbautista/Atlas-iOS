@@ -26,7 +26,7 @@ final class ProgramDetailViewModel: ObservableObject {
     @Published var programImageIsLoading = true
     
     @Published var didReturnError = false
-    @Published var returnedErrorMessage = ""
+    @Published var errorMessage = ""
     
     // MARK: Initializer
     init(programId: String) {
@@ -41,11 +41,12 @@ final class ProgramDetailViewModel: ObservableObject {
                 // Get program
                 let program = try await ProgramService.shared.getProgram(programId: programId)
                 
-                let currentUserId = UserService.currentUser?.id
-                
                 self.program = program
                 
                 guard let currentUserId = UserService.currentUser?.id, let creatorId = program.createdBy?.id else {
+                    self.isLoading = false
+                    self.didReturnError = true
+                    self.errorMessage = "There was an error getting the current user and creator id."
                     return
                 }
                 self.isCreator = creatorId == currentUserId
@@ -79,7 +80,7 @@ final class ProgramDetailViewModel: ObservableObject {
             } catch {
                 self.isLoading = false
                 self.didReturnError = true
-                self.returnedErrorMessage = error.localizedDescription
+                self.errorMessage = error.localizedDescription
             }
         }
     }
@@ -129,7 +130,7 @@ final class ProgramDetailViewModel: ObservableObject {
         } catch {
             self.isLoading = false
             self.didReturnError = true
-            self.returnedErrorMessage = error.localizedDescription
+            self.errorMessage = error.localizedDescription
         }
     }
     
@@ -150,7 +151,7 @@ final class ProgramDetailViewModel: ObservableObject {
         guard let creatorId = self.program?.createdBy?.id else {
             self.isLoading = false
             self.didReturnError = true
-            self.returnedErrorMessage = "Couldn't save program."
+            self.errorMessage = "Couldn't save program."
             return
         }
         
@@ -164,7 +165,7 @@ final class ProgramDetailViewModel: ObservableObject {
         } catch {
             self.isSaving = false
             self.didReturnError = true
-            self.returnedErrorMessage = error.localizedDescription
+            self.errorMessage = error.localizedDescription
         }
     }
     
@@ -185,7 +186,7 @@ final class ProgramDetailViewModel: ObservableObject {
         } catch {
             self.isSaving = false
             self.didReturnError = true
-            self.returnedErrorMessage = error.localizedDescription
+            self.errorMessage = error.localizedDescription
         }
     }
 }

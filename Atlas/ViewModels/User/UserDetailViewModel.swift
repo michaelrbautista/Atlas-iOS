@@ -44,6 +44,7 @@ final class UserDetailViewModel: ObservableObject {
                     self.userProfilePictureIsLoading = false
                     
                     if let error = error {
+                        self.isLoading = false
                         self.didReturnError = true
                         self.errorMessage = error.localizedDescription
                         return

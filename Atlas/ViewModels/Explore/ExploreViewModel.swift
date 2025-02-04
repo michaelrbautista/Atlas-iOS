@@ -24,7 +24,7 @@ final class ExploreViewModel: ObservableObject {
     @Published var isLoading = true
     
     @Published var didReturnError = false
-    @Published var returnedErrorMessage = ""
+    @Published var errorMessage = ""
     
     @MainActor
     public func getAllUsers() async {
@@ -36,7 +36,7 @@ final class ExploreViewModel: ObservableObject {
         } catch {
             self.isLoading = false
             self.didReturnError = true
-            self.returnedErrorMessage = error.localizedDescription
+            self.errorMessage = error.localizedDescription
         }
     }
     
@@ -53,7 +53,7 @@ final class ExploreViewModel: ObservableObject {
             } catch {
                 self.isLoading = false
                 self.didReturnError = true
-                self.returnedErrorMessage = error.localizedDescription
+                self.errorMessage = error.localizedDescription
             }
         } else {
             do {
@@ -64,7 +64,7 @@ final class ExploreViewModel: ObservableObject {
             } catch {
                 self.isLoading = false
                 self.didReturnError = true
-                self.returnedErrorMessage = error.localizedDescription
+                self.errorMessage = error.localizedDescription
             }
         }
     }

@@ -15,7 +15,7 @@ final class CollectionDetailViewModel: ObservableObject {
     @Published var isLoading = true
     
     @Published var didReturnError = false
-    @Published var returnedErrorMessage = ""
+    @Published var errorMessage = ""
     
     var collectionId: String
     
@@ -40,7 +40,7 @@ final class CollectionDetailViewModel: ObservableObject {
             } catch {
                 self.isLoading = false
                 self.didReturnError = true
-                self.returnedErrorMessage = error.localizedDescription
+                self.errorMessage = error.localizedDescription
             }
         }
     }

@@ -12,24 +12,15 @@ struct CollectionDetailView: View {
     @StateObject var viewModel: CollectionDetailViewModel
     
     var body: some View {
-        if viewModel.isLoading == true || viewModel.collection == nil {
-            VStack(alignment: .center) {
-                Spacer()
-                ProgressView()
-                    .frame(maxWidth: .infinity)
-                    .tint(Color.ColorSystem.primaryText)
-                Spacer()
-            }
-            .background(Color.ColorSystem.systemBackground)
-            .navigationBarTitleDisplayMode(.inline)
-            .alert(isPresented: $viewModel.didReturnError, content: {
-                Alert(title: Text(viewModel.returnedErrorMessage))
-            })
-            .onAppear {
-                Task {
-                    await viewModel.getCollection()
+        if viewModel.isLoading {
+            LoadingView()
+                .onAppear {
+                    Task {
+                        await viewModel.getCollection()
+                    }
                 }
-            }
+        } else if viewModel.didReturnError {
+            ErrorView(errorMessage: viewModel.errorMessage)
         } else {
             List {
                 VStack {

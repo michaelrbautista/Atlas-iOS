@@ -15,14 +15,6 @@ struct AtlasApp: App {
     @StateObject var userViewModel = UserViewModel()
     
     init() {
-        #if DEBUG
-        StripeAPI.defaultPublishableKey = "pk_test_51P3659KRUtiKYn5dqjDEIBTZQSxzvgLXlLwwP7qNzoBCvHt9fONoV1N6nLwkSDD5bGmfT1NyuWrIkd7yAhkLQpvS00ZY9EsKzQ"
-        print()
-        print("INITIALIZING ATLAS IN DEBUG MODE")
-        #else
-        StripeAPI.defaultPublishableKey = "pk_live_51P3659KRUtiKYn5dwsXjtLmId9RBxn7HcheF3xa7UUmIU9gB5muXSJ2O6QkzW4JXaA3KleatZqRpBLzWrKafaeNv007sERBIv3"
-        #endif
-        
         let navAppearance = UINavigationBarAppearance()
         navAppearance.backgroundColor = UIColor(Color.ColorSystem.systemBackground)
         navAppearance.titleTextAttributes = [.foregroundColor: UIColor(Color.ColorSystem.primaryText)]
@@ -52,16 +44,7 @@ struct CheckAuthentication: View {
     
     var body: some View {
         if userViewModel.isBusy {
-            VStack(spacing: 16) {
-                Spacer()
-                
-                ProgressView()
-                    .frame(maxWidth: .infinity)
-                
-                Spacer()
-            }
-            .background(Color.ColorSystem.systemBackground)
-            .tint(Color.ColorSystem.primaryText)
+            LoadingView()
         } else {
             if userViewModel.isLoggedIn {
                 UserView()

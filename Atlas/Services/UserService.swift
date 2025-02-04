@@ -63,7 +63,25 @@ class UserService {
         do {
             let user: User = try await SupabaseService.shared.supabase
                 .from("users")
-                .select()
+                .select(
+                    """
+                        id,
+                        email,
+                        full_name,
+                        username,
+                        bio,
+                        profile_picture_url,
+                        profile_picture_path,
+                        stripe_account_id,
+                        payments_enabled,
+                        stripe_price_id,
+                        collections(
+                            id,
+                            title,
+                            description
+                        )
+                    """
+                )
                 .eq("id", value: uid)
                 .single()
                 .execute()

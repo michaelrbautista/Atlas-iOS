@@ -19,7 +19,7 @@ final class ProgramWorkoutDetailViewModel: ObservableObject {
     @Published var isDeleting = false
     
     @Published var didReturnError = false
-    @Published var returnedErrorMessage = ""
+    @Published var errorMessage = ""
     
     // MARK: Initializer
     init(programWorkoutId: String) {
@@ -39,7 +39,7 @@ final class ProgramWorkoutDetailViewModel: ObservableObject {
         } catch {
             self.isLoading = false
             self.didReturnError = true
-            self.returnedErrorMessage = error.localizedDescription
+            self.errorMessage = error.localizedDescription
         }
     }
     
@@ -54,7 +54,7 @@ final class ProgramWorkoutDetailViewModel: ObservableObject {
         } catch {
             self.isLoading = false
             self.didReturnError = true
-            self.returnedErrorMessage = error.localizedDescription
+            self.errorMessage = error.localizedDescription
         }
     }
     
@@ -71,7 +71,7 @@ final class ProgramWorkoutDetailViewModel: ObservableObject {
         } catch {
             self.isLoading = false
             self.didReturnError = true
-            self.returnedErrorMessage = error.localizedDescription
+            self.errorMessage = error.localizedDescription
         }
     }
 }

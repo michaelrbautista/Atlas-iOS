@@ -13,23 +13,14 @@ struct ArticleDetailView: View {
     
     var body: some View {
         if viewModel.isLoading {
-            VStack(alignment: .center) {
-                Spacer()
-                ProgressView()
-                    .frame(maxWidth: UIScreen.main.bounds.size.width)
-                    .tint(Color.ColorSystem.primaryText)
-                Spacer()
-            }
-            .background(Color.ColorSystem.systemBackground)
-            .navigationBarTitleDisplayMode(.inline)
-            .alert(isPresented: $viewModel.didReturnError, content: {
-                Alert(title: Text(viewModel.returnedErrorMessage))
-            })
-            .onAppear {
-                Task {
-                    await viewModel.checkSubscription()
+            LoadingView()
+                .onAppear {
+                    Task {
+                        await viewModel.checkSubscription()
+                    }
                 }
-            }
+        } else if viewModel.didReturnError {
+            ErrorView(errorMessage: viewModel.errorMessage)
         } else {
             List {
                 VStack(spacing: 20) {
@@ -81,22 +72,11 @@ struct ArticleDetailView: View {
                     }
                     .listRowSeparator(.hidden)
                 } else {
-                    Button {
-                        
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Text("Subscribers only")
-                                .font(Font.FontStyles.headline)
-                                .foregroundStyle(Color.ColorSystem.systemGray)
-                            Spacer()
-                        }
-                        .padding(10)
-                        .background(Color.ColorSystem.systemGray6)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                    }
-                    .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-                    .listRowSeparator(.hidden)
+                    ListButton(
+                        text: "Subscribers only",
+                        textColor: Color.ColorSystem.systemGray,
+                        buttonColor: Color.ColorSystem.systemGray6
+                    )
                 }
             }
             .listStyle(.plain)
@@ -106,6 +86,7 @@ struct ArticleDetailView: View {
         }
     }
     
+    // MARK: Format string
     func getFormattedString(content: NSArray) -> String {
         var str = ""
         
@@ -139,30 +120,33 @@ struct ArticleDetailView: View {
         return str
     }
     
+    // MARK: Parse bullet list
     @ViewBuilder
     func parseBulletList(content: NSArray) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
+        AnyView(VStack(alignment: .leading, spacing: 0) {
             ForEach(0...content.count - 1, id: \.self) { i in
                 if let itemContent = content[i] as? NSDictionary {
                     translateListNode(node: itemContent, order: nil)
                 }
             }
         }
-        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)))
     }
     
+    // MARK: Parse ordered list
     @ViewBuilder
     func parseOrderedList(content: NSArray) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
+        AnyView(VStack(alignment: .leading, spacing: 0) {
             ForEach(0...content.count - 1, id: \.self) { i in
                 if let itemContent = content[i] as? NSDictionary {
                     translateListNode(node: itemContent, order: i + 1)
                 }
             }
         }
-        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0)))
     }
     
+    // MARK: Translate list node
     @ViewBuilder
     func translateListNode(node: NSDictionary, order: Int?) -> some View {
         if let nodeType = node["type"] as? String {
@@ -173,11 +157,13 @@ struct ArticleDetailView: View {
                 }
             case "listItem":
                 if let content = node["content"] as? NSArray {
-                    ForEach(0...content.count - 1, id: \.self) { i in
-                        if let itemContent = content[i] as? NSDictionary {
-                            translateListNode(node: itemContent, order: order != nil ? order : nil)
+                    AnyView(VStack(alignment: .leading, spacing: 0) {
+                        ForEach(0...content.count - 1, id: \.self) { i in
+                            if let itemContent = content[i] as? NSDictionary {
+                                translateListNode(node: itemContent, order: order != nil ? order : nil)
+                            }
                         }
-                    }
+                    })
                 }
             case "orderedList":
                 if let content = node["content"] as? NSArray {
@@ -185,7 +171,7 @@ struct ArticleDetailView: View {
                 }
             case "paragraph":
                 if let paragraphContent = node["content"] as? NSArray {
-                    HStack {
+                    AnyView(HStack(alignment: .top) {
                         if order != nil {
                             Text("\(order!).")
                                 .foregroundStyle(Color.ColorSystem.primaryText)
@@ -193,17 +179,18 @@ struct ArticleDetailView: View {
                             Circle()
                                 .frame(width: 5, height: 5)
                                 .foregroundStyle(Color.ColorSystem.primaryText)
+                                .padding(EdgeInsets(top: 8, leading: 0, bottom: 0, trailing: 0))
                         }
                         
                         Text(LocalizedStringKey(getFormattedString(content: paragraphContent)))
-                    }
+                    })
                 } else {
-                    Text("")
+                    AnyView(Text(""))
                 }
             case "image":
                 if let nodeAttrs = node["attrs"] as? NSDictionary {
                     if let imageSrc = nodeAttrs["src"] as? String {
-                        AsyncImage(url: URL(string: imageSrc)) { image in
+                        AnyView(AsyncImage(url: URL(string: imageSrc)) { image in
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
@@ -212,16 +199,16 @@ struct ArticleDetailView: View {
                         } placeholder: {
                             ProgressView()
                         }
-                        .frame(width: UIScreen.main.bounds.size.width - 40)
+                        .frame(width: UIScreen.main.bounds.size.width - 40))
                     }
                 }
             case "horizontalRule":
-                Rectangle()
+                AnyView(Rectangle()
                     .frame(maxWidth: UIScreen.main.bounds.size.width)
                     .frame(height: 1)
-                    .foregroundStyle(Color.ColorSystem.systemGray5)
+                    .foregroundStyle(Color.ColorSystem.systemGray5))
             default:
-                Text("Couldn't get article node.")
+                AnyView(Text("Couldn't get article node."))
             }
         }
     }
@@ -237,11 +224,13 @@ struct ArticleDetailView: View {
                 }
             case "listItem":
                 if let content = node["content"] as? NSArray {
-                    ForEach(0...content.count - 1, id: \.self) { i in
-                        if let itemContent = content[i] as? NSDictionary {
-                            translateNode(node: itemContent)
+                    AnyView(VStack(alignment: .leading, spacing: 0) {
+                        ForEach(0...content.count - 1, id: \.self) { i in
+                            if let itemContent = content[i] as? NSDictionary {
+                                translateNode(node: itemContent)
+                            }
                         }
-                    }
+                    })
                 }
             case "orderedList":
                 if let content = node["content"] as? NSArray {
@@ -249,7 +238,7 @@ struct ArticleDetailView: View {
                 }
             case "paragraph":
                 if let paragraphContent = node["content"] as? NSArray {
-                    Text(LocalizedStringKey(getFormattedString(content: paragraphContent)))
+                    AnyView(Text(LocalizedStringKey(getFormattedString(content: paragraphContent))))
                 } else {
                     Text("")
                 }
@@ -258,14 +247,14 @@ struct ArticleDetailView: View {
                     let str = LocalizedStringKey(getFormattedString(content: content))
                     
                     if let level = attrs["level"] as? Int {
-                        Text(str)
+                        AnyView(Text(str))
                             .font(level == 1 ? Font.FontStyles.title1 : (level == 2 ? Font.FontStyles.title2 : Font.FontStyles.title3))
                     }
                 }
             case "image":
                 if let nodeAttrs = node["attrs"] as? NSDictionary {
                     if let imageSrc = nodeAttrs["src"] as? String {
-                        AsyncImage(url: URL(string: imageSrc)) { image in
+                        AnyView(AsyncImage(url: URL(string: imageSrc)) { image in
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
@@ -274,16 +263,16 @@ struct ArticleDetailView: View {
                         } placeholder: {
                             ProgressView()
                         }
-                        .frame(width: UIScreen.main.bounds.size.width - 40)
+                        .frame(width: UIScreen.main.bounds.size.width - 40))
                     }
                 }
             case "horizontalRule":
-                Rectangle()
+                AnyView(Rectangle()
                     .frame(maxWidth: UIScreen.main.bounds.size.width)
                     .frame(height: 1)
-                    .foregroundStyle(Color.ColorSystem.systemGray5)
+                    .foregroundStyle(Color.ColorSystem.systemGray5))
             default:
-                Text("Couldn't get article node.")
+                AnyView(Text("Couldn't get article node."))
             }
         }
     }

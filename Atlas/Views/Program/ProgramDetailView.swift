@@ -24,24 +24,15 @@ struct ProgramDetailView: View {
     var deleteProgram: (() -> Void)?
     
     var body: some View {
-        if viewModel.program == nil || viewModel.isLoading {
-            VStack(alignment: .center) {
-                Spacer()
-                ProgressView()
-                    .frame(maxWidth: UIScreen.main.bounds.size.width)
-                    .tint(Color.ColorSystem.primaryText)
-                Spacer()
-            }
-            .background(Color.ColorSystem.systemBackground)
-            .navigationBarTitleDisplayMode(.inline)
-            .alert(isPresented: $viewModel.didReturnError, content: {
-                Alert(title: Text(viewModel.returnedErrorMessage))
-            })
-            .onAppear {
-                Task {
-                    await viewModel.getProgram()
+        if viewModel.isLoading {
+            LoadingView()
+                .onAppear {
+                    Task {
+                        await viewModel.getProgram()
+                    }
                 }
-            }
+        } else if viewModel.didReturnError {
+            ErrorView(errorMessage: viewModel.errorMessage)
         } else {
             if let program = viewModel.program {
                 List {
@@ -234,9 +225,6 @@ struct ProgramDetailView: View {
                             }
                         }
                     }
-                })
-                .alert(isPresented: $viewModel.didReturnError, content: {
-                    Alert(title: Text(viewModel.returnedErrorMessage))
                 })
                 .alert(Text("Are you sure you want to delete this program? This action cannot be undone."), isPresented: $presentDeleteProgram) {
                     Button(role: .destructive) {

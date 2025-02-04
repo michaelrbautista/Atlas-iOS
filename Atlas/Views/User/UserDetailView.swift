@@ -14,12 +14,11 @@ struct UserDetailView: View {
     var body: some View {
         if viewModel.isLoading {
             LoadingView()
-            .task {
-                await viewModel.getUser(userId: viewModel.userId)
-            }
-            .alert(isPresented: $viewModel.didReturnError, content: {
-                Alert(title: Text(viewModel.errorMessage ?? "Couldn't get team."))
-            })
+                .task {
+                    await viewModel.getUser(userId: viewModel.userId)
+                }
+        } else if viewModel.didReturnError {
+            ErrorView(errorMessage: viewModel.errorMessage!)
         } else {
             List {
                 VStack(alignment: .center) {
@@ -103,49 +102,19 @@ struct UserDetailView: View {
                 // MARK: Content
                 if viewModel.user?.stripePriceId != nil {
                     Section {
-                        Button {
+                        CoordinatorLink {
+                            Text("Programs")
+                        } action: {
                             navigationController.push(.UserProgramsView(userId: viewModel.user!.id))
-                        } label: {
-                            HStack(spacing: 16) {
-                                Image(systemName: "figure.run")
-                                    .frame(width: 20)
-                                    .foregroundStyle(Color.ColorSystem.primaryText)
-                                
-                                Text("Programs")
-                                    .font(Font.FontStyles.body)
-                                    .foregroundStyle(Color.ColorSystem.primaryText)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: 12)
-                                    .foregroundStyle(Color.ColorSystem.systemGray2)
-                                    .fontWeight(.bold)
-                            }
                         }
                         
-                        Button {
-                            navigationController.push(.UserCollectionsView(userId: viewModel.user!.id))
-                        } label: {
-                            HStack(spacing: 16) {
-                                Image(systemName: "list.bullet.rectangle.portrait.fill")
-                                    .frame(width: 20)
-                                    .foregroundStyle(Color.ColorSystem.primaryText)
-                                
-                                Text("Collections")
-                                    .font(Font.FontStyles.body)
-                                    .foregroundStyle(Color.ColorSystem.primaryText)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: 12)
-                                    .foregroundStyle(Color.ColorSystem.systemGray2)
-                                    .fontWeight(.bold)
+                        if let collections = viewModel.user?.collections {
+                            ForEach(collections) { collection in
+                                CoordinatorLink {
+                                    Text(collection.title)
+                                } action: {
+                                    navigationController.push(.CollectionDetailView(collectionId: collection.id))
+                                }
                             }
                         }
                     }

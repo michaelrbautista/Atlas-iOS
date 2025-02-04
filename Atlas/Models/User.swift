@@ -24,15 +24,13 @@ struct User: Codable, Identifiable, Hashable {
     var paymentsEnabled: Bool
     var stripePriceId: String?
     
+    var collections: [UserCollection]?
+    
     enum CodingKeys: String, CodingKey {
-        case id
+        case id, email, username, bio, collections
         case createdAt = "created_at"
         
-        case email
         case fullName = "full_name"
-        case username
-        
-        case bio
         
         case profilePictureUrl = "profile_picture_url"
         case profilePicturePath = "profile_picture_path"
@@ -41,6 +39,12 @@ struct User: Codable, Identifiable, Hashable {
         case paymentsEnabled = "payments_enabled"
         case stripePriceId = "stripe_price_id"
     }
+}
+
+struct UserCollection: Identifiable, Codable, Hashable {
+    var id: String
+    var title: String
+    var description: String?
 }
 
 struct FetchedUser: Codable, Hashable {

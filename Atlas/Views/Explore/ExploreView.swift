@@ -22,16 +22,14 @@ struct ExploreView: View {
                         .tint(Color.ColorSystem.primaryText)
                     Spacer()
                 }
-                .background(Color.ColorSystem.systemBackground)
-                .navigationBarTitleDisplayMode(.inline)
-                .alert(isPresented: $viewModel.didReturnError, content: {
-                    Alert(title: Text(viewModel.returnedErrorMessage))
-                })
                 .onAppear {
                     Task {
                         await viewModel.getAllUsers()
                     }
                 }
+                .navigationBarTitleDisplayMode(.inline)
+            } else if viewModel.didReturnError {
+                ErrorView(errorMessage: viewModel.errorMessage)
             } else {
                 if viewModel.searchText != "" {
                     if viewModel.filter == "Programs" {
@@ -78,9 +76,6 @@ struct ExploreView: View {
             Task {
                 await viewModel.search()
             }
-        })
-        .alert(isPresented: $viewModel.didReturnError, content: {
-            Alert(title: Text(viewModel.returnedErrorMessage))
         })
     }
 }

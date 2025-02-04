@@ -18,24 +18,15 @@ struct ProgramWorkoutDetailView: View {
     var deleteProgramWorkout: (() -> Void)?
     
     var body: some View {
-        if viewModel.isLoading == true || viewModel.programWorkout == nil {
-            VStack(alignment: .center) {
-                Spacer()
-                ProgressView()
-                    .frame(maxWidth: .infinity)
-                    .tint(Color.ColorSystem.primaryText)
-                Spacer()
-            }
-            .background(Color.ColorSystem.systemBackground)
-            .navigationBarTitleDisplayMode(.inline)
-            .alert(isPresented: $viewModel.didReturnError, content: {
-                Alert(title: Text(viewModel.returnedErrorMessage))
-            })
-            .onAppear {
-                Task {
-                    await viewModel.getProgramWorkout()
+        if viewModel.isLoading {
+            LoadingView()
+                .onAppear {
+                    Task {
+                        await viewModel.getProgramWorkout()
+                    }
                 }
-            }
+        } else if viewModel.didReturnError {
+            ErrorView(errorMessage: viewModel.errorMessage)
         } else {
             List {
                 VStack(spacing: 20) {
@@ -148,9 +139,6 @@ struct ProgramWorkoutDetailView: View {
                     Text("Yes")
                 }
             }
-//            .sheet(isPresented: $presentNewExercise) {
-//                AddExerciseToWorkoutView(viewModel: AddExerciseToWorkoutViewModel(workoutId: nil, programWorkoutId: viewModel.programWorkout!.id, exerciseNumber: (viewModel.programWorkout!.workoutExercises?.count ?? 0) + 1))
-//            }
         }
     }
 }
