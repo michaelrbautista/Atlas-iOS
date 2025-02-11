@@ -37,7 +37,7 @@ struct ExploreView: View {
                             CoordinatorLink {
                                 SearchProgramCell(program: program)
                             } action: {
-                                navigationController.push(.ProgramDetailView(programId: program.id, deleteProgram: {}))
+                                navigationController.push(.ProgramDetailView(programId: program.id, removeProgram: nil))
                             }
                         }
                     } else {

@@ -63,7 +63,7 @@ final class CollectionService {
                     """
                 )
                 .eq("created_by", value: userId)
-                .order("created_at", ascending: false)
+                .order("collection_number", ascending: false)
                 .range(from: offset, to: offset + 9)
                 .execute()
                 .value

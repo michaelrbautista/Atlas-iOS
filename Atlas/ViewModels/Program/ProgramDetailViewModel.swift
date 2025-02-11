@@ -109,31 +109,6 @@ final class ProgramDetailViewModel: ObservableObject {
         }
     }
     
-    // MARK: Delete program
-    @MainActor
-    public func deleteProgram() async {
-        self.isDeleting = true
-        do {
-            var deleteImagePath: String? = nil
-            
-            if self.program?.imagePath != nil {
-                deleteImagePath = self.program!.imagePath
-            }
-            
-            // Delete program from database
-            try await ProgramService.shared.deleteProgram(programId: self.programId)
-            
-            // Delete image from storage
-            if deleteImagePath != nil {
-                try await StorageService.shared.deleteFile(bucketName: "program_images", filePath: deleteImagePath!)
-            }
-        } catch {
-            self.isLoading = false
-            self.didReturnError = true
-            self.errorMessage = error.localizedDescription
-        }
-    }
-    
     // MARK: Finish program
     @MainActor
     public func finishProgram() {

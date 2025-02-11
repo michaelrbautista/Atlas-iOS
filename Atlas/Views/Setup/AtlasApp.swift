@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Supabase
-import StripePaymentsUI
 
 @main
 struct AtlasApp: App {

@@ -41,9 +41,7 @@ struct DayView: View {
                         CoordinatorLink {
                             WorkoutCell(title: workout.title, description: workout.description)
                         } action: {
-                            navigationController.push(.ProgramWorkoutDetailView(programWorkoutId: workout.id, deleteProgramWorkout: {
-                                viewModel.workouts.remove(workout)
-                            }))
+                            navigationController.push(.ProgramWorkoutDetailView(programWorkoutId: workout.id))
                         }
                     }
                 }
@@ -56,17 +54,6 @@ struct DayView: View {
                     .foregroundStyle(Color.ColorSystem.primaryText)
                 
                 Spacer()
-                
-                if viewModel.isCreator {
-                    Button {
-                        navigationController.presentSheet(.NewProgramWorkoutCoordinatorView(programId: viewModel.programId, week: viewModel.week, day: viewModel.day, addProgramWorkout: { newWorkout in
-                            viewModel.workouts.insert(newWorkout, at: 0)
-                        }))
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                    
-                }
             }
             .padding(EdgeInsets(top: 20, leading: 20, bottom: 0, trailing: 20))
         }

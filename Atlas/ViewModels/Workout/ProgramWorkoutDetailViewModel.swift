@@ -42,36 +42,4 @@ final class ProgramWorkoutDetailViewModel: ObservableObject {
             self.errorMessage = error.localizedDescription
         }
     }
-    
-    // MARK: Delete exercise
-    @MainActor
-    public func deleteExercise(exerciseId: String, exerciseNumber: Int, indexSet: IndexSet) async {
-        do {
-            // Delete exercise
-            try await ExerciseService.shared.deleteWorkoutExercise(exerciseId: exerciseId, deletedExerciseNumber: exerciseNumber, workoutId: nil, programWorkoutId: programWorkout!.id)
-            
-            self.programWorkout!.workoutExercises!.remove(atOffsets: indexSet)
-        } catch {
-            self.isLoading = false
-            self.didReturnError = true
-            self.errorMessage = error.localizedDescription
-        }
-    }
-    
-    // MARK: Delete workout
-    @MainActor
-    public func deleteWorkout() async {
-        self.isDeleting = true
-        
-        do {
-            // Delete workout from database
-            try await WorkoutService.shared.deleteProgramWorkout(workoutId: self.programWorkout!.id)
-            
-            self.isDeleting = false
-        } catch {
-            self.isLoading = false
-            self.didReturnError = true
-            self.errorMessage = error.localizedDescription
-        }
-    }
 }

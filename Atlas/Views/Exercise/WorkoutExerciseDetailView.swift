@@ -14,9 +14,6 @@ struct WorkoutExerciseDetailView: View {
     @StateObject var viewModel: WorkoutExerciseDetailViewModel
     
     @State var presentVideoPlayer = false
-    @State var presentEditExercise = false
-    
-    var deleteWorkoutExercise: (() -> Void)?
     
     var body: some View {
         List {
@@ -99,23 +96,6 @@ struct WorkoutExerciseDetailView: View {
         .scrollContentBackground(.hidden)
         .navigationBarTitleDisplayMode(.inline)
         .background(Color.ColorSystem.systemBackground)
-        .toolbar(content: {
-            if viewModel.isCreator {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        Button {
-                            navigationController.presentSheet(.EditWorkoutExerciseView(workoutExercise: viewModel.workoutExercise, editWorkoutExercise: { newWorkoutExercise in
-                                viewModel.workoutExercise = newWorkoutExercise
-                            }))
-                        } label: {
-                            Text("Edit exercise")
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis")
-                    }
-                }
-            }
-        })
         .fullScreenCover(isPresented: $presentVideoPlayer, content: {
             if let url = viewModel.workoutExercise.exercises?.videoUrl {
                 WatchVideoView(videoUrl: url)

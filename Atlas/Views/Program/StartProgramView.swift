@@ -13,6 +13,8 @@ struct StartProgramView: View {
     
     @StateObject var viewModel = StartProgramViewModel()
     
+    @Binding var isStarted: Bool
+    
     @State var currentPage = 1
     @State var isEnd = false
     
@@ -141,6 +143,7 @@ struct StartProgramView: View {
                 
                 Button {
                     viewModel.startProgram(programId: programId, startDate: selectedDay)
+                    self.isStarted.toggle()
                     dismiss()
                 } label: {
                     HStack {
@@ -177,5 +180,5 @@ struct StartProgramView: View {
 }
 
 #Preview {
-    StartProgramView(programId: "", weeks: 10, pages: 10 / 4 + 1, remainder: 10 % 4)
+    StartProgramView(isStarted: .constant(false), programId: "", weeks: 10, pages: 10 / 4 + 1, remainder: 10 % 4)
 }

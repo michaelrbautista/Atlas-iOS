@@ -14,7 +14,7 @@ struct ProgramsView: View {
     var body: some View {
         List {
             Section {
-                ForEach(viewModel.programs) { program in
+                ForEach(Array(viewModel.programs.enumerated()), id: \.offset) { index, program in
                     if let createdBy = program.createdBy, let checkProgram = program.programs {
                         CoordinatorLink {
                             ProgramCell(
@@ -24,8 +24,8 @@ struct ProgramsView: View {
                                 description: checkProgram.description
                             )
                         } action: {
-                            navigationController.push(.ProgramDetailView(programId: checkProgram.id, deleteProgram: {
-                                viewModel.programs.remove(program)
+                            navigationController.push(.ProgramDetailView(programId: checkProgram.id, removeProgram: {
+                                viewModel.programs.remove(atOffsets: IndexSet(integer: index))
                             }))
                         }
                     }

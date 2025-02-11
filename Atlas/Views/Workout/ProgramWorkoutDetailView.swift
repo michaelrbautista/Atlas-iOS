@@ -11,12 +11,6 @@ struct ProgramWorkoutDetailView: View {
     @EnvironmentObject var navigationController: NavigationController
     @StateObject var viewModel: ProgramWorkoutDetailViewModel
     
-    @State private var presentNewExercise = false
-    @State private var presentEditWorkout = false
-    @State private var presentDeleteWorkout = false
-    
-    var deleteProgramWorkout: (() -> Void)?
-    
     var body: some View {
         if viewModel.isLoading {
             LoadingView()
@@ -58,17 +52,7 @@ struct ProgramWorkoutDetailView: View {
                                         ExerciseCell(exerciseNumber: index + 1, name: libraryExercise.title, sets: exercise.sets ?? 1, reps: exercise.reps ?? 1)
                                     }
                                 } action: {
-                                    navigationController.push(.WorkoutExerciseDetailView(workoutExercise: exercise, deleteWorkoutExercise: {
-                                        viewModel.programWorkout?.workoutExercises?.remove(exercise)
-                                    }))
-                                }
-                            }
-                            .onDelete { indexSet in
-                                // Delete and remove workout
-                                let exerciseIndex = indexSet[indexSet.startIndex]
-                                
-                                Task {
-                                    await viewModel.deleteExercise(exerciseId: viewModel.programWorkout!.workoutExercises![exerciseIndex].id, exerciseNumber: viewModel.programWorkout!.workoutExercises![exerciseIndex].exerciseNumber, indexSet: indexSet)
+                                    navigationController.push(.WorkoutExerciseDetailView(workoutExercise: exercise))
                                 }
                             }
                         } header: {
@@ -78,17 +62,6 @@ struct ProgramWorkoutDetailView: View {
                                     .foregroundStyle(Color.ColorSystem.primaryText)
                                 
                                 Spacer()
-                                
-                                if viewModel.isCreator {
-                                    Button {
-                                        navigationController.presentSheet(.AddExerciseToWorkoutCoordinatorView(workoutId: nil, programWorkoutId: viewModel.programWorkout!.id, exerciseNumber: (viewModel.programWorkout!.workoutExercises?.count ?? 0) + 1, addExerciseToWorkout: { newWorkoutExercise in
-                                            viewModel.programWorkout?.workoutExercises?.append(newWorkoutExercise)
-                                        }))
-                                    } label: {
-                                        Image(systemName: "plus")
-                                    }
-                                    
-                                }
                             }
                         }
                         .headerProminence(.increased)
@@ -99,46 +72,6 @@ struct ProgramWorkoutDetailView: View {
             .scrollContentBackground(.hidden)
             .navigationBarTitleDisplayMode(.inline)
             .background(Color.ColorSystem.systemBackground)
-            .toolbar(content: {
-                if viewModel.isCreator {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        if !viewModel.isDeleting {
-                            Menu {
-                                Button {
-                                    navigationController.presentSheet(.EditProgramWorkoutView(programWorkout: viewModel.programWorkout!, editProgramWorkout: { newWorkout in
-                                        viewModel.programWorkout = newWorkout
-                                    }))
-                                } label: {
-                                    Text("Edit workout")
-                                }
-                                
-                                Button {
-                                    presentDeleteWorkout.toggle()
-                                } label: {
-                                    Text("Delete workout")
-                                        .foregroundStyle(Color.ColorSystem.systemRed)
-                                }
-                            } label: {
-                                Image(systemName: "ellipsis")
-                            }
-                        } else {
-                            ProgressView()
-                                .tint(Color.ColorSystem.primaryText)
-                        }
-                    }
-                }
-            })
-            .alert(Text("Are you sure you want to delete this workout? This action cannot be undone."), isPresented: $presentDeleteWorkout) {
-                Button(role: .destructive) {
-                    Task {
-                        await viewModel.deleteWorkout()
-                    }
-                    
-                    navigationController.pop()
-                } label: {
-                    Text("Yes")
-                }
-            }
         }
     }
 }

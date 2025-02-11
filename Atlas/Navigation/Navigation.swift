@@ -2,7 +2,7 @@
 //  Navigation.swift
 //  Atlas
 //
-//  Created by Michael Bautista on 12/24/24.
+//  Created by Michael Bautista on 2/11/25.
 //
 
 import SwiftUI
@@ -67,14 +67,6 @@ class NavigationController: CoordinatorProtocol {
         case .LibraryView:
             LibraryView()
             
-        // Library
-        case .CreatorProgramsView:
-            CreatorProgramsView()
-        case .CreatorWorkoutsView:
-            CreatorWorkoutsView()
-        case .CreatorExercisesView:
-            CreatorExercisesView()
-            
         // Subscriptions
         case .SubscriptionsView:
             SubscriptionsView()
@@ -82,8 +74,8 @@ class NavigationController: CoordinatorProtocol {
         // Programs
         case .ProgramsView:
             ProgramsView()
-        case .ProgramDetailView(let programId, let deleteProgram):
-            ProgramDetailView(viewModel: ProgramDetailViewModel(programId: programId), deleteProgram: deleteProgram)
+        case .ProgramDetailView(let programId, let removeProgram):
+            ProgramDetailView(viewModel: ProgramDetailViewModel(programId: programId), removeProgram: removeProgram)
         case .CalendarView(let program):
             CalendarView(
                 programId: program.id,
@@ -93,38 +85,15 @@ class NavigationController: CoordinatorProtocol {
                 remainder: program.weeks % 4
             )
             
-        // Add workout to program
-        case .LibraryWorkoutsForProgramView(let programId, let week, let day, let addWorkoutToProgram):
-            let vm = LibraryWorkoutsForProgramViewModel(programId: programId, week: week, day: day
-            )
-            LibraryWorkoutsForProgramView(viewModel: vm, addWorkoutToProgram: addWorkoutToProgram)
-        case .LibraryWorkoutDetailForProgramView(let workoutId, let programId, let week, let day, let addWorkoutToProgram):
-            let vm = LibraryWorkoutDetailForProgramViewModel(workoutId: workoutId, programId: programId, week: week, day: day)
-            LibraryWorkoutDetailForProgramView(viewModel: vm, addWorkoutToProgram: addWorkoutToProgram)
-            
         // Workouts
-        case .NewProgramWorkoutView(let programId, let week, let day, let addWorkoutToProgram):
-            let vm = NewProgramWorkoutViewModel(programId: programId, week: week, day: day)
-            NewProgramWorkoutView(viewModel: vm, addWorkoutToProgram: addWorkoutToProgram)
-        case .LibraryWorkoutDetailView(let libraryWorkoutId, let deleteLibraryWorkout):
-            let vm = LibraryWorkoutDetailViewModel(libraryWorkoutId: libraryWorkoutId)
-            LibraryWorkoutDetailView(viewModel: vm, deleteLibraryWorkout: deleteLibraryWorkout)
-        case .ProgramWorkoutDetailView(let programWorkoutId, let deleteProgramWorkout):
+        case .ProgramWorkoutDetailView(let programWorkoutId):
             let vm = ProgramWorkoutDetailViewModel(programWorkoutId: programWorkoutId)
-            ProgramWorkoutDetailView(viewModel: vm, deleteProgramWorkout: deleteProgramWorkout)
-            
-        // Add exercise to workout
-        case .AddExerciseToWorkoutView(let workoutId, let programWorkoutId, let exerciseNumber, let addExerciseToWorkout):
-            let vm = AddExerciseToWorkoutViewModel(workoutId: workoutId, programWorkoutId: programWorkoutId, exerciseNumber: exerciseNumber)
-            AddExerciseToWorkoutView(viewModel: vm, addExerciseToWorkout: addExerciseToWorkout)
+            ProgramWorkoutDetailView(viewModel: vm)
             
         // Exercises
-        case .LibraryExerciseDetailView(let libraryExercise, let deleteLibraryExercise):
-            let vm = LibraryExerciseDetailViewModel(exercise: libraryExercise)
-            LibraryExerciseDetailView(viewModel: vm, deleteLibraryExercise: deleteLibraryExercise)
-        case .WorkoutExerciseDetailView(let workoutExercise, let deleteWorkoutExercise):
+        case .WorkoutExerciseDetailView(let workoutExercise):
             let vm = WorkoutExerciseDetailViewModel(workoutExercise: workoutExercise)
-            WorkoutExerciseDetailView(viewModel: vm, deleteWorkoutExercise: deleteWorkoutExercise)
+            WorkoutExerciseDetailView(viewModel: vm)
             
         // User
         case .UserDetailView(let userId):
@@ -156,121 +125,11 @@ class NavigationController: CoordinatorProtocol {
     @ViewBuilder
     func build(_ sheet: Sheet) -> some View {
         switch sheet {
-        // New
-        case .NewProgramView(let addProgram):
-            NewProgramView(addProgram: addProgram)
-        case .NewLibraryWorkoutView(let addWorkout):
-            NewLibraryWorkoutView(addWorkout: addWorkout)
-        
-        // For navigation within sheet
-        case .NewProgramWorkoutCoordinatorView(let programId, let week, let day, let addWorkoutToProgram):
-            NewProgramWorkoutCoordinatorView(programId: programId, week: week, day: day, addWorkoutToProgram: addWorkoutToProgram)
-        case .AddExerciseToWorkoutCoordinatorView(let workoutId, let programWorkoutId, let exerciseNumber, let addExerciseToWorkout):
-            AddExerciseToWorkoutCoordinatorView(workoutId: workoutId, programWorkoutId: programWorkoutId, exerciseNumber: exerciseNumber, addExerciseToWorkout: addExerciseToWorkout)
-        
-        case .NewLibraryExerciseView(let addLibraryExercise):
-            NewLibraryExerciseView(addExercise: addLibraryExercise)
-        case .NewWorkoutExerciseView(let workoutId, let programWorkoutId, let exerciseNumber, let addExerciseToWorkout):
-            let vm = AddExerciseToWorkoutViewModel(workoutId: workoutId, programWorkoutId: programWorkoutId, exerciseNumber: exerciseNumber)
-            AddExerciseToWorkoutView(viewModel: vm, addExerciseToWorkout: addExerciseToWorkout)
-            
-        // Edit
-        case .EditProgramView(let program, let programImage, let editProgram):
-            let vm = EditProgramViewModel(program: program, programImage: programImage)
-            EditProgramView(viewModel: vm, editProgram: editProgram)
-            
-        case .EditLibraryWorkoutView(let libraryWorkout, let editLibraryWorkout):
-            let vm = EditLibraryWorkoutViewModel(workout: libraryWorkout)
-            EditLibraryWorkoutView(viewModel: vm, editLibraryWorout: editLibraryWorkout)
-        case .EditProgramWorkoutView(let programWorkout, let editProgramWorkout):
-            let vm = EditProgramWorkoutViewModel(workout: programWorkout)
-            EditProgramWorkoutView(viewModel: vm, editProgramWorout: editProgramWorkout)
-            
-        case .EditLibraryExerciseView(let libraryExercise, let exerciseVideo, let editLibraryExercise):
-            let vm = EditLibraryExerciseViewModel(exercise: libraryExercise, exerciseVideo: exerciseVideo)
-            EditLibraryExerciseView(viewModel: vm, editLibraryExercise: editLibraryExercise)
-        case .EditWorkoutExerciseView(let workoutExercise, let editWorkoutExercise):
-            let vm = EditWorkoutExerciseViewModel(exercise: workoutExercise)
-            EditWorkoutExerciseView(viewModel: vm, editWorkoutExercise: editWorkoutExercise)
-            
         case .SubscribeSheet:
             SubscribeSheet()
                 .presentationDetents(
                     [.medium]
                  )
-        }
-    }
-    
-    @ViewBuilder
-    func build(_ fullScreenCover: FullScreenCover) -> some View {
-        switch fullScreenCover {
-        case .ViewVideo:
-            Text("View video")
-        }
-    }
-}
-
-// MARK: Sheet navigation controller
-protocol SheetCoordinatorProtocol: ObservableObject {
-    var path: NavigationPath { get set }
-    var fullScreenCover: FullScreenCover? { get set }
-
-    func push(_ screen:  Screen)
-    func pop()
-    func popToRoot()
-    func presentFullScreenCover(_ fullScreenCover: FullScreenCover)
-    func dismissFullScreenCover()
-}
-
-class SheetNavigationController: SheetCoordinatorProtocol {
-    @Published var path: NavigationPath = NavigationPath()
-    @Published var fullScreenCover: FullScreenCover? = nil
-    
-    func push(_ screen: Screen) {
-        path.append(screen)
-    }
-    
-    func presentFullScreenCover(_ fullScreenCover: FullScreenCover) {
-        self.fullScreenCover = fullScreenCover
-    }
-    
-    func pop() {
-        path.removeLast()
-    }
-    
-    func popToRoot() {
-        path.removeLast(path.count)
-    }
-    
-    func dismissFullScreenCover() {
-        self.fullScreenCover = nil
-    }
-    
-    // MARK: - Screen views
-    @ViewBuilder
-    func build(_ screen: Screen) -> some View {
-        switch screen {
-        // Add workout to program
-        case .NewProgramWorkoutView(let programId, let week, let day, let addWorkoutToProgram):
-            let vm = NewProgramWorkoutViewModel(programId: programId, week: week, day: day)
-            NewProgramWorkoutView(viewModel: vm, addWorkoutToProgram: addWorkoutToProgram)
-        case .LibraryWorkoutsForProgramView(let programId, let week, let day, let addWorkoutToProgram):
-            let vm = LibraryWorkoutsForProgramViewModel(programId: programId, week: week, day: day
-            )
-            LibraryWorkoutsForProgramView(viewModel: vm, addWorkoutToProgram: addWorkoutToProgram)
-        case .LibraryWorkoutDetailForProgramView(let workoutId, let programId, let week, let day, let addWorkoutToProgram):
-            let vm = LibraryWorkoutDetailForProgramViewModel(workoutId: workoutId, programId: programId, week: week, day: day)
-            LibraryWorkoutDetailForProgramView(viewModel: vm, addWorkoutToProgram: addWorkoutToProgram)
-            
-        // Add exercise to workout
-        case .AddExerciseToWorkoutView(let workoutId, let programWorkoutId, let exerciseNumber, let addExerciseToWorkout):
-            let vm = AddExerciseToWorkoutViewModel(workoutId: workoutId, programWorkoutId: programWorkoutId, exerciseNumber: exerciseNumber)
-            AddExerciseToWorkoutView(viewModel: vm, addExerciseToWorkout: addExerciseToWorkout)
-        case .ExerciseDetailForWorkoutView(let workoutId, let programWorkoutId, let exercise, let exerciseNumber, let addExerciseToWorkout):
-            let vm = ExerciseDetailForWorkoutViewModel(workoutId: workoutId, programWorkoutId: programWorkoutId, exercise: exercise, exerciseNumber: exerciseNumber)
-            ExerciseDetailForWorkoutView(viewModel: vm, addExerciseToWorkout: addExerciseToWorkout)
-        default:
-            Text("Couldn't load page.")
         }
     }
     

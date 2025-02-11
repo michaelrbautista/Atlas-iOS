@@ -30,9 +30,11 @@ final class TrainingViewModel: ObservableObject {
         self.startDayAsNumber = UserDefaults.standard.value(forKey: "startDayAsNumber") as? Int
         self.startDate = UserDefaults.standard.value(forKey: "startDate") as? Date
         
-        Task {
-            await getStartedProgram()
-        }
+//        if self.startedProgram != nil && self.startDayAsNumber != nil && self.startDate != nil {
+//            Task {
+//                await getStartedProgram()
+//            }
+//        }
     }
     
     @MainActor

@@ -2,7 +2,7 @@
 //  NavigationViews.swift
 //  Atlas
 //
-//  Created by Michael Bautista on 12/25/24.
+//  Created by Michael Bautista on 2/11/25.
 //
 
 import SwiftUI
@@ -73,55 +73,5 @@ struct LibraryCoordinatorView: View {
                 }
         }
         .environmentObject(navigationController)
-    }
-}
-
-struct NewProgramWorkoutCoordinatorView: View {
-    
-    @EnvironmentObject var userViewModel: UserViewModel
-    @EnvironmentObject var navigationController: NavigationController
-    
-    @StateObject var sheetNavigationController: SheetNavigationController = SheetNavigationController()
-    
-    var programId: String
-    var week: Int
-    var day: String
-    var addWorkoutToProgram: ((ProgramWorkout) -> Void)
-    
-    var body: some View {
-        NavigationStack(path: $sheetNavigationController.path) {
-            sheetNavigationController.build(.NewProgramWorkoutView(programId: programId, week: week, day: day, addWorkoutToProgram: addWorkoutToProgram))
-                .environmentObject(userViewModel)
-                .navigationDestination(for: Screen.self) { screen in
-                    sheetNavigationController.build(screen)
-                }
-        }
-        .environmentObject(navigationController)
-        .environmentObject(sheetNavigationController)
-    }
-}
-
-struct AddExerciseToWorkoutCoordinatorView: View {
-    
-    @EnvironmentObject var userViewModel: UserViewModel
-    @EnvironmentObject var navigationController: NavigationController
-    
-    @StateObject var sheetNavigationController: SheetNavigationController = SheetNavigationController()
-    
-    var workoutId: String?
-    var programWorkoutId: String?
-    var exerciseNumber: Int
-    var addExerciseToWorkout: ((FetchedWorkoutExercise) -> Void)
-    
-    var body: some View {
-        NavigationStack(path: $sheetNavigationController.path) {
-            sheetNavigationController.build(.AddExerciseToWorkoutView(workoutId: workoutId, programWorkoutId: programWorkoutId, exerciseNumber: exerciseNumber, addExerciseToWorkout: addExerciseToWorkout))
-                .environmentObject(userViewModel)
-                .navigationDestination(for: Screen.self) { screen in
-                    sheetNavigationController.build(screen)
-                }
-        }
-        .environmentObject(navigationController)
-        .environmentObject(sheetNavigationController)
     }
 }

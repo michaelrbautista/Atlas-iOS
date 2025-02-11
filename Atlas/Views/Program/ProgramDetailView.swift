@@ -11,17 +11,12 @@ struct ProgramDetailView: View {
     @EnvironmentObject var navigationController: NavigationController
     @StateObject var viewModel: ProgramDetailViewModel
     
-    // Creator
-    @State var presentEditProgram = false
-    @State var presentDeleteProgram = false
-    
     // User
     @State var presentStartProgram = false
     @State var presentPurchaseModal = false
     @State var presentFinishProgram = false
     
-    var editProgram: ((Program) -> Void)?
-    var deleteProgram: (() -> Void)?
+    var removeProgram: (() -> Void)?
     
     var body: some View {
         if viewModel.isLoading {
@@ -177,68 +172,26 @@ struct ProgramDetailView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .background(Color.ColorSystem.systemBackground)
                 .toolbar(content: {
-                    if viewModel.isCreator {
+                    if viewModel.isPurchased {
                         ToolbarItem(placement: .topBarTrailing) {
-                            if !viewModel.isDeleting {
-                                Menu {
-                                    Button {
-                                        navigationController.presentSheet(.EditProgramView(program: viewModel.program!, programImage: viewModel.programImage, editProgram: { editedProgram in
-                                            viewModel.program = editedProgram
-                                        }))
-                                    } label: {
-                                        Text("Edit program")
-                                    }
-                                    
-                                    Button {
-                                        presentDeleteProgram.toggle()
-                                    } label: {
-                                        Text("Delete program")
-                                            .foregroundStyle(Color.ColorSystem.systemRed)
+                            Menu {
+                                Button {
+                                    Task {
+                                        try await viewModel.unsaveProgram()
+                                        
+                                        self.removeProgram?()
+                                        
+                                        self.navigationController.pop()
                                     }
                                 } label: {
-                                    Image(systemName: "ellipsis")
+                                    Text("Unsave program")
                                 }
-                            } else {
-                                ProgressView()
-                                    .tint(Color.ColorSystem.primaryText)
-                            }
-                        }
-                    } else {
-                        if viewModel.isPurchased {
-                            ToolbarItem(placement: .topBarTrailing) {
-                                Menu {
-                                    Button {
-                                        Task {
-                                            try await viewModel.unsaveProgram()
-                                            
-                                            self.deleteProgram?()
-                                            
-                                            self.navigationController.pop()
-                                        }
-                                    } label: {
-                                        Text("Unsave program")
-                                    }
-                                } label: {
-                                    Image(systemName: "ellipsis")
-                                }
-
+                            } label: {
+                                Image(systemName: "ellipsis")
                             }
                         }
                     }
                 })
-                .alert(Text("Are you sure you want to delete this program? This action cannot be undone."), isPresented: $presentDeleteProgram) {
-                    Button(role: .destructive) {
-                        Task {
-                            await viewModel.deleteProgram()
-                            
-                            self.deleteProgram?()
-                            
-                            self.navigationController.pop()
-                        }
-                    } label: {
-                        Text("Yes")
-                    }
-                }
                 .alert(Text("Are you sure you want to finish this program?"), isPresented: $presentFinishProgram) {
                     Button(role: .destructive) {
                         viewModel.finishProgram()
@@ -252,6 +205,7 @@ struct ProgramDetailView: View {
                 }
                 .sheet(isPresented: $presentStartProgram) {
                     StartProgramView(
+                        isStarted: $viewModel.isStarted,
                         programId: viewModel.programId,
                         weeks: viewModel.program!.weeks,
                         pages: viewModel.program!.weeks / 4 + 1,
@@ -264,5 +218,5 @@ struct ProgramDetailView: View {
 }
 
 #Preview {
-    ProgramDetailView(viewModel: ProgramDetailViewModel(programId: "29683f2e-0da1-4eef-9666-09da010789e4"), editProgram: {_ in}, deleteProgram: {})
+    ProgramDetailView(viewModel: ProgramDetailViewModel(programId: "29683f2e-0da1-4eef-9666-09da010789e4"), removeProgram: {})
 }

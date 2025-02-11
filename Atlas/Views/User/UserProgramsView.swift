@@ -24,7 +24,7 @@ struct UserProgramsView: View {
                                 description: program.description
                             )
                         } action: {
-                            navigationController.push(.ProgramDetailView(programId: program.id, deleteProgram: nil))
+                            navigationController.push(.ProgramDetailView(programId: program.id, removeProgram: nil))
                         }
                     }
                 }
