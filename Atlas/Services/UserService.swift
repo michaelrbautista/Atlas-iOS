@@ -16,12 +16,48 @@ class UserService {
     // MARK: Get all users
     public func getAllUsers() async throws -> [User] {
         do {
+            #if DEBUG
             let users: [User] = try await SupabaseService.shared.supabase
                 .from("users")
-                .select()
+                .select(
+                    """
+                        id,
+                        email,
+                        full_name,
+                        username,
+                        bio,
+                        profile_picture_url,
+                        profile_picture_path,
+                        stripe_account_id,
+                        payments_enabled,
+                        stripe_price_id
+                    """
+                )
                 .neq("stripe_price_id", value: "null")
                 .execute()
                 .value
+            #else
+            let users: [User] = try await SupabaseService.shared.supabase
+                .from("users")
+                .select(
+                    """
+                        id,
+                        email,
+                        full_name,
+                        username,
+                        bio,
+                        profile_picture_url,
+                        profile_picture_path,
+                        stripe_account_id,
+                        payments_enabled,
+                        stripe_price_id
+                    """
+                )
+                .neq("stripe_price_id", value: "null")
+                .neq("id", value: "e4d6f88c-d8c3-4a01-98d6-b5d56a366491")
+                .execute()
+                .value
+            #endif
             
             return users
         } catch {
@@ -34,7 +70,20 @@ class UserService {
         do {
             let users: [User] = try await SupabaseService.shared.supabase
                 .from("users")
-                .select()
+                .select(
+                    """
+                        id,
+                        email,
+                        full_name,
+                        username,
+                        bio,
+                        profile_picture_url,
+                        profile_picture_path,
+                        stripe_account_id,
+                        payments_enabled,
+                        stripe_price_id
+                    """
+                )
                 .textSearch("full_name", query: "'\(searchText)'")
                 .execute()
                 .value

@@ -28,7 +28,23 @@ final class ProgramService {
         do {
             let programs: [Program] = try await SupabaseService.shared.supabase
                 .from("programs")
-                .select()
+                .select(
+                    """
+                        id,
+                        title,
+                        description,
+                        image_url,
+                        price,
+                        weeks,
+                        free,
+                        private,
+                        created_by:users!programs_created_by_fkey(
+                            id,
+                            full_name,
+                            username
+                        )
+                    """
+                )
                 .textSearch("title", query: "'\(searchText)'")
                 .execute()
                 .value
@@ -188,7 +204,15 @@ final class ProgramService {
         do {
             let exercises: [Exercise] = try await SupabaseService.shared.supabase
                 .from("exercises")
-                .select()
+                .select(
+                    """
+                        id,
+                        exercise_number,
+                        title,
+                        sets,
+                        reps
+                    """
+                )
                 .eq("workout_id", value: workoutId)
                 .single()
                 .execute()
@@ -205,7 +229,13 @@ final class ProgramService {
         do {
             let workouts: [Workout] = try await SupabaseService.shared.supabase
                 .from("workouts")
-                .select()
+                .select(
+                    """
+                        id,
+                        title,
+                        description
+                    """
+                )
                 .eq("program_id", value: programId)
                 .eq("week", value: week)
                 .execute()

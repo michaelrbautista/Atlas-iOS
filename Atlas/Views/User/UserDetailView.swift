@@ -79,24 +79,11 @@ struct UserDetailView: View {
                 
                 // MARK: Subscribe button
                 if !viewModel.isCreator {
-                    // MARK: Subscribe
-                    Button {
-                        navigationController.presentSheet(.SubscribeSheet)
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Text(viewModel.isSubscribed ? "Unsubscribe" : "Subscribe")
-                                .font(Font.FontStyles.headline)
-                                .foregroundStyle(viewModel.isSubscribed ? Color.ColorSystem.systemGray : Color.ColorSystem.primaryText)
-                            Spacer()
-                        }
-                        .padding(10)
-                        .background(viewModel.isSubscribed ? Color.ColorSystem.systemGray5 : Color.ColorSystem.systemBlue)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                    }
-                    .listRowInsets(EdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20))
-                    .listRowSeparator(.hidden)
-                    .buttonStyle(.plain)
+                    SubscribeButton(
+                        viewModel: viewModel,
+                        isSubscribed: $viewModel.isSubscribed,
+                        isSubscribing: $viewModel.isSubscribing
+                    )
                 }
                 
                 // MARK: Content

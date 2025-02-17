@@ -10,6 +10,7 @@ import SwiftUI
 final class UserDetailViewModel: ObservableObject {
     
     @Published var isLoading = true
+    @Published var isSubscribing = false
     
     @Published var didReturnError = false
     @Published var errorMessage: String? = nil
@@ -29,6 +30,77 @@ final class UserDetailViewModel: ObservableObject {
         self.userId = userId
     }
     
+    // MARK: Unsubscribe
+    @MainActor
+    public func unsubscribeFromUser() async {
+        self.isSubscribing = true
+        
+        guard let currentUserId = UserService.currentUser?.id else {
+            self.isSubscribing = false
+            self.didReturnError = true
+            self.errorMessage = "There was an error getting the current user and creator id."
+            return
+        }
+        
+        do {
+            try await SubscriptionService.shared.unsubscribe(
+                subscriber: currentUserId,
+                subscribedTo: userId
+            )
+            
+            self.isSubscribed = false
+            self.isSubscribing = false
+        } catch {
+            self.isSubscribing = false
+            self.didReturnError = true
+            self.errorMessage = error.localizedDescription
+        }
+    }
+    
+    // MARK: Subscribe
+    @MainActor
+    public func subscribeToUser() async {
+        self.isSubscribing = true
+        
+        do {
+            guard let currentUserId = UserService.currentUser?.id else {
+                self.isSubscribing = false
+                self.didReturnError = true
+                self.errorMessage = "There was an error getting the current user and creator id."
+                return
+            }
+            
+            // Check if old subscription exists
+            let oldSubscription = try await SubscriptionService.shared.getPreviousSubscription(
+                subscriber: currentUserId,
+                subscribedTo: userId
+            )
+            
+            if oldSubscription.count > 0 {
+                try await SubscriptionService.shared.updateOldSubscription(
+                    subscriber: currentUserId,
+                    subscribedTo: userId
+                )
+            } else {
+                let newSubscription = NewSubscriptionRequest(
+                    subscribedTo: userId,
+                    tier: "free",
+                    isActive: true
+                )
+                
+                try await SubscriptionService.shared.createNewSubscription(newSubscription: newSubscription)
+            }
+            
+            self.isSubscribed = true
+            self.isSubscribing = false
+        } catch {
+            self.isSubscribing = false
+            self.didReturnError = true
+            self.errorMessage = error.localizedDescription
+        }
+    }
+    
+    // MARK: Get user
     @MainActor
     public func getUser(userId: String) async {
         do {

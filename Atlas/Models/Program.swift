@@ -13,7 +13,7 @@ struct Program: Identifiable, Codable, Hashable {
     var description: String?
     var imageUrl: String?
     var imagePath: String?
-    var price: Double
+    var price: Double?
     var weeks: Int
     var free: Bool
     var isPrivate: Bool

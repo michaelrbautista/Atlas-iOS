@@ -15,6 +15,7 @@
 		8917C6FD2CAB3F76005B3D5B /* StartProgramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917C6FC2CAB3F76005B3D5B /* StartProgramView.swift */; };
 		89380BFA2D4B292C009C44B1 /* LoadingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89380BF92D4B292C009C44B1 /* LoadingScreen.swift */; };
 		89380BFC2D4B29A2009C44B1 /* ListButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89380BFB2D4B29A2009C44B1 /* ListButton.swift */; };
+		894DA7AD2D61ADC500C462B5 /* SubscribeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894DA7AC2D61ADC500C462B5 /* SubscribeButton.swift */; };
 		896C34C32D431A7C00EB6209 /* UserCollectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896C34C22D431A7C00EB6209 /* UserCollectionsView.swift */; };
 		896C34C52D431AA700EB6209 /* UserCollectionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896C34C42D431AA300EB6209 /* UserCollectionsViewModel.swift */; };
 		896C34C72D431ACC00EB6209 /* CollectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896C34C62D431AC900EB6209 /* CollectionService.swift */; };
@@ -111,6 +112,7 @@
 		8917C6FC2CAB3F76005B3D5B /* StartProgramView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartProgramView.swift; sourceTree = "<group>"; };
 		89380BF92D4B292C009C44B1 /* LoadingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingScreen.swift; sourceTree = "<group>"; };
 		89380BFB2D4B29A2009C44B1 /* ListButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListButton.swift; sourceTree = "<group>"; };
+		894DA7AC2D61ADC500C462B5 /* SubscribeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribeButton.swift; sourceTree = "<group>"; };
 		896C34C22D431A7C00EB6209 /* UserCollectionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCollectionsView.swift; sourceTree = "<group>"; };
 		896C34C42D431AA300EB6209 /* UserCollectionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCollectionsViewModel.swift; sourceTree = "<group>"; };
 		896C34C62D431AC900EB6209 /* CollectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionService.swift; sourceTree = "<group>"; };
@@ -307,6 +309,7 @@
 			isa = PBXGroup;
 			children = (
 				898D0B072C8F531300898957 /* UserDetailView.swift */,
+				894DA7AC2D61ADC500C462B5 /* SubscribeButton.swift */,
 				898D0B0B2C8F674200898957 /* UserProgramsView.swift */,
 				896C34C22D431A7C00EB6209 /* UserCollectionsView.swift */,
 				896C34DC2D443AAC00EB6209 /* SubscribeSheet.swift */,
@@ -759,6 +762,7 @@
 				898D0B1A2C93529800898957 /* CalendarView.swift in Sources */,
 				89766E782CDC21090022C4F5 /* TrainingView.swift in Sources */,
 				89D5A8612BA65AC20001CFB3 /* User.swift in Sources */,
+				894DA7AD2D61ADC500C462B5 /* SubscribeButton.swift in Sources */,
 				896C34CB2D431CA100EB6209 /* ArticleService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -892,7 +896,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Atlas/Atlas.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"Atlas/Preview Content\"";
 				DEVELOPMENT_TEAM = T2V9U83CKZ;
 				ENABLE_PREVIEWS = YES;
@@ -910,7 +914,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.4;
+				MARKETING_VERSION = 3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = "Michael-Bautista.Atlas";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -930,7 +934,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Atlas/Atlas.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"Atlas/Preview Content\"";
 				DEVELOPMENT_TEAM = T2V9U83CKZ;
 				ENABLE_PREVIEWS = YES;
@@ -948,7 +952,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.4;
+				MARKETING_VERSION = 3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = "Michael-Bautista.Atlas";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

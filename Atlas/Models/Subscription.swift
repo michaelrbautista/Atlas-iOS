@@ -44,3 +44,15 @@ struct FetchedSubscriptionUser: Codable, Hashable {
 struct CheckSubscription: Codable, Hashable {
     var id: String
 }
+
+struct NewSubscriptionRequest: Codable {
+    var subscribedTo: String
+    var tier: String
+    var isActive: Bool
+    
+    enum CodingKeys: String, CodingKey {
+        case tier
+        case subscribedTo = "subscribed_to"
+        case isActive = "is_active"
+    }
+}

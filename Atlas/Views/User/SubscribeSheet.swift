@@ -13,11 +13,11 @@ struct SubscribeSheet: View {
     var body: some View {
         VStack(spacing: 20) {
             VStack {
-                Text("Manage subscription")
+                Text("Subscribed")
                     .font(Font.FontStyles.title1)
                     .foregroundStyle(Color.ColorSystem.primaryText)
                 
-                Text("You cannot manage your subscription in the app.")
+                Text("You've subscribed to the free plan.")
                     .font(Font.FontStyles.body)
                     .foregroundStyle(Color.ColorSystem.systemGray)
                     .multilineTextAlignment(.center)

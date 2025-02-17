@@ -16,7 +16,16 @@ final class ExerciseService {
         do {
             let exercises: [FetchedWorkoutExercise] = try await SupabaseService.shared.supabase
                 .from("workout_exercises")
-                .select()
+                .select(
+                    """
+                        id,
+                        created_by,
+                        title,
+                        instructions,
+                        video_url,
+                        video_path
+                    """
+                )
                 .eq("workout_id", value: workoutId)
                 .execute()
                 .value
@@ -27,30 +36,22 @@ final class ExerciseService {
         }
     }
     
-    // MARK: Get creator's exercises
-    public func getCreatorsExercises(userId: String, offset: Int) async throws -> [FetchedExercise] {
-        do {
-            let programs: [FetchedExercise] = try await SupabaseService.shared.supabase
-                .from("exercises")
-                .select()
-                .eq("created_by", value: userId)
-                .order("created_at", ascending: false)
-                .range(from: offset, to: offset + 9)
-                .execute()
-                .value
-            
-            return programs
-        } catch {
-            throw error
-        }
-    }
-    
     // MARK: Get exercise
     public func getExercise(exerciseId: String) async throws -> Exercise {
         do {
             let exercise: Exercise = try await SupabaseService.shared.supabase
                 .from("exercises")
-                .select()
+                .select(
+                    """
+                        id,
+                        created_at,
+                        created_by,
+                        title,
+                        instructions,
+                        video_url,
+                        video_path
+                    """
+                )
                 .eq("id", value: exerciseId)
                 .single()
                 .execute()

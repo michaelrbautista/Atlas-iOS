@@ -69,6 +69,14 @@ final class TrainingViewModel: ObservableObject {
             let program = try await ProgramService.shared.getProgram(programId: self.startedProgram!)
 
             self.program = program
+            
+            if (currentDayAsNumber > program.weeks * 7) {
+                print("Program finished.")
+                UserDefaults.standard.removeObject(forKey: "startedProgram")
+                UserDefaults.standard.removeObject(forKey: "startDayAsNumber")
+                UserDefaults.standard.removeObject(forKey: "startDate")
+            }
+            
             self.workouts = [ProgramWorkout]()
 
             let workouts = try await WorkoutService.shared.getDayWorkouts(
